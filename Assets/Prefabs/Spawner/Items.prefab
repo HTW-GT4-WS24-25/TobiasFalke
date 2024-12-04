@@ -110,6 +110,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPrefabs:
   - {fileID: 8069308713666372123, guid: ddb38815989c1b749b7dd2dfeb6439cd, type: 3}
+  - {fileID: 8069308713666372123, guid: 0a3db822590af7a40a3cca7221cf5b1b, type: 3}
+  - {fileID: 8069308713666372123, guid: 79c8bdc750b42b54f90c5a69dfd459fc, type: 3}
+  - {fileID: 8069308713666372123, guid: ff89a7a80d7d7594f86b6240e1c92459, type: 3}
   itemParent: {fileID: 6543285197218806887}
   spawnTimeInterval: 5
   initialSpawnDelay: 5
