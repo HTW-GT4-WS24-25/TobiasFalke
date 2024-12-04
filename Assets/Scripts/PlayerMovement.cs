@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
             _initialJumpY = transform.position.y;
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
+            ToggleCollider();
         }
     }
 
@@ -70,13 +71,17 @@ public class PlayerMovement : MonoBehaviour
         _isJumping = false;
         transform.position = new Vector3(transform.position.x, _initialJumpY, transform.position.z);
         ToggleShadowSprite();
+        ToggleCollider();
     }
 
     private void ToggleShadowSprite()
     {
         shadowSprite.enabled = !shadowSprite.enabled;
     }
-
+    
+    /**
+     * Toggles collision between player and obstacles on and off.
+     */
     private void ToggleCollider()
     {
         GetComponent<Collider2D>().enabled = !GetComponent<Collider2D>().enabled;
