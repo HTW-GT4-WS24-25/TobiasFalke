@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// TODO: Obstacle destroyen, sobald es den Bildschirmrand verlässt
+// TODO: Destroy obstacle after it leaves the screen
 
 public class ObstacleSpawner : ObjectSpawner
 {

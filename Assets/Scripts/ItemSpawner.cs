@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// TODO: Item destroyen, sobald es den Bildschirmrand verlässt
+// TODO: Destroy item after it leaves the screen
 
 public class ItemSpawner : ObjectSpawner
 {
