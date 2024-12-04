@@ -21,5 +21,4 @@ public class ObjectSpawner : MonoBehaviour
         var objectRb = spawningObject.GetComponent<Rigidbody2D>();
         objectRb.linearVelocity = new Vector2(0f, 1f * -_objectFallSpeed);
     }
-        
 }

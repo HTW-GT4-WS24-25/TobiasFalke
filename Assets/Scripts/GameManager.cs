@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// TODO: Ausbauen
-
 public class GameManager : MonoBehaviour
 {
     #region Singleton
@@ -18,27 +16,39 @@ public class GameManager : MonoBehaviour
 
     #endregion Singleton
 
-    public float currentScore;
+    [SerializeField] private UIManager _ui;
+    [SerializeField] private PlayerController _player;
+    
     public float scrollSpeed = 10f;
     public bool isPlaying = true;
+    private float playTime;
 
+    private void Start()
+    {
+        _ui.SetMaxHealth(_player._maxHealth);
+        _ui.SetMaxSpecial(_player._maxSpecial);
+    }
+    
     private void Update()
     {
         if (isPlaying)
         {
-            currentScore += Time.deltaTime;
+            playTime += Time.deltaTime;
         }
-            
     }
 
-    public void GameOver()
+    private void LateUpdate()
     {
-        currentScore = 0;
+        _ui.timeUI.text = UpdateTimer().ToString();
+    }
+
+    public void TriggerGameOver()
+    {
         isPlaying = false;
     }
-        
-    public int UpdateScore()
+
+    private int UpdateTimer()
     {
-        return Mathf.RoundToInt(currentScore);
+        return Mathf.RoundToInt(playTime);
     }
 }

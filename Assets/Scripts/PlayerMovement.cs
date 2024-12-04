@@ -8,25 +8,25 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpDuration = 0.5f;
     [SerializeField] private SpriteRenderer shadowSprite;
     
-    private Rigidbody2D _rigidbody;
+    private Rigidbody2D _rigidBody;
     private Vector2 _movementInput;
     private SpriteRenderer _playerSprite;
 
-    private bool _isJumping = false;
+    private bool _isJumping;
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidBody = GetComponent<Rigidbody2D>();
         _playerSprite = GetComponent<SpriteRenderer>();
         ToggleShadowSprite();
     }
 
     private void FixedUpdate()
     {
-        _rigidbody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
+        _rigidBody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
 
         if (_isJumping)
         {

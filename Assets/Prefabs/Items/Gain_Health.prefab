@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 6986410766733221668}
   - component: {fileID: -8082027580727778954}
   m_Layer: 3
-  m_Name: Item Obstacle
+  m_Name: Gain_Health
   m_TagString: Item
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
