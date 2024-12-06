@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
+    private float _intialShadowSpriteY;
     private Animator _animator;
     private Animator _shadowAnimator;
 
@@ -57,7 +58,8 @@ public class PlayerMovement : MonoBehaviour
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
-            _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
+            _intialShadowSpriteY = shadowSprite.transform.position.y;
+            _shadowSpriteY = transform.position.y - _intialShadowSpriteY ;
             //ToggleShadowSprite();
             ToggleCollider();
         }
