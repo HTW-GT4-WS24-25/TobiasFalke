@@ -144,6 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1038220737889275976}
   - component: {fileID: 1404085071037684358}
+  - component: {fileID: -8188073513325486033}
   m_Layer: 0
   m_Name: Car Obstacle
   m_TagString: Obstacle
@@ -194,3 +195,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 5
+--- !u!114 &-8188073513325486033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3517725226731259035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff58833f09382b349b8d592939d76568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObstacleJumpable: 1
+  ObstacleGrindable: 0

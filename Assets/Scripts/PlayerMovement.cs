@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     private float _initialJumpY;
     private float _shadowSpriteY;
 
+    public bool IsJumping => _isJumping;
+
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
@@ -48,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
             _initialJumpY = transform.position.y;
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
-            ToggleCollider();
+            //ToggleCollider();
         }
     }
 
@@ -71,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
         _isJumping = false;
         transform.position = new Vector3(transform.position.x, _initialJumpY, transform.position.z);
         ToggleShadowSprite();
-        ToggleCollider();
+        //ToggleCollider();
     }
 
     private void ToggleShadowSprite()
