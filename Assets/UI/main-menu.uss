@@ -1,0 +1,20 @@
+.panel {
+}
+
+.menu {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.unity-button {
+    flex-grow: 1;
+    align-items: stretch;
+    justify-content: flex-start;
+    align-self: center;
+    align-content: stretch;
+    max-height: 50px;
+    transform-origin: left;
+    cursor: url("project://database/Assets/Sprites/UI/Cursors/tile_0154.png?fileID=2800000&guid=bfee32b6f66aad04eae55e2a7f90758c&type=3#tile_0154");
+    min-width: 200px;
+    background-image: none;
+}
