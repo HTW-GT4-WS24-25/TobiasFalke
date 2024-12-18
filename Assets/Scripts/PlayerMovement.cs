@@ -16,12 +16,17 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
+    private float _intialShadowSpriteY;
+    private Animator _animator;
+    private Animator _shadowAnimator;
 
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _playerSprite = GetComponent<SpriteRenderer>();
-        ToggleShadowSprite();
+        //ToggleShadowSprite();
+        _animator = GetComponent<Animator>();
+        _shadowAnimator = shadowSprite.GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -31,6 +36,13 @@ public class PlayerMovement : MonoBehaviour
         if (_isJumping)
         {
             HandleJump();
+        }
+
+        //TODO: just an example of triggering Flip
+        if (Input.GetKeyDown("k"))
+        {
+            _animator.SetTrigger("Flip");
+            _shadowAnimator.SetTrigger("Flip");
         }
     }
 
@@ -46,8 +58,9 @@ public class PlayerMovement : MonoBehaviour
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
-            _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
-            ToggleShadowSprite();
+            _intialShadowSpriteY = shadowSprite.transform.position.y;
+            _shadowSpriteY = transform.position.y - _intialShadowSpriteY ;
+            //ToggleShadowSprite();
             ToggleCollider();
         }
     }
@@ -70,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
         if (!(progress >= 1)) return;
         _isJumping = false;
         transform.position = new Vector3(transform.position.x, _initialJumpY, transform.position.z);
-        ToggleShadowSprite();
+        //ToggleShadowSprite();
         ToggleCollider();
     }
 

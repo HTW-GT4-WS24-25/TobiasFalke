@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4474447837689050585}
   - component: {fileID: 2834653918772242421}
   - component: {fileID: 8086779117063913833}
+  - component: {fileID: 6901214514111357737}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -32,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1784579889903990669}
@@ -50,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03441a82b60f4c5a918421bf5910949f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _maxSpecial: 100
 --- !u!114 &149430250057437529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,17 +160,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0001546517, y: 0.0011992455}
+  m_Offset: {x: -0.0028642565, y: 0.006618589}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.1, y: 0.25}
+    oldSize: {x: 0.5, y: 1}
     newSize: {x: 0.1, y: 0.25}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.08401278, y: 0.23161143}
+  m_Size: {x: 0.32788083, y: 0.94695777}
   m_EdgeRadius: 0
 --- !u!212 &8086779117063913833
 SpriteRenderer:
@@ -212,8 +215,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 788615541
   m_SortingLayer: 2
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 285373381019332353, guid: d6166d6862f2542908eb713f5fcef21a, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -8233202092170039229, guid: 9ef8a3dc70e7a0f4881c13e60e5b76ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -224,6 +227,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &6901214514111357737
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5337571061259710200}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 56e11433c79a99145aa64c1c7e38f32a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8348515121616870656
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1784579889903990669}
   - component: {fileID: 5146903415476791251}
+  - component: {fileID: 6930284442327239070}
   m_Layer: 0
   m_Name: Shadow Sprite
   m_TagString: Untagged
@@ -300,7 +326,7 @@ SpriteRenderer:
   m_SortingLayerID: 788615541
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4756028443593143600, guid: e3a39fbe7da704d66b704d8dd27e4f21, type: 3}
+  m_Sprite: {fileID: 7076132785684289655, guid: abf160341f12bcf40a9398accf8be917, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -311,3 +337,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &6930284442327239070
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8348515121616870656}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 844d101fc7c98af4390eb6f09d58fa07, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
