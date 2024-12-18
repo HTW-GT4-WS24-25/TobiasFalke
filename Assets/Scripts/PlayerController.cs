@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStats stats;
     public int _maxHealth = 100;
     public int _maxSpecial = 100;
+
     
     private void Start()
     {
@@ -31,7 +32,6 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other)
     {
         CheckItemCollision(other);
-        CheckObstacleCollision(other);
         
         if (stats._health == 0)
         {
@@ -49,8 +49,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void CheckObstacleCollision(Collision2D other)
+     public void TriggerCollisionEffect()
     {
-        // TODO: implement obstacle collision triggering
+        // Log the collision to the console
+        Debug.Log("Collided");
+    }
+
+     private void HandleObstacleCollision(GameObject obstacle, ObstacleManger obstacleManger)
+    {
+        // Destroy the obstacle
+        Destroy(obstacle);
     }
 }
