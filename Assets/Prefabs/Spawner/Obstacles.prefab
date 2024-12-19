@@ -77,8 +77,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefabs:
   - {fileID: 8069308713666372123, guid: bea87b1e04eaf2f4ca4a53cbe55f9693, type: 3}
+  - {fileID: 8069308713666372123, guid: 5e4976fa1e9b9d74ca9de90855e85738, type: 3}
   obstacleParent: {fileID: 5397144262348039215}
-  spawnTimeInterval: 5
+  spawnTimeInterval: 1
   initialSpawnDelay: 5
 --- !u!1 &4597300324638332686
 GameObject:
