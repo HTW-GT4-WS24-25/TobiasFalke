@@ -25,6 +25,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider specialBar;
     [SerializeField] private Gradient specialGradiant;
     [SerializeField] private Image specialFill;
+    
+    [SerializeField] private Image specialActionButton;
 
     public TextMeshProUGUI scoreUI;
     public TextMeshProUGUI timeUI;
@@ -58,5 +60,10 @@ public class UIManager : MonoBehaviour
     public void SetScore(float score)
     {
         scoreUI.text = ((int)score).ToString();
+    }
+
+    public void SetSpecialActionButtonVisibility(bool activeornot)
+    {
+        specialActionButton.gameObject.SetActive(activeornot);
     }
 }
