@@ -32,7 +32,7 @@ public class PlayerStats
     internal void ChangeSpecial(int amount)
     {
         Debug.Log("Special was changed by " + amount);
-        _health += amount;
+        _special += amount;
         UIManager.Instance.SetSpecial(_special);
     }
     

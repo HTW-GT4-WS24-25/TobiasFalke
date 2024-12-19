@@ -1,13 +1,12 @@
+using System;
 using UnityEngine;
-
-// TODO: implement SP bar logic
 
 public class PlayerController : MonoBehaviour
 {
-    private PlayerStats stats;
     public int _maxHealth = 100;
     public int _maxSpecial = 100;
-
+    
+    private PlayerStats stats;
     private PlayerMovement playerMovement;
 
     private void Start()
@@ -15,7 +14,7 @@ public class PlayerController : MonoBehaviour
         stats = new PlayerStats
         {
             _health = _maxHealth,
-            _special = _maxSpecial,
+            _special = 0,
             _score = 0f
         };
 
@@ -24,12 +23,14 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown("x")) TriggerSpecialAction();
         stats._score += Time.deltaTime * 5;
     }
 
     private void LateUpdate()
     {
         UIManager.Instance.SetScore(stats._score);
+        if (stats._special >= 100) UIManager.Instance.SetSpecialActionButtonVisibility(true);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -75,9 +76,13 @@ public class PlayerController : MonoBehaviour
                 {
                     TriggerCollisionEffect(other);
                 }
-
             }
         }
+    }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        stats.ChangeSpecial(10);
     }
 
     private void HandleGrindCollision()
@@ -85,12 +90,23 @@ public class PlayerController : MonoBehaviour
         // Implement grind logic (if the player is on a grind rail, for example)
         Debug.Log("Player is grinding over an obstacle.");
         // Add logic to manage player's state while grinding
+        
+        // continously while grinding:
+        stats.ChangeSpecial(5);
     }
 
-    public void TriggerCollisionEffect(Collider2D other)
+    private void TriggerCollisionEffect(Collider2D other)
     {
+        stats.ChangeHealth(-50);
         // Implement collision effect, such as animation or sound
         Debug.Log("Collision effect triggered.");
         Destroy(other.gameObject);
+    }
+
+    private void TriggerSpecialAction()
+    {
+        stats._special = 0;
+        UIManager.Instance.SetSpecialActionButtonVisibility(false);
+        // TODO: implement special action
     }
 }
