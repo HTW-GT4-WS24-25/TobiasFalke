@@ -24,7 +24,7 @@ public class MainMenuEvents : MonoBehaviour
 
     private void OnClickPlayButton(ClickEvent evt)
     {
-        SceneManager.Instance.LoadGame();
+        GameSceneManager.Instance.LoadGame();
     }
     private void OnClickExitButton(ClickEvent evt)
     {
@@ -34,7 +34,7 @@ public class MainMenuEvents : MonoBehaviour
     }
     private void OnClickSettingsButton(ClickEvent evt)
     {
-        SceneManager.Instance.LoadSettingsMenu();
+        GameSceneManager.Instance.LoadSettingsMenu();
     }
 
 

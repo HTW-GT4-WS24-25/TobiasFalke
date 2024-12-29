@@ -11,7 +11,7 @@ public class GameManager : PersistentSingleton<GameManager>
     [SerializeField] private PlayerController _player;
     
     public float scrollSpeed = 10f;
-    public bool isPlaying = false;
+    public bool isPlaying;
     private float playTime;
 
     private void Start()

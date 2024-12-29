@@ -1,33 +1,33 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities;
-public class SceneManager : PersistentSingleton<SceneManager>
+public class GameSceneManager : PersistentSingleton<GameSceneManager>
 {
     private string _mainMenuScene = "Main Menu";
     private string _settingsMenuScene = "Settings";
     private string _gameScene = "Main Scene";
         
-    public void LoadScene(string sceneName)
+    public void LoadGameScene(string sceneName)
     {
         // Logic to load a scene
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != sceneName)
+        if (SceneManager.GetActiveScene().name != sceneName)
             
-            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+            SceneManager.LoadScene(sceneName);
     }
 
 
     public void LoadMainMenu()
     {
-        LoadScene(_mainMenuScene);
+        LoadGameScene(_mainMenuScene);
     }
 
     public void LoadSettingsMenu()
     {
-        LoadScene(_settingsMenuScene);
+        LoadGameScene(_settingsMenuScene);
     }
 
     public void LoadGame()
     {
-        LoadScene(_gameScene);
+        LoadGameScene(_gameScene);
     }
 }
