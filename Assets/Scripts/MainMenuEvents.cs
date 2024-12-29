@@ -24,15 +24,17 @@ public class MainMenuEvents : MonoBehaviour
 
     private void OnClickPlayButton(ClickEvent evt)
     {
-        throw new NotImplementedException();
+        GameSceneManager.Instance.LoadGame();
     }
     private void OnClickExitButton(ClickEvent evt)
     {
-        throw new NotImplementedException();
+        //TODO Fix structure (currently also in GameManager)
+        HideMenu();
+        Application.Quit();
     }
     private void OnClickSettingsButton(ClickEvent evt)
     {
-        throw new NotImplementedException();
+        GameSceneManager.Instance.LoadSettingsMenu();
     }
 
 
@@ -41,5 +43,10 @@ public class MainMenuEvents : MonoBehaviour
         _playButton.UnregisterCallback<ClickEvent>(OnClickPlayButton);
         _settingsButton.UnregisterCallback<ClickEvent>(OnClickSettingsButton);
         _quitButton.UnregisterCallback<ClickEvent>(OnClickExitButton);
+    }
+
+    private void HideMenu()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -1,30 +1,22 @@
 using UnityEngine;
+using UnityEngine.Timeline;
+using Utilities;
 
-public class GameManager : MonoBehaviour
+// TODO: Ausbauen
+
+public class GameManager : PersistentSingleton<GameManager>
 {
-    #region Singleton
-
-    public static GameManager Instance;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
-
-    #endregion Singleton
 
     [SerializeField] private UIManager _ui;
     [SerializeField] private PlayerController _player;
     
     public float scrollSpeed = 10f;
-    public bool isPlaying = true;
+    public bool isPlaying;
     private float playTime;
 
     private void Start()
     {
+        isPlaying = true;
         _ui.SetMaxHealth(_player._maxHealth);
         _ui.SetMaxSpecial(_player._maxSpecial);
     }
@@ -35,6 +27,11 @@ public class GameManager : MonoBehaviour
         {
             playTime += Time.deltaTime;
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseGame();
+        }
     }
 
     private void LateUpdate()
@@ -44,6 +41,33 @@ public class GameManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
+        isPlaying = false;
+    }
+
+    public void TogglePauseGame()
+    {
+        if (isPlaying)
+        {
+            Resume();
+        }
+        else
+        {
+            Pause();
+        }
+
+    }
+
+    private void Resume()
+    {
+        // pauseMenuUI.SetActive(true);
+        Time.timeScale = 1f; // Unpause time
+        isPlaying = true;
+    }
+
+    private void Pause()
+    {
+        // pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f; // Pause time
         isPlaying = false;
     }
 

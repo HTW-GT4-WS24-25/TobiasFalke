@@ -1,22 +1,10 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    #region Singleton
-
-    public static UIManager Instance;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
-
-    #endregion Singleton
     
     [SerializeField] private Slider healthBar;
     [SerializeField] private Gradient healthGradient;
