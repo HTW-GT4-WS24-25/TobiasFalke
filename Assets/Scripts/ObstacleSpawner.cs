@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// TODO: Destroy obstacle after it leaves the screen
+// spawns obstacles at intervals and manages their lifecycle
 
 public class ObstacleSpawner : ObjectSpawner
 {

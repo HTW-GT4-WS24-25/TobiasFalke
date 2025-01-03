@@ -1,12 +1,10 @@
 using UnityEngine;
-using UnityEngine.Timeline;
 using Utilities;
 
-// TODO: Ausbauen
+// Oversees game states, flow, and manages score and high scores.
 
 public class GameManager : PersistentSingleton<GameManager>
 {
-
     [SerializeField] private UIManager _ui;
     [SerializeField] private PlayerController _player;
     
@@ -17,8 +15,7 @@ public class GameManager : PersistentSingleton<GameManager>
     private void Start()
     {
         isPlaying = true;
-        _ui.SetMaxHealth(_player._maxHealth);
-        _ui.SetMaxSpecial(_player._maxSpecial);
+      
     }
     
     private void Update()
@@ -54,7 +51,6 @@ public class GameManager : PersistentSingleton<GameManager>
         {
             Pause();
         }
-
     }
 
     private void Resume()

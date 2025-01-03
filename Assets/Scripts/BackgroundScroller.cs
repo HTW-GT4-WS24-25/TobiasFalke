@@ -1,16 +1,18 @@
 using UnityEngine;
 
-// TODO: overhaul class
+// controls the endless scrolling effect of the background
 
 public class ScrollingBackground : MonoBehaviour
 {
     public float scrollSpeed = 10.0f;
     public float backgroundHeight = 10.5f;
+    public SpriteRenderer backGroundImage;
     private Vector3 _startPosition;
 
     private void Start()
     {
         _startPosition = transform.position;
+        backgroundHeight = backGroundImage.bounds.size.y;
     }
 
     private void Update()
