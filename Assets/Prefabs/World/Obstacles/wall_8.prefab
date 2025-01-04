@@ -134,8 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff58833f09382b349b8d592939d76568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canJumpOver: 0
-  canGrindOver: 0
+  isJumpable: 0
+  isGrindable: 0
 --- !u!50 &3792637773487835072
 Rigidbody2D:
   serializedVersion: 5
@@ -145,7 +145,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8069308713666372123}
   m_BodyType: 1
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
