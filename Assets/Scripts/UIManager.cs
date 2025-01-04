@@ -1,7 +1,9 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Utilities;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -13,6 +15,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Slider specialBar;
     [SerializeField] private Gradient specialGradiant;
     [SerializeField] private Image specialFill;
+    
+    [SerializeField] private UIDocument _pauseUI;
 
     public TextMeshProUGUI scoreUI;
     public TextMeshProUGUI timeUI;
@@ -47,4 +51,10 @@ public class UIManager : Singleton<UIManager>
     {
         scoreUI.text = ((int)score).ToString();
     }
+
+    public void SetPauseMenuUIVisibility(bool state)
+    {
+        _pauseUI.gameObject.SetActive(state);
+    }
+    
 }

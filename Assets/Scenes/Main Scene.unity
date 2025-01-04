@@ -219,6 +219,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+--- !u!1 &768879865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 768879866}
+  - component: {fileID: 768879867}
+  m_Layer: 5
+  m_Name: UI PauseMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &768879866
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768879865}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 653, y: 352, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1058527722}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &768879867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768879865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: edba9215a90304349be51b1f9384e72f, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: c0e335d38e714a5428920af444f53afa, type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!1 &854065296
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +514,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 768879866}
   - {fileID: 1756171949}
   m_Father: {fileID: 1626369991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1731,7 +1783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 287434810727211399, guid: 8d4141007d5bf234fb0b02fe7d4b8cab, type: 3}
       propertyPath: m_fontSize
-      value: 22.35
+      value: 18.95
       objectReference: {fileID: 0}
     - target: {fileID: 287434810727211399, guid: 8d4141007d5bf234fb0b02fe7d4b8cab, type: 3}
       propertyPath: m_margin.x
@@ -1829,6 +1881,10 @@ PrefabInstance:
       propertyPath: timeUI
       value: 
       objectReference: {fileID: 1691421705}
+    - target: {fileID: 3862749007806803647, guid: 8d4141007d5bf234fb0b02fe7d4b8cab, type: 3}
+      propertyPath: _pauseUI
+      value: 
+      objectReference: {fileID: 768879867}
     - target: {fileID: 3862749007806803647, guid: 8d4141007d5bf234fb0b02fe7d4b8cab, type: 3}
       propertyPath: healthBar
       value: 

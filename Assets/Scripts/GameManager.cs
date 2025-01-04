@@ -44,29 +44,29 @@ public class GameManager : PersistentSingleton<GameManager>
         isPlaying = false;
     }
 
-    public void TogglePauseGame()
+    private void TogglePauseGame()
     {
         if (isPlaying)
         {
-            Resume();
+            Pause();
         }
         else
         {
-            Pause();
+            Resume();
         }
 
     }
 
-    private void Resume()
+    public void Resume()
     {
-        // pauseMenuUI.SetActive(true);
+        _ui.SetPauseMenuUIVisibility(false);
         Time.timeScale = 1f; // Unpause time
         isPlaying = true;
     }
 
-    private void Pause()
+    public void Pause()
     {
-        // pauseMenuUI.SetActive(true);
+        _ui.SetPauseMenuUIVisibility(true);
         Time.timeScale = 0f; // Pause time
         isPlaying = false;
     }
