@@ -1,13 +1,14 @@
 using UnityEngine;
-
-// TODO: Destroy obstacle after it leaves the screen
+using UnityEngine.Serialization;
 
 public class ObstacleSpawner : ObjectSpawner
 {
-    [SerializeField] private GameObject[] obstaclePrefabs;
+    // adjustable depending on level or difficulty
+    [FormerlySerializedAs("obstaclePrefabs")] [SerializeField] private GameObject[] spawnableObstacles;
     public Transform obstacleParent;
     public float spawnTimeInterval = 5f;
     public float initialSpawnDelay = 5f;
+    // for inner calculation only
     private float _timeSinceLastSpawn;
     private bool _firstSpawnOccured;
 
@@ -16,7 +17,7 @@ public class ObstacleSpawner : ObjectSpawner
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;
-        var spawningObject = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)];
+        var spawningObject = spawnableObstacles[Random.Range(0, spawnableObstacles.Length)];
         SpawnObject(spawningObject, obstacleParent);
         _timeSinceLastSpawn = 0f;
         _firstSpawnOccured = true;

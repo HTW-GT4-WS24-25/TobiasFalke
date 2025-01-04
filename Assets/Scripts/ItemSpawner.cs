@@ -1,13 +1,13 @@
 using UnityEngine;
 
-// TODO: Destroy item after it leaves the screen
-
 public class ItemSpawner : ObjectSpawner
 {
-    [SerializeField] private GameObject[] itemPrefabs;
-    public Transform itemParent;
+    // adjustable depending on level or difficulty
+    [SerializeField] public GameObject[] spawnableItems;
     public float spawnTimeInterval = 5f;
     public float initialSpawnDelay = 5f;
+    public Transform itemParent; 
+    // for inner calculation only
     private float _timeSinceLastSpawn;
     private bool _firstSpawnOccured;
 
@@ -16,7 +16,7 @@ public class ItemSpawner : ObjectSpawner
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;
-        var spawningObject = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+        var spawningObject = spawnableItems[Random.Range(0, spawnableItems.Length)];
         SpawnObject(spawningObject, itemParent);
         _timeSinceLastSpawn = 0f;
         _firstSpawnOccured = true;
