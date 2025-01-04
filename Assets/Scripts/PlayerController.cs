@@ -50,13 +50,14 @@ public class PlayerController : MonoBehaviour
         UIManager.Instance.ToggleSpecialActionButton(false); 
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // check if collided object is a power up or an obstacle
+        Debug.Log("Collision is triggered.");
+        // Check whether collided object is power up or obstacle.
         var interactable = other.gameObject.GetComponent<IObject>();
-        // change player stats & movement according to collision effect
+        // Change player stats & movement according to collision effect.
         interactable?.Collide(other.gameObject, stats, movement);
-        // trigger game over screen if collision had health reach 0
+        // Trigger game over screen if collision causes health to drop to 0.
         if (stats._health <= 0) TriggerGameOver(); 
     }
     
