@@ -5,6 +5,7 @@ public class ObjectSpawner : MonoBehaviour
     private const float SceneHeight = 10;
     private const float SceneWidth = 15;
     private float _objectFallSpeed = 10f;
+    
     private void Update()
     {
         if (GameManager.Instance.isPlaying)

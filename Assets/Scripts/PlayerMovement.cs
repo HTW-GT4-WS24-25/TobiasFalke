@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
-    private float _intialShadowSpriteY;
+    private float _initialShadowSpriteY;
     private Animator _animator;
     private Animator _shadowAnimator;
 
@@ -26,21 +26,38 @@ public class PlayerMovement : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _playerSprite = GetComponent<SpriteRenderer>();
-        //ToggleShadowSprite();
         _animator = GetComponent<Animator>();
         _shadowAnimator = shadowSprite.GetComponent<Animator>();
+        // ToggleShadowSprite();
     }
 
     private void FixedUpdate()
     {
+        // Calculate the new velocity based on input
         _rigidBody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
 
+        // Get half of the player's width and height in world units
+        float playerHalfWidth = _playerSprite.bounds.extents.x;
+        float playerHalfHeight = _playerSprite.bounds.extents.y;
+
+        // Calculate the world bounds of the screen
+        Vector3 bottomLeft = Camera.main.ScreenToWorldPoint(Vector3.zero);
+        Vector3 topRight = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+
+        // Clamp the player's position within the screen bounds
+        float clampedX = Mathf.Clamp(transform.position.x, bottomLeft.x + playerHalfWidth, topRight.x - playerHalfWidth);
+        float clampedY = Mathf.Clamp(transform.position.y, bottomLeft.y + playerHalfHeight, topRight.y - playerHalfHeight);
+
+        // Apply the clamped position
+        transform.position = new Vector2(clampedX, clampedY);
+
+        // Handle jumping if the player is currently jumping
         if (_isJumping)
         {
             HandleJump();
         }
 
-        //TODO: just an example of triggering Flip
+        // Example of triggering Flip animation (for debugging purposes)
         if (Input.GetKeyDown("k"))
         {
             _animator.SetTrigger("Flip");
