@@ -1,3 +1,4 @@
+using System.Collections;
 using Mono.Cecil;
 using UnityEngine;
 
@@ -43,6 +44,8 @@ public class Obstacle : MonoBehaviour, IObject
     
     private void TriggerCollisionEffect(PlayerStats playerStats)
     {
+        if(playerStats.isInvincible) return;
+        StartCoroutine(SetInvincibility(playerStats));
         Debug.Log("Collision!");
         AudioManager.Instance.PlaySound("crash");
         UpdatePlayerHealth(playerStats);
@@ -88,5 +91,15 @@ public class Obstacle : MonoBehaviour, IObject
         }
         
         playerStats.UpdateHealth(amount);
+    }
+    
+    private static IEnumerator SetInvincibility(PlayerStats playerStats)
+    {
+        playerStats.isInvincible = true;
+        Debug.Log("Player is invincible for " + playerStats.invincibilityDuration + " seconds.");
+        // TODO: trigger some visual indication.
+        yield return new WaitForSeconds(playerStats.invincibilityDuration);
+        playerStats.isInvincible = false;
+        Debug.Log("Player is no longer invincible.");
     }
 }
