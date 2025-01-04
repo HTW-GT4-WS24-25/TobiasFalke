@@ -25,7 +25,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.Instance.PlayTrack("mainSceneMusic");
+        AudioManager.Instance.PlayTrack("mainMenuMusic");
     }
 
     private void OnClickPlayButton(ClickEvent evt)

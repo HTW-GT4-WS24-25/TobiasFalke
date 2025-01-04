@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
-        AudioManager.Instance.PlayTrack("mainGameMusic");
+        AudioManager.Instance.PlayTrack("mainSceneMusic");
         
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
