@@ -22,20 +22,22 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnClickPlayButton(ClickEvent evt)
     {
+        AudioManager.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadGame();
     }
     private void OnClickExitButton(ClickEvent evt)
     {
+        AudioManager.Instance.PlaySound("quitGame");
         //TODO Fix structure (currently also in GameManager)
         HideMenu();
         Application.Quit();
     }
     private void OnClickSettingsButton(ClickEvent evt)
     {
+        AudioManager.Instance.PlaySound("openSettings");
         SceneLoader.Instance.LoadSettingsMenu();
     }
-
-
+    
     private void OnDisable()
     {
         _playButton.UnregisterCallback<ClickEvent>(OnClickPlayButton);
