@@ -56,10 +56,16 @@ public class PlayerMovement : MonoBehaviour
         {
             HandleJump();
         }
+        else
+        {   
+            // TODO: add music track for driving
+            // AudioManager.Instance.PlayBackgroundTrack("driving");
+        }
 
         // Example of triggering Flip animation (for debugging purposes)
         if (Input.GetKeyDown("k"))
         {
+            AudioManager.Instance.PlaySound("flip");
             _animator.SetTrigger("Flip");
             _shadowAnimator.SetTrigger("Flip");
         }
@@ -74,6 +80,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!_isJumping)
         {
+            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air
+            AudioManager.Instance.PlaySound("jump");
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
@@ -99,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Jump is done.
         if (!(progress >= 1)) return;
+        AudioManager.Instance.PlaySound("land");
         _isJumping = false;
         transform.position = new Vector3(transform.position.x, _initialJumpY, transform.position.z);
         ToggleShadowSprite();

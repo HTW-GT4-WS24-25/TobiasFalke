@@ -1,6 +1,10 @@
+using UnityEngine;
+
 public interface IAudio
 {
-        void PlayMusic(string fileName);
-        void StopMusic();
+        void PlayTrack(string fileName);
+        void StopTrack();
+        void PlayBackgroundTrack(string fileName);
+        void StopBackgroundTrack();
         void PlaySound(string fileName);
 }
