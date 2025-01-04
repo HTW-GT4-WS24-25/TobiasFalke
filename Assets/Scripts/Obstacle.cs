@@ -21,19 +21,18 @@ public class Obstacle : MonoBehaviour, IObject
     
     private void HandleGrindCollision(PlayerStats playerStats)
     {
-        Debug.Log("Player is grinding over an obstacle.");
-        // TODO: implement logic for grinding
-        // TODO: make continuous while grinding:
-        playerStats.UpdateSpecial(100);
+        Debug.Log("Grinding!");
+        // TODO: implement logic for grinding -> Coroutine?
+        AudioManager.Instance.PlaySound("grind");
+        playerStats.UpdateSpecial(15); // TODO: adjust based on balancing
     }
     
     private void TriggerCollisionEffect(PlayerStats playerStats)
     {
-        Debug.Log("Collision effect triggered.");
-        // TODO: make damage depend on type of obstacle?
-        playerStats.UpdateHealth(-20);
-        // Implement collision effect, such as animation or sound
+        Debug.Log("Collision!");
+        playerStats.UpdateHealth(-20); // TODO: make damage depend on type of obstacle?
+        AudioManager.Instance.PlaySound("crash");
         // TODO: add animation to player when colliding
-        AudioManager.Instance.PlaySound("collision");
+        // TODO: have player phrase through obstacle or be pushed below the screen (game over)
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ScrollingBackground : MonoBehaviour
 {
-    public float scrollSpeed = 10.0f;
+    public float scrollSpeed = 5.0f;
     public float backgroundHeight = 10.5f;
     public SpriteRenderer backGroundImage;
     private Vector3 _startPosition;
@@ -10,7 +10,7 @@ public class ScrollingBackground : MonoBehaviour
     private void Start()
     {
         _startPosition = transform.position;
-        backgroundHeight = backGroundImage.bounds.size.y;
+        // backgroundHeight = backGroundImage.bounds.size.y;
     }
 
     private void Update()

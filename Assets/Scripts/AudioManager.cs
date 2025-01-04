@@ -4,8 +4,11 @@ public class AudioManager : MonoBehaviour, IAudio
 {
     public static IAudio Instance { get; private set; } // singleton instance for easy access
     [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource backgroundSource;
     [SerializeField] private AudioSource soundSource;
+    
     private float musicVolume = 1.0f;
+    private float backgroundVolume = 1.0f;
     private float soundVolume = 1.0f;
     
     private void Awake()
@@ -26,9 +29,9 @@ public class AudioManager : MonoBehaviour, IAudio
         Debug.Assert(soundSource != null, "AudioManager: soundSource not assigned.");
     }
 
-    public void PlayMusic(string fileName)
+    public void PlayTrack(string fileName)
     {
-        if (musicSource == null) return;
+        if (this.musicSource == null) return;
         // load audio by file name
         AudioClip musicClip = Resources.Load<AudioClip>(fileName);
         if (musicClip == null) return;
@@ -40,11 +43,32 @@ public class AudioManager : MonoBehaviour, IAudio
         musicSource.loop = true;
         musicSource.Play();
     }
-
-    public void StopMusic()
+    
+    public void StopTrack()
     {
         if (musicSource == null) return;
         musicSource.Stop();
+    }
+    
+    public void PlayBackgroundTrack(string fileName)
+    {
+        if (backgroundSource == null) return;
+        // load audio by file name
+        AudioClip musicClip = Resources.Load<AudioClip>(fileName);
+        if (musicClip == null) return;
+        // do nothing if the track is already playing
+        if (backgroundSource.clip == musicClip && backgroundSource.isPlaying) return;
+        // play music with desired properties
+        backgroundSource.clip = musicClip;
+        backgroundSource.volume = musicVolume;
+        backgroundSource.loop = true;
+        backgroundSource.Play();
+    }
+    
+    public void StopBackgroundTrack()
+    {
+        if (backgroundSource == null) return;
+        backgroundSource.Stop();
     }
 
     public void PlaySound(string fileName)
