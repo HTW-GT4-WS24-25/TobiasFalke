@@ -26,8 +26,8 @@ Transform:
   m_GameObject: {fileID: 3487000760957291311}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0050768093}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8766097449575356709}
@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 788615541
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 8156248357809595061, guid: 81cf9e37f053c66409ede993282e2545, type: 3}
+  m_Color: {r: 0, g: 0.09206629, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -96,12 +96,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8766097449575356709}
+  - component: {fileID: -8082027580727778954}
   - component: {fileID: 3792637773487835072}
   - component: {fileID: 6986410766733221668}
-  - component: {fileID: -149195007705795725}
   m_Layer: 3
-  m_Name: Box Obstacle
-  m_TagString: Obstacle
+  m_Name: Special Boost
+  m_TagString: Item
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,13 +115,26 @@ Transform:
   m_GameObject: {fileID: 8069308713666372123}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.28, y: 3.13, z: -0.0050768093}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4456393579738733733}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8082027580727778954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069308713666372123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4168a74ab641a244ab3da6e35d42d0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemType: 2
 --- !u!50 &3792637773487835072
 Rigidbody2D:
   serializedVersion: 5
@@ -179,7 +192,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -195,17 +208,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-149195007705795725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8069308713666372123}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff58833f09382b349b8d592939d76568, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObstacleJumpable: 1
-  ObstacleGrindable: 0

@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 8156248357809595061, guid: 81cf9e37f053c66409ede993282e2545, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9742701, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 3792637773487835072}
   - component: {fileID: 6986410766733221668}
   m_Layer: 3
-  m_Name: HealthBoost
+  m_Name: Speed Boost
   m_TagString: Item
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4168a74ab641a244ab3da6e35d42d0f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 0
+  itemType: 4
 --- !u!50 &3792637773487835072
 Rigidbody2D:
   serializedVersion: 5
