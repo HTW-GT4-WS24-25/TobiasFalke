@@ -1,8 +1,5 @@
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities;
-
-// controls the loading and unloading of game scenes
 
 public class SceneLoader : PersistentSingleton<SceneLoader>
 {
@@ -12,10 +9,7 @@ public class SceneLoader : PersistentSingleton<SceneLoader>
         
     public void LoadGameScene(string sceneName)
     {
-        // Logic to load a scene
-        if (SceneManager.GetActiveScene().name != sceneName)
-            
-            SceneManager.LoadScene(sceneName);
+        if (SceneManager.GetActiveScene().name != sceneName) SceneManager.LoadScene(sceneName);
     }
     
     public void LoadMainMenu()

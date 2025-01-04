@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// controls the endless scrolling effect of the background
-
 public class ScrollingBackground : MonoBehaviour
 {
     public float scrollSpeed = 10.0f;

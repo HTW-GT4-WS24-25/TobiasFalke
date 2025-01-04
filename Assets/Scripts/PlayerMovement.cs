@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// defines player movement behavior
-
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5;
@@ -18,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
-    private float _intialShadowSpriteY;
+    private float _initialShadowSpriteY;
     private Animator _animator;
     private Animator _shadowAnimator;
 
@@ -33,7 +31,8 @@ public class PlayerMovement : MonoBehaviour
         // ToggleShadowSprite();
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         // Calculate the new velocity based on input
         _rigidBody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
 
@@ -53,12 +52,14 @@ public class PlayerMovement : MonoBehaviour
         transform.position = new Vector2(clampedX, clampedY);
 
         // Handle jumping if the player is currently jumping
-        if (_isJumping) {
+        if (_isJumping)
+        {
             HandleJump();
         }
 
         // Example of triggering Flip animation (for debugging purposes)
-        if (Input.GetKeyDown("k")) {
+        if (Input.GetKeyDown("k"))
+        {
             _animator.SetTrigger("Flip");
             _shadowAnimator.SetTrigger("Flip");
         }
@@ -116,6 +117,4 @@ public class PlayerMovement : MonoBehaviour
     {
         GetComponent<Collider2D>().enabled = !GetComponent<Collider2D>().enabled;
     }
-    
-    
 }

@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour, IAudioPlayer
+public class AudioManager : MonoBehaviour, IAudio
 {
-    public static IAudioPlayer Instance { get; private set; } // singleton instance for easy access
+    public static IAudio Instance { get; private set; } // singleton instance for easy access
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource soundSource;
     private float musicVolume = 1.0f;
     private float soundVolume = 1.0f;
     
     private void Awake()
-    {
+    { 
         if (Instance == null)
         {
             Instance = this;

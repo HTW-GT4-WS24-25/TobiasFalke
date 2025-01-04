@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// manages player behaviors, inputs, and interactions
-
 public class PlayerController : MonoBehaviour
 { 
     private PlayerStats stats; // handles player's current health, special & score
@@ -55,7 +53,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other)
     {
         // check if collided object is a power up or an obstacle
-        var interactable = other.gameObject.GetComponent<ICollidable>();
+        var interactable = other.gameObject.GetComponent<IObject>();
         // change player stats & movement according to collision effect
         interactable?.Collide(other.gameObject, stats, movement);
         // trigger game over screen if collision had health reach 0

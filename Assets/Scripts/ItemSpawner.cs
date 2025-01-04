@@ -1,13 +1,12 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class ObstacleSpawner : ObjectSpawner
+public class ItemSpawner : ObjectSpawner
 {
     // adjustable depending on level or difficulty
-    [FormerlySerializedAs("obstaclePrefabs")] [SerializeField] private GameObject[] spawnableObstacles;
-    public Transform obstacleParent;
+    [SerializeField] public GameObject[] spawnableItems;
     public float spawnTimeInterval = 5f;
     public float initialSpawnDelay = 5f;
+    public Transform itemParent; 
     // for inner calculation only
     private float _timeSinceLastSpawn;
     private bool _firstSpawnOccured;
@@ -17,8 +16,8 @@ public class ObstacleSpawner : ObjectSpawner
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;
-        var spawningObject = spawnableObstacles[Random.Range(0, spawnableObstacles.Length)];
-        SpawnObject(spawningObject, obstacleParent);
+        var spawningObject = spawnableItems[Random.Range(0, spawnableItems.Length)];
+        SpawnObject(spawningObject, itemParent);
         _timeSinceLastSpawn = 0f;
         _firstSpawnOccured = true;
     }

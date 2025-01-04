@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-// handles main menu events and UI interactions.
-
 public class MainMenuManager : MonoBehaviour
 {
     private UIDocument _uiDocument;
@@ -16,11 +14,10 @@ public class MainMenuManager : MonoBehaviour
         _playButton = _uiDocument.rootVisualElement.Q("PlayButton") as Button;
         _settingsButton = _uiDocument.rootVisualElement.Q("SettingsButton") as Button;
         _quitButton = _uiDocument.rootVisualElement.Q("QuitButton") as Button;
-        
-        _playButton.RegisterCallback<ClickEvent>(OnClickPlayButton);
-        _settingsButton.RegisterCallback<ClickEvent>(OnClickSettingsButton);
-        _quitButton.RegisterCallback<ClickEvent>(OnClickExitButton);
-        
+
+        _playButton?.RegisterCallback<ClickEvent>(OnClickPlayButton);
+        _settingsButton?.RegisterCallback<ClickEvent>(OnClickSettingsButton);
+        _quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
     }
 
     private void OnClickPlayButton(ClickEvent evt)

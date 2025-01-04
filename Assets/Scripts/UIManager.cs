@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
 
-// manages UI elements and handles game state transitions in the UI
-
 public class UIManager : Singleton<UIManager>
 {
     // health bar

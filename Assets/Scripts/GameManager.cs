@@ -1,8 +1,6 @@
 using UnityEngine;
 using Utilities;
 
-// Oversees game states, flow, and manages score and high scores.
-
 public class GameManager : PersistentSingleton<GameManager>
 {
     [SerializeField] private UIManager _ui;
@@ -15,7 +13,6 @@ public class GameManager : PersistentSingleton<GameManager>
     private void Start()
     {
         isPlaying = true;
-      
     }
     
     private void Update()

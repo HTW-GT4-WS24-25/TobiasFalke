@@ -1,9 +1,8 @@
 using UnityEngine;
 
-// Manages player health and special ability parameters
 public class PlayerStats
 {
-    // Values changing during gameplay
+    // balues changing during gameplay
     public int _health = 100;
     public int _special = 0;
     public float _speedMultiplier = 1;
@@ -11,7 +10,7 @@ public class PlayerStats
     public float _score = 0;
     public float _scoreMultiplier = 1;
     
-    // Ceiling values
+    // ceiling values
     public int _maxHealth = 100;
     public int _maxSpecial = 100;
     public float _maxSpeedMultiplier = 5;
