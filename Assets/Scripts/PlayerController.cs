@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
+        AudioManager.Instance.PlayTrack("mainGameMusic");
+        
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         
@@ -65,10 +67,11 @@ public class PlayerController : MonoBehaviour
         if (stats._health <= 0) TriggerGameOver(); 
     }
     
-    private void TriggerGameOver()
-    {       
-        // TODO: connect to GameManager and trigger Game Over
+    private static void TriggerGameOver()
+    {     
         // TODO: trigger death animation (e.g. explosion, whatever)
         AudioManager.Instance.PlaySound("gameOver"); 
+        SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
+        AudioManager.Instance.PlayTrack("gameOverMusic");
     }
 }

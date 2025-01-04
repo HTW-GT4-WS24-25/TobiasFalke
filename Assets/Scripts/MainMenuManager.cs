@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class MainMenuManager : MonoBehaviour
@@ -10,6 +11,8 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
+        
+        
         _uiDocument = GetComponent<UIDocument>();
         _playButton = _uiDocument.rootVisualElement.Q("PlayButton") as Button;
         _settingsButton = _uiDocument.rootVisualElement.Q("SettingsButton") as Button;
@@ -20,10 +23,15 @@ public class MainMenuManager : MonoBehaviour
         _quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
     }
 
+    private void Start()
+    {
+        AudioManager.Instance.PlayTrack("mainSceneMusic");
+    }
+
     private void OnClickPlayButton(ClickEvent evt)
     {
         AudioManager.Instance.PlaySound("clickPlay");
-        SceneLoader.Instance.LoadGame();
+        SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
     }
     private void OnClickExitButton(ClickEvent evt)
     {
@@ -35,7 +43,7 @@ public class MainMenuManager : MonoBehaviour
     private void OnClickSettingsButton(ClickEvent evt)
     {
         AudioManager.Instance.PlaySound("openSettings");
-        SceneLoader.Instance.LoadSettingsMenu();
+        // SceneLoader.Instance.LoadSettingsMenu();
     }
     
     private void OnDisable()
