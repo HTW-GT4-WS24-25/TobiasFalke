@@ -6,17 +6,38 @@ public class GameManager : PersistentSingleton<GameManager>
     [SerializeField] private UIManager _ui;
     [SerializeField] private PlayerController _player;
     
+    [SerializeField]private float countDownTime = 3f;
     public float scrollSpeed = 10f;
     public bool isPlaying;
     private float playTime;
+    private float remainingTime;
 
     private void Start()
     {
-        isPlaying = true;
+        remainingTime = countDownTime;
+        isPlaying = false;
+        Time.timeScale = 0f; // Unpause time
+        _ui.ToggleCountDownVisibility(true);
+
     }
     
     private void Update()
-    {
+    {        
+        if (remainingTime > 0)
+        {
+            remainingTime -= Time.unscaledDeltaTime;
+            float remainingSeconds = remainingTime % 60;
+            _ui.UpdateCountDown(remainingSeconds);
+        } 
+        else if (remainingTime < 0)
+        {
+            remainingTime = 0;
+            isPlaying = true;
+            _ui.ToggleCountDownVisibility(false);
+            Time.timeScale = 1f; // Unpause time
+            AudioManager.Instance.PlaySound("openSettings");
+        }
+        
         if (isPlaying)
         {
             playTime += Time.deltaTime;
@@ -38,28 +59,28 @@ public class GameManager : PersistentSingleton<GameManager>
         isPlaying = false;
     }
 
-    public void TogglePauseGame()
+    private void TogglePauseGame()
     {
         if (isPlaying)
         {
-            Resume();
+            Pause();
         }
         else
         {
-            Pause();
+            Resume();
         }
     }
 
-    private void Resume()
+    public void Resume()
     {
-        // pauseMenuUI.SetActive(true);
+        _ui.SetPauseMenuUIVisibility(false);
         Time.timeScale = 1f; // Unpause time
         isPlaying = true;
     }
 
-    private void Pause()
+    public void Pause()
     {
-        // pauseMenuUI.SetActive(true);
+        _ui.SetPauseMenuUIVisibility(true);
         Time.timeScale = 0f; // Pause time
         isPlaying = false;
     }

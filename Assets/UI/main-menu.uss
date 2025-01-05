@@ -5,6 +5,7 @@
 .menu {
     flex-grow: 1;
     flex-direction: column;
+    align-content: center;
     justify-content: flex-start;
 }
 
@@ -14,7 +15,7 @@
     justify-content: flex-start;
     align-self: center;
     align-content: stretch;
-    max-height: none;
+    max-height: 60px;
     min-width: 253px;
     background-image: url("project://database/Assets/Sprites/UI/tilemap_packed.png?fileID=-638729143&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_19");
     -unity-background-image-tint-color: rgb(255, 255, 255);
@@ -46,6 +47,7 @@
     -unity-background-image-tint-color: rgb(197, 227, 255);
     text-shadow: 0 0 0 rgba(0, 0, 0, 0.59);
     scale: 1.03 1.03;
+    transition-duration: 0.1s;
 }
 
 .unity-text-element {
@@ -55,4 +57,20 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
+}
+
+.panel-pause {
+    opacity: 0.74;
+    color: rgb(27, 27, 27);
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.panel {
+    background-color: rgb(49, 77, 120);
+}
+
+.unity-button:active {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    scale: 0.95 0.95;
 }
