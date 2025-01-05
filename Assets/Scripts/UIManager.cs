@@ -22,10 +22,10 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI jumpMultiplier;
     public TextMeshProUGUI scoreMultiplier;
     // counters
-    
-
     public TextMeshProUGUI scoreUI;
     public TextMeshProUGUI timeUI;
+
+    public TextMeshProUGUI countDownUI;
     // pop-ups
     [SerializeField] private Image specialActionButton;
 
@@ -58,6 +58,16 @@ public class UIManager : Singleton<UIManager>
     public void UpdateScoreCounter(float score)
     {
         scoreUI.text = ((int)score).ToString();
+    }
+
+    public void UpdateCountDown(float remainingTime)
+    {
+        countDownUI.text = (((int)remainingTime).ToString());
+    }
+
+    public void ToggleCountDownVisibility(bool isActive)
+    {
+        countDownUI.gameObject.SetActive(isActive);
     }
 
     public void ToggleSpecialActionButton(bool onOrOff)
