@@ -5,6 +5,7 @@
 .menu {
     flex-grow: 1;
     flex-direction: column;
+    justify-content: flex-start;
 }
 
 .unity-button {
