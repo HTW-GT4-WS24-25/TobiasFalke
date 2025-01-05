@@ -657,7 +657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: spawnableObstacles.Array.size
-      value: 12
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: 'spawnableObstacles.Array.data[1]'
@@ -703,6 +703,14 @@ PrefabInstance:
       propertyPath: 'spawnableObstacles.Array.data[11]'
       value: 
       objectReference: {fileID: 8069308713666372123, guid: 33a572f088abe0a49ac120d592d47a6a, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[12]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 0517236e272a24a2289292a6b0ad2eae, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[13]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: a0be365ae7f494bb0aa93485a6a0495d, type: 3}
     - target: {fileID: 3643794058620438955, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
