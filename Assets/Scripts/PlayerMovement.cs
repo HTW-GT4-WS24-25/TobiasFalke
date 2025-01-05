@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     
     private Rigidbody2D _rigidBody;
     private Vector2 _movementInput;
-    private SpriteRenderer _playerSprite;
+    public SpriteRenderer _playerSprite;
 
     private bool _isJumping;
     private float _jumpTime;

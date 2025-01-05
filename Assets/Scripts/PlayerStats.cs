@@ -98,4 +98,14 @@ public class PlayerStats: MonoBehaviour
         UIManager.Instance.UpdateScoreMultiplier(_scoreMultiplier);
         Debug.Log("Score multiplier was set to " + _scoreMultiplier);
     }
+
+    internal void TriggerSpecialAction()
+    {
+        SetHealth(100);
+        UpdateScoreMultiplier(100);
+        UpdateSpeedMultiplier(50);
+        UpdateJumpDuration(50);
+        // Reset special points to 0.
+        SetSpecial(0);
+    }
 }

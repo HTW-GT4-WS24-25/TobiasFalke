@@ -215,6 +215,81 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+--- !u!1 &739661888
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 739661889}
+  - component: {fileID: 739661891}
+  - component: {fileID: 739661890}
+  m_Layer: 5
+  m_Name: Special Action Screen Flash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &739661889
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739661888}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1716038745}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 975, y: 550}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &739661890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739661888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0.13991976, b: 1, a: 0.65882355}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -3109530460148663181, guid: 6e141d147e8022f4aaba42b235fedbd0, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &739661891
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739661888}
+  m_CullTransparentMesh: 1
 --- !u!114 &952242988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,6 +459,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_ActionId: dad70c86-b58c-4b17-88ad-f5e53adf419e
+--- !u!224 &1716038745 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 456147973671111725, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+  m_PrefabInstance: {fileID: 2499219362959403672}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1966480385 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 578193544025717480, guid: db9f9ad1ebaab5141b1461b9d32081f6, type: 3}
@@ -690,6 +770,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 113
       objectReference: {fileID: 0}
+    - target: {fileID: 5473051898354044323, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: screenFlashImage
+      value: 
+      objectReference: {fileID: 739661890}
     - target: {fileID: 6912873050559114926, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 144
@@ -732,6 +816,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4939863839849161758, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1154186366}
+    - targetCorrespondingSourceObject: {fileID: 456147973671111725, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 739661889}
     - targetCorrespondingSourceObject: {fileID: 4700171048450370208, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1313555063}
