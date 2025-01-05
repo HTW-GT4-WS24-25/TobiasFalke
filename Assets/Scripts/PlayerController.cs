@@ -5,6 +5,13 @@ public class PlayerController : MonoBehaviour
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
     
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
+    
     private void Start()
     {
         stats = new PlayerStats(); // Is created with default values for each stat.
@@ -26,7 +33,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // Trigger special action if conditions are met.
-        if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction(); 
+        if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction();
+        // Update animation.
+        _animator.SetBool("isInvincible", stats.isInvincible);
     }
 
     private void LateUpdate()
@@ -60,7 +69,7 @@ public class PlayerController : MonoBehaviour
         // Check whether collided object is power up or obstacle.
         var interactable = other.gameObject.GetComponent<IObject>();
         // Change player stats & movement according to collision effect.
-        interactable?.Collide(other.gameObject, stats, movement);
+        interactable?.Collide(other.gameObject, stats, movement, _animator);
         // Trigger game over screen if collision causes health to drop to 0.
         if (stats._health <= 0) TriggerGameOver(); 
     }
