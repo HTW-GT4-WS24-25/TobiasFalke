@@ -394,20 +394,36 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
       propertyPath: initialSpawnDelay
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
       propertyPath: spawnTimeInterval
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
       propertyPath: spawnableItems.Array.size
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
       propertyPath: 'spawnableItems.Array.data[0]'
       value: 
       objectReference: {fileID: 8069308713666372123, guid: ddb38815989c1b749b7dd2dfeb6439cd, type: 3}
+    - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
+      propertyPath: 'spawnableItems.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 50680e7692a12f240a5903fa97bfe133, type: 3}
+    - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
+      propertyPath: 'spawnableItems.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 509c905ad54d01a4297cd020c1b77ded, type: 3}
+    - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
+      propertyPath: 'spawnableItems.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 320502064e6a1b74ba1a488cd76e8552, type: 3}
+    - target: {fileID: 4700282302729870423, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
+      propertyPath: 'spawnableItems.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 060680947b2db7646ad154d3c41943d7, type: 3}
     - target: {fileID: 5086856416481781460, guid: 63b9a8f2ac560fa40bbf4db3511e0c7d, type: 3}
       propertyPath: m_Name
       value: Item Spawning
@@ -484,6 +500,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3481737726355573428, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3481737726355573428, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3481737726355573428, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4694171215568471426, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
@@ -578,6 +602,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7131083314116218637, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131083314116218637, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9125871765665499834, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       propertyPath: Loop
       value: 1
@@ -625,20 +657,56 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: spawnTimeInterval
-      value: 0.1
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: spawnableObstacles.Array.size
-      value: 4
+      value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 089c1067bce35ee439dc0e6386326fcd, type: 3}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: 'spawnableObstacles.Array.data[2]'
       value: 
-      objectReference: {fileID: 3517725226731259035, guid: f9418666e6965454d8745191f6ec1f8f, type: 3}
+      objectReference: {fileID: 8069308713666372123, guid: 95b06a46f56634a478590bf7d2e2c8e5, type: 3}
     - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: 'spawnableObstacles.Array.data[3]'
       value: 
-      objectReference: {fileID: 8069308713666372123, guid: 859a8ecaa4a1b3949b788230377accb8, type: 3}
+      objectReference: {fileID: 8069308713666372123, guid: f83473573cadb4743b54a6fddd9c4bde, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: ae685e5699cb7774db759049e0a0e165, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[5]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 372188d7daef79f48b4b53e6b3415e86, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[6]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: b5cfaed62229fe84aa51a62604a37bfb, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[7]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 2f590661a6f6cf84c943714ac6eeec75, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[8]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 0bebf728583f0954196ce77f11256017, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[9]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 55482b20f64f43a42b5866871bae65d7, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[10]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 52b62d1d8219db1489cdc67ab78d3473, type: 3}
+    - target: {fileID: 2228656350254366012, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
+      propertyPath: 'spawnableObstacles.Array.data[11]'
+      value: 
+      objectReference: {fileID: 8069308713666372123, guid: 33a572f088abe0a49ac120d592d47a6a, type: 3}
     - target: {fileID: 3643794058620438955, guid: f5386758250a26c4ebe8e4f3d54ecd8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -711,6 +779,14 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 2051109155}
+    - target: {fileID: 5401914717460075009, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5401914717460075009, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5401914717460075009, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -817,6 +893,10 @@ PrefabInstance:
     - target: {fileID: 3846405085585530437, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
+      propertyPath: scrollSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5603646661093661104, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: m_Name

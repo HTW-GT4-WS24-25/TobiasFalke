@@ -1,8 +1,9 @@
+using System.Collections;
 using UnityEngine;
 
-public class PlayerStats
+public class PlayerStats: MonoBehaviour
 {
-    // balues changing during gameplay
+    // Values changing during gameplay.
     public int _health = 100;
     public int _special = 0;
     public float _speedMultiplier = 1;
@@ -10,13 +11,17 @@ public class PlayerStats
     public float _score = 0;
     public float _scoreMultiplier = 1;
     
-    // ceiling values
+    // Ceiling values.
     public int _maxHealth = 100;
     public int _maxSpecial = 100;
     public float _maxSpeedMultiplier = 5;
     public float _maxJumpMultiplier = 5;
     public float _maxScoreMultiplier = 5;
-
+    
+    // For invincibility frames (after being hit).
+    public bool isInvincible = false;
+    public float invincibilityDuration = 1.5f;
+    
     internal void UpdateHealth(int amount)
     {
         _health = Mathf.Clamp(_health + amount, 0, _maxHealth);

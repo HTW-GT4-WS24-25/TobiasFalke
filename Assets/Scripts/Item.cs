@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour, IObject
 {
-    public ItemType itemType;
+    [SerializeField] private ItemType itemType;
 
     public enum ItemType
     {
