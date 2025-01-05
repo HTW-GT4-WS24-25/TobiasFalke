@@ -1,7 +1,9 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Utilities;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -13,6 +15,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Slider specialBar;
     [SerializeField] private Gradient specialGradiant;
     [SerializeField] private Image specialFill;
+    
+    [SerializeField] private UIDocument _pauseUI;
     // multipliers
     public TextMeshProUGUI speedMultiplier;
     public TextMeshProUGUI jumpMultiplier;
@@ -20,6 +24,8 @@ public class UIManager : Singleton<UIManager>
     // counters
     public TextMeshProUGUI scoreUI;
     public TextMeshProUGUI timeUI;
+
+    public TextMeshProUGUI countDownUI;
     // pop-ups
     [SerializeField] private Image specialActionButton;
 
@@ -54,6 +60,16 @@ public class UIManager : Singleton<UIManager>
         scoreUI.text = ((int)score).ToString();
     }
 
+    public void UpdateCountDown(float remainingTime)
+    {
+        countDownUI.text = (((int)remainingTime).ToString());
+    }
+
+    public void ToggleCountDownVisibility(bool isActive)
+    {
+        countDownUI.gameObject.SetActive(isActive);
+    }
+
     public void ToggleSpecialActionButton(bool onOrOff)
     {
         specialActionButton.gameObject.SetActive(onOrOff);
@@ -71,5 +87,10 @@ public class UIManager : Singleton<UIManager>
         specialBar.maxValue = special;
         specialBar.value = special; 
         specialFill.color = specialGradiant.Evaluate(1f);
+    }
+    
+    public void SetPauseMenuUIVisibility(bool state)
+    {
+        _pauseUI.gameObject.SetActive(state);
     }
 }

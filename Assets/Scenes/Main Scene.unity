@@ -554,6 +554,10 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 3998412068223635358}
+    - target: {fileID: 4755473657435877021, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
+      propertyPath: countDownTime
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4939863839849161758, guid: f734f7a5a8b03ca428f43e106404a796, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
