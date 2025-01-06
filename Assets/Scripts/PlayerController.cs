@@ -72,9 +72,6 @@ public class PlayerController : MonoBehaviour
     
     private void TriggerGameOver()
     {     
-        // Disable movement in PlayerMovement script
-        movement.disableMovement = true;
-
         // Stop the game from playing
         GameManager.Instance.isPlaying = false;
 
@@ -82,13 +79,14 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isDead", true);
         AudioManager.Instance.PlaySound("gameOver"); 
         // Start coroutine to delay scene change
+        Time.timeScale = 0f;
         StartCoroutine(DelayedGameOver());
     }
 
     private IEnumerator DelayedGameOver()
     {
         // Wait for the length of the death animation (e.g., 2 seconds)
-        yield return new WaitForSeconds(2f); 
+        yield return new WaitForSecondsRealtime(2f); 
 
         // Change the scene after delay
         SceneLoader.Instance.LoadScene(SceneLoader.gameOver);

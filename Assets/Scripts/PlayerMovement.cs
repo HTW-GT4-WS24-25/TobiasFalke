@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     private Animator _shadowAnimator;
 
     public bool IsJumping => _isJumping;
-    public bool disableMovement { get; set; } = false; // This flag will disable movement when true
 
     private void Awake()
     {
@@ -34,9 +33,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Prevent movement if disableMovement is true
-        if (disableMovement) return;
-
         // Calculate the new velocity based on input
         _rigidBody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
 
@@ -77,25 +73,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnMove(InputValue inputValue)
     {
-        // Prevent movement input if disableMovement is true
-        if (disableMovement) return;
-
         _movementInput = inputValue.Get<Vector2>();
     }
     
     private void OnJump()
     {
-        // Prevent jumping if disableMovement is true or if the player is already jumping
-        if (disableMovement || _isJumping) return;
+        if (!_isJumping){
+            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air
+            AudioManager.Instance.PlaySound("jump");
+            _isJumping = true;
+            _jumpTime = 0;
+            _initialJumpY = transform.position.y;
+            _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
+            ToggleShadowSprite();
+            //ToggleCollider();
+        }
 
-        AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air
-        AudioManager.Instance.PlaySound("jump");
-        _isJumping = true;
-        _jumpTime = 0;
-        _initialJumpY = transform.position.y;
-        _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
-        ToggleShadowSprite();
-        //ToggleCollider();
     
     }
 
