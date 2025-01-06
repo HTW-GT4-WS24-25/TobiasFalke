@@ -75,6 +75,9 @@ public class PlayerController : MonoBehaviour
         // Disable movement in PlayerMovement script
         movement.disableMovement = true;
 
+        // Stop the game from playing
+        GameManager.Instance.isPlaying = false;
+
         // Trigger death animation
         animator.SetBool("isDead", true);
         AudioManager.Instance.PlaySound("gameOver"); 
