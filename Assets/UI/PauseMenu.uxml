@@ -1,0 +1,10 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/main-menu.uss?fileID=7433441132597879392&amp;guid=9eb3a4b59199704409428d005d953203&amp;type=3#main-menu" />
+    <engine:VisualElement name="TransparantBackground" class="panel-pause" style="background-color: rgb(0, 0, 0); position: absolute; height: 100%; width: 100%;" />
+    <engine:VisualElement class="panel" style="flex-grow: 1; position: relative; justify-content: center; align-content: flex-start; flex-direction: column; flex-basis: auto; opacity: 1; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: stretch-to-fill; background-position-y: center 0; background-position-x: center 0; align-self: auto; align-items: center;">
+        <engine:VisualElement name="PauseMenu" class="menu" style="flex-grow: 1; position: relative; background-color: rgb(49, 77, 120); width: 470px; max-height: 330px; justify-content: center; border-left-color: rgb(46, 65, 109); border-right-color: rgb(46, 65, 109); border-top-color: rgb(46, 65, 109); border-bottom-color: rgb(46, 65, 109); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; padding-top: 40px; padding-bottom: 40px;">
+            <engine:Button text="Continue" name="ContinueButton" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+            <engine:Button text="Quit" name="QuitButton" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

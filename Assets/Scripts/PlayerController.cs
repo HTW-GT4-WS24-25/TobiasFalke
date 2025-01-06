@@ -1,9 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 { 
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
+    private Animator animator; // Reference to Animator component
     
     private Animator _animator;
 
@@ -14,8 +16,11 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
+        AudioManager.Instance.PlayTrack("mainSceneMusic");
+        
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
+        animator = GetComponent<Animator>(); // Get the Animator component
         
         // Initialize player's max health & special bars on UI.
         UIManager.Instance.SetMaxHealth(stats._maxHealth);
@@ -75,9 +80,25 @@ public class PlayerController : MonoBehaviour
     }
     
     private void TriggerGameOver()
-    {       
-        // TODO: connect to GameManager and trigger Game Over
-        // TODO: trigger death animation (e.g. explosion, whatever)
+    {     
+        // Stop the game from playing
+        GameManager.Instance.isPlaying = false;
+
+        // Trigger death animation
+        animator.SetBool("isDead", true);
         AudioManager.Instance.PlaySound("gameOver"); 
+        // Start coroutine to delay scene change
+        Time.timeScale = 0f;
+        StartCoroutine(DelayedGameOver());
+    }
+
+    private IEnumerator DelayedGameOver()
+    {
+        // Wait for the length of the death animation (e.g., 2 seconds)
+        yield return new WaitForSecondsRealtime(2f); 
+
+        // Change the scene after delay
+        SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
+        AudioManager.Instance.PlayTrack("gameOverMusic");
     }
 }

@@ -1,29 +1,27 @@
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using Utilities;
 
-public class SceneLoader : PersistentSingleton<SceneLoader>
+public class SceneLoader : MonoBehaviour, IScene
 {
-    private string _mainMenuScene = "Main Menu";
-    private string _settingsMenuScene = "Settings";
-    private string _gameScene = "Main Scene";
+    public static IScene Instance { get; private set; } // singleton instance for easy access
+
+    public const string mainMenu = "Main Menu";
+    public const string gameOver = "Game Over";
+    public const string gameLevel = "Main Scene";
         
-    public void LoadGameScene(string sceneName)
+    private void Awake()
+    { 
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(gameObject);
+    }
+    public void LoadScene(string sceneName)
     {
+        AudioManager.Instance.StopTrack();
+        // only load if scene is not already loaded
         if (SceneManager.GetActiveScene().name != sceneName) SceneManager.LoadScene(sceneName);
-    }
-    
-    public void LoadMainMenu()
-    {
-        LoadGameScene(_mainMenuScene);
-    }
-
-    public void LoadSettingsMenu()
-    {
-        LoadGameScene(_settingsMenuScene);
-    }
-
-    public void LoadGame()
-    {
-        LoadGameScene(_gameScene);
     }
 }
