@@ -19,7 +19,7 @@ public class Item : MonoBehaviour, IObject
         ScoreMultiplierBoost
     }
     
-    public void Collide(GameObject item, PlayerStats playerStats, PlayerMovement playerMovement)
+    public void Collide(GameObject item, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
         AudioManager.Instance.PlaySound("item");
         TriggerItemEffect(playerStats, itemType);

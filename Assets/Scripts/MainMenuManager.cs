@@ -6,7 +6,7 @@ public class MainMenuManager : MonoBehaviour
 {
     private UIDocument _uiDocument;
     private Button _playButton;
-    private Button _settingsButton;
+    private Button _tutorialButton;
     private Button _quitButton;
 
     private void Awake()
@@ -15,11 +15,11 @@ public class MainMenuManager : MonoBehaviour
         
         _uiDocument = GetComponent<UIDocument>();
         _playButton = _uiDocument.rootVisualElement.Q("PlayButton") as Button;
-        _settingsButton = _uiDocument.rootVisualElement.Q("SettingsButton") as Button;
+        _tutorialButton = _uiDocument.rootVisualElement.Q("TutorialButton") as Button;
         _quitButton = _uiDocument.rootVisualElement.Q("QuitButton") as Button;
 
         _playButton?.RegisterCallback<ClickEvent>(OnClickPlayButton);
-        _settingsButton?.RegisterCallback<ClickEvent>(OnClickSettingsButton);
+        _tutorialButton?.RegisterCallback<ClickEvent>(OnClickTutorialButton);
         _quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
     }
 
@@ -40,7 +40,7 @@ public class MainMenuManager : MonoBehaviour
         HideMenu();
         Application.Quit();
     }
-    private void OnClickSettingsButton(ClickEvent evt)
+    private void OnClickTutorialButton(ClickEvent evt)
     {
         AudioManager.Instance.PlaySound("openSettings");
         // SceneLoader.Instance.LoadSettingsMenu();
@@ -49,7 +49,7 @@ public class MainMenuManager : MonoBehaviour
     private void OnDisable()
     {
         _playButton.UnregisterCallback<ClickEvent>(OnClickPlayButton);
-        _settingsButton.UnregisterCallback<ClickEvent>(OnClickSettingsButton);
+        _tutorialButton.UnregisterCallback<ClickEvent>(OnClickTutorialButton);
         _quitButton.UnregisterCallback<ClickEvent>(OnClickExitButton);
     }
 

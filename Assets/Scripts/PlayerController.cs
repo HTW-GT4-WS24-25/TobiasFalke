@@ -1,11 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 { 
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
+    private Animator animator; // Reference to Animator component
+    
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
     
     private void Start()
     {
@@ -13,6 +22,14 @@ public class PlayerController : MonoBehaviour
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         UIManager.Instance.InitializeStatusBars(stats);
         AudioManager.Instance.PlayTrack("mainSceneMusic");
+
+        animator = GetComponent<Animator>(); // Get the Animator component
+        
+        // Initialize player's max health & special bars on UI.
+        UIManager.Instance.SetMaxHealth(stats._maxHealth);
+        UIManager.Instance.SetMaxSpecial(stats._maxSpecial);
+        UIManager.Instance.UpdateHealthBar(stats._health);
+        UIManager.Instance.UpdateSpecialBar(stats._special);
     }
 
     private void FixedUpdate()
@@ -24,7 +41,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // Trigger special action if conditions are met.
-        if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction(); 
+        if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction();
+        // Update animation.
+        _animator.SetBool("isInvincible", stats.isInvincible);
     }
 
     private void LateUpdate()
@@ -41,7 +60,7 @@ public class PlayerController : MonoBehaviour
         // Check whether collided object is power up or obstacle.
         var interactable = other.gameObject.GetComponent<IObject>();
         // Change player stats & movement according to collision effect.
-        interactable?.Collide(other.gameObject, stats, movement);
+        interactable?.Collide(other.gameObject, stats, movement, _animator);
         // Trigger game over screen if collision causes health to drop to 0.
         if (stats._health <= 0) TriggerGameOver(); 
     }
@@ -76,10 +95,25 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    private static void TriggerGameOver()
+    private void TriggerGameOver()
     {     
-        // TODO: trigger death animation (e.g. explosion, whatever)
+        // Stop the game from playing
+        GameManager.Instance.isPlaying = false;
+
+        // Trigger death animation
+        animator.SetBool("isDead", true);
         AudioManager.Instance.PlaySound("gameOver"); 
+        // Start coroutine to delay scene change
+        Time.timeScale = 0f;
+        StartCoroutine(DelayedGameOver());
+    }
+
+    private IEnumerator DelayedGameOver()
+    {
+        // Wait for the length of the death animation (e.g., 2 seconds)
+        yield return new WaitForSecondsRealtime(2f); 
+
+        // Change the scene after delay
         SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
         AudioManager.Instance.PlayTrack("gameOverMusic");
     }

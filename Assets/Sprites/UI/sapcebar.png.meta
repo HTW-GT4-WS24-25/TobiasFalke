@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: f47f35e3c1ce05147be361f3a019bbf8
+guid: 0a64b8403bbad34459250ac3399aadfa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -805397131078003914
-    second: broken_sk8dex_0
-  - first:
-      213: 5323059742367616385
-    second: broken_sk8dex_1
+      213: -5473671287230420240
+    second: sapcebar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -78,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,62 +109,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: broken_sk8dex_0
+      name: sapcebar_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 32
+        width: 48
+        height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6331af29397a2d4f0800000000000000
-      internalID: -805397131078003914
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: broken_sk8dex_1
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 0
-        width: 12
-        height: 17
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 18d010602ae4fd940800000000000000
-      internalID: 5323059742367616385
+      spriteID: 0fa206b07fc9904b0800000000000000
+      internalID: -5473671287230420240
       vertices: []
       indices: 
       edges: []
@@ -176,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 779a2dd8d2b45574996a9f18e7ef12f7
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -186,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      broken_sk8dex_0: -805397131078003914
-      broken_sk8dex_1: 5323059742367616385
+      sapcebar_0: -5473671287230420240
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
