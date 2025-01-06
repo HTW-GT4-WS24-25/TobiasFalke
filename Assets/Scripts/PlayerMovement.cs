@@ -78,8 +78,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void OnJump()
     {
-        if (!_isJumping)
-        {
+        if (!_isJumping){
             AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air
             AudioManager.Instance.PlaySound("jump");
             _isJumping = true;
@@ -89,6 +88,8 @@ public class PlayerMovement : MonoBehaviour
             ToggleShadowSprite();
             //ToggleCollider();
         }
+
+    
     }
 
     private void HandleJump()

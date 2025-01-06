@@ -17,7 +17,7 @@ public class Obstacle : MonoBehaviour, IObject
 
     private bool IsJumpable => obstacleType != ObstacleType.Wall;
 
-    public void Collide(GameObject obstacle, PlayerStats playerStats, PlayerMovement playerMovement)
+    public void Collide(GameObject obstacle, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
         if (playerMovement.IsJumping && IsJumpable)
         {
@@ -30,7 +30,7 @@ public class Obstacle : MonoBehaviour, IObject
         }
         else if (!IsJumpable || !playerMovement.IsJumping)
         {
-            TriggerCollisionEffect(playerStats);
+            TriggerCollisionEffect(playerStats, animator);
         }
     }
     
@@ -42,10 +42,11 @@ public class Obstacle : MonoBehaviour, IObject
         playerStats.UpdateSpecial(15); // TODO: adjust based on balancing
     }
     
-    private void TriggerCollisionEffect(PlayerStats playerStats)
+    private void TriggerCollisionEffect(PlayerStats playerStats, Animator animator)
     {
         if(playerStats.isInvincible) return;
         StartCoroutine(SetInvincibility(playerStats));
+        animator.Play("invincibility");
         Debug.Log("Collision!");
         AudioManager.Instance.PlaySound("crash");
         UpdatePlayerHealth(playerStats);
