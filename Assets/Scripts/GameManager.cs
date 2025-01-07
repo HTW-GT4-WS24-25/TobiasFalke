@@ -8,7 +8,7 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public bool isPlaying = false;
     public float gameSpeed = 10f;
-   
+
     private float playTime;
     private const float countDownTime = 3f;
     private float remainingTime;
@@ -19,43 +19,61 @@ public class GameManager : PersistentSingleton<GameManager>
     private void Start()
     {
         remainingTime = countDownTime;
-        Time.timeScale = 0f;
+        Time.timeScale = 0f; // Pause at the start
         UIManager.Instance.ToggleCountDownVisibility(true);
     }
-    
+
     private void Update()
-    {        
-        switch (remainingTime)
+    {
+        // Handle countdown
+        if (remainingTime > 0)
         {
-            case > 0:
+            remainingTime -= Time.unscaledDeltaTime; // Use unscaled time
+            float remainingSeconds = Mathf.Ceil(remainingTime);
+            
+            // Update countdown only if changed to reduce UI updates
+            UIManager.Instance.UpdateCountDown(remainingSeconds);
+
+            if (remainingTime <= 0)
             {
-                remainingTime -= Time.unscaledDeltaTime;
-                float remainingSeconds = remainingTime % 60;
-                UIManager.Instance.UpdateCountDown(remainingSeconds);
-                break;
+                StartGame();
             }
-            case <= 0:
-                isPlaying = true;
-                remainingTime = 0;
-                UIManager.Instance.ToggleCountDownVisibility(false);
-                Time.timeScale = 1f;
-                AudioManager.Instance.PlaySound("gameStart");
-                break;
+        }
+
+        // Handle pause toggle
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseMenu();
+            return;
         }
         
-        if (Input.GetKeyDown(KeyCode.Escape)) TogglePauseMenu(); // open or close pause menu on ESC
-        if (!isPlaying) return; // only continue if game is running
-        playTime += Time.deltaTime;
+        // Only proceed if the game is playing
+        if (!isPlaying) return;
 
+        // Game running logic
+        playTime += Time.deltaTime;
         int levelByTime = (int)(playTime / levelDuration);
         if (levelByTime > level) ChangeLevel(levelByTime);
     }
 
+    private void StartGame()
+    {
+        isPlaying = true;
+        remainingTime = 0;
+        UIManager.Instance.ToggleCountDownVisibility(false);
+        Time.timeScale = 1f; // Begin gameplay
+        AudioManager.Instance.PlaySound("gameStart");
+    }
+
     private void LateUpdate()
     {
-        UIManager.Instance.timeCounter.text = Mathf.RoundToInt(playTime).ToString();
+        // Update time counter UI if game is playing
+        if (isPlaying)
+        {
+            UIManager.Instance.timeCounter.text = Mathf.RoundToInt(playTime).ToString();
+        }
     }
-    
+
     private void TogglePauseMenu()
     {
         if (isPlaying)
@@ -71,7 +89,7 @@ public class GameManager : PersistentSingleton<GameManager>
     public void ResumeGame()
     {
         UIManager.Instance.SetPauseMenuUIVisibility(false);
-        Time.timeScale = 1f; // Unpause time
+        Time.timeScale = 1f; // Resume time
         isPlaying = true;
     }
 
