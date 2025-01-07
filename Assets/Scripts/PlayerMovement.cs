@@ -11,16 +11,24 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D _rigidBody;
     private Vector2 _movementInput;
     private SpriteRenderer _playerSprite;
+    private Animator _animator;
+    private Animator _shadowAnimator;
 
     private bool _isJumping;
+    private bool _isGrinding;
+    private bool _isOverRail;
+    
     private float _jumpTime;
     private float _initialJumpY;
     private float _shadowSpriteY;
     private float _initialShadowSpriteY;
-    private Animator _animator;
-    private Animator _shadowAnimator;
-
+    
     public bool IsJumping => _isJumping;
+    public bool IsGrinding => _isGrinding;
+    public bool SetIsOverRail
+    {
+        set => _isOverRail = value;
+    }
 
     private void Awake()
     {
@@ -28,41 +36,17 @@ public class PlayerMovement : MonoBehaviour
         _playerSprite = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _shadowAnimator = shadowSprite.GetComponent<Animator>();
-        // ToggleShadowSprite();
     }
 
     private void FixedUpdate()
     {
-        // Calculate the new velocity based on input
-        _rigidBody.linearVelocity = new Vector2(_movementInput.x * speed, _movementInput.y * speed);
+        // Updating player velocity, position, and handling jump/grind logic.
+        UpdateVelocity();
+        UpdatePlayerPosition();
+        HandleJump();
+        HandleGrinding();
 
-        // Get half of the player's width and height in world units
-        float playerHalfWidth = _playerSprite.bounds.extents.x;
-        float playerHalfHeight = _playerSprite.bounds.extents.y;
-
-        // Calculate the world bounds of the screen
-        Vector3 bottomLeft = Camera.main.ScreenToWorldPoint(Vector3.zero);
-        Vector3 topRight = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
-
-        // Clamp the player's position within the screen bounds
-        float clampedX = Mathf.Clamp(transform.position.x, bottomLeft.x + playerHalfWidth, topRight.x - playerHalfWidth);
-        float clampedY = Mathf.Clamp(transform.position.y, bottomLeft.y + playerHalfHeight, topRight.y - playerHalfHeight);
-
-        // Apply the clamped position
-        transform.position = new Vector2(clampedX, clampedY);
-
-        // Handle jumping if the player is currently jumping
-        if (_isJumping)
-        {
-            HandleJump();
-        }
-        else
-        {   
-            // TODO: add music track for driving
-            // AudioManager.Instance.PlayBackgroundTrack("driving");
-        }
-
-        // Example of triggering Flip animation (for debugging purposes)
+        // Example of triggering Flip animation (for debugging purposes).
         if (Input.GetKeyDown("k"))
         {
             AudioManager.Instance.PlaySound("flip");
@@ -73,27 +57,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnMove(InputValue inputValue)
     {
-        _movementInput = inputValue.Get<Vector2>();
+        if(!_isGrinding) _movementInput = inputValue.Get<Vector2>();
     }
     
     private void OnJump()
     {
         if (!_isJumping){
-            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air
-            AudioManager.Instance.PlaySound("jump");
+            AudioManager.Instance.StopBackgroundTrack(); // Stops driving sound while in air.
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
-            //ToggleCollider();
         }
-
-    
     }
 
     private void HandleJump()
     {
+        if (!_isJumping)
+        {
+            // TODO: add music track for driving
+            // AudioManager.Instance.PlayBackgroundTrack("driving");
+            return;
+        }
+        
         // Calculate jump progress.
         _jumpTime += Time.fixedDeltaTime;
         var progress = _jumpTime / jumpDuration;
@@ -108,11 +95,25 @@ public class PlayerMovement : MonoBehaviour
 
         // Jump is done.
         if (!(progress >= 1)) return;
+        HandleLanding();
+    }
+
+    private void HandleLanding()
+    {
         AudioManager.Instance.PlaySound("land");
+        if (_isOverRail) StartGrinding();
         _isJumping = false;
         transform.position = new Vector3(transform.position.x, _initialJumpY, transform.position.z);
         ToggleShadowSprite();
-        //ToggleCollider();
+    }
+    
+    private void HandleGrinding()
+    {
+        if(!_isGrinding) return;
+        if (_isJumping || !_isOverRail)
+        {
+            FinishGrinding();
+        }
     }
 
     private void ToggleShadowSprite()
@@ -120,11 +121,52 @@ public class PlayerMovement : MonoBehaviour
         shadowSprite.enabled = !shadowSprite.enabled;
     }
     
-    /**
-     * Toggles collision between player and obstacles on and off.
-     */
-    private void ToggleCollider()
+    private void StartGrinding()
     {
-        GetComponent<Collider2D>().enabled = !GetComponent<Collider2D>().enabled;
+        Debug.Log("Started grinding!");
+        _isGrinding = true;
+        
+        AudioManager.Instance.PlaySound("grinding");
+        
+        // Just rotate player sprite for now.
+        transform.Rotate(0, 0, 10);
+    }
+
+    private void FinishGrinding()
+    {
+        Debug.Log("Finished grinding!");
+        _isGrinding = false;
+        transform.Rotate(0, 0, -10);
+    }
+
+    private void UpdateVelocity()
+    {
+        var movementX = _movementInput.x * speed;
+        var movementY = _movementInput.y * speed;
+        if (_isGrinding)
+        {
+            movementX = 0f;
+            movementY = 0f;
+        }
+        _rigidBody.linearVelocity = new Vector2(movementX, movementY);
+    }
+
+    private void UpdatePlayerPosition()
+    {
+        if (_isGrinding) return;
+        // Get half of the player's width and height in world units.
+        var playerHalfWidth = _playerSprite.bounds.extents.x;
+        var playerHalfHeight = _playerSprite.bounds.extents.y;
+
+        // Calculate the world bounds of the screen.
+        Vector3 bottomLeft = Camera.main.ScreenToWorldPoint(Vector3.zero);
+        Vector3 topRight = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+
+        // Clamp the player's position within the screen bounds.
+        var clampedX = Mathf.Clamp(transform.position.x, bottomLeft.x + playerHalfWidth, topRight.x - playerHalfWidth);
+        var clampedY = Mathf.Clamp(transform.position.y, bottomLeft.y + playerHalfHeight, topRight.y - playerHalfHeight);
+
+        // Apply the clamped position.
+        transform.position = new Vector2(clampedX, clampedY);
     }
 }
