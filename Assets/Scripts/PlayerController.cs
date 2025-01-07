@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
@@ -17,6 +15,7 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
+        
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         UIManager.Instance.InitializeStatusBars(stats);
@@ -34,7 +33,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         // Increase score continuously while game is active.
-        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.gameSpeed / 10);
+        UpdateScore();
     }
 
     private void Update()
@@ -52,7 +51,20 @@ public class PlayerController : MonoBehaviour
         // Show special action button when special bar is full.
         if (stats._special >= 100) UIManager.Instance.ToggleSpecialActionButton(true);
     }
+
+    private void UpdateScore()
+    {
+        // Increase score continuously while game is active.
+       stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.gameSpeed / 10);
+        
+        // Grinding bonus.
+        if (movement.IsGrinding)
+        {
+            stats.UpdateScore(50);
+        }
+    }
     
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Collision is triggered.");
@@ -63,6 +75,15 @@ public class PlayerController : MonoBehaviour
         // Trigger game over screen if collision causes health to drop to 0.
         if (stats._health <= 0) TriggerGameOver(); 
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {   
+        var interactable = other.gameObject.GetComponent<IObject>();
+        if (interactable.GetType() != typeof(Obstacle)) return;
+        var obstacle = interactable as Obstacle;
+        obstacle?.ExitCollision(other.gameObject, movement);
+    }
+
     
     private void TriggerSpecialAction()
     {
