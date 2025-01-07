@@ -51,7 +51,7 @@ public class GameManager : PersistentSingleton<GameManager>
 
     private void LateUpdate()
     {
-        _ui.timeUI.text = UpdateTimer().ToString();
+        _ui.timeCounter.text = UpdateTimer().ToString();
     }
 
     public void TriggerGameOver()

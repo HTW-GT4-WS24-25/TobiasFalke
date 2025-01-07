@@ -6,7 +6,9 @@ public class PlayerStats: MonoBehaviour
     // Values changing during gameplay.
     public int _health = 100;
     public int _special = 0;
+    public float _speed;
     public float _speedMultiplier = 1;
+    public float _jumpLength;
     public float _jumpMultiplier = 1;
     public float _score = 0;
     public float _scoreMultiplier = 1;
@@ -97,5 +99,15 @@ public class PlayerStats: MonoBehaviour
         _scoreMultiplier = Mathf.Clamp(multiplier, 0, _maxScoreMultiplier);
         UIManager.Instance.UpdateScoreMultiplier(_scoreMultiplier);
         Debug.Log("Score multiplier was set to " + _scoreMultiplier);
+    }
+
+    internal void TriggerSpecialAction()
+    {
+        SetHealth(100);
+        UpdateScoreMultiplier(100);
+        UpdateSpeedMultiplier(50);
+        UpdateJumpDuration(50);
+        // Reset special points to 0.
+        SetSpecial(0);
     }
 }

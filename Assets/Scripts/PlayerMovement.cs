@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     
     private Rigidbody2D _rigidBody;
     private Vector2 _movementInput;
-    private SpriteRenderer _playerSprite;
+    public SpriteRenderer _playerSprite;
     private Animator _animator;
     private Animator _shadowAnimator;
 
@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private float _initialJumpY;
     private float _shadowSpriteY;
     private float _initialShadowSpriteY;
-    
+
     public bool IsJumping => _isJumping;
     public bool IsGrinding => _isGrinding;
     public bool SetIsOverRail
@@ -63,13 +63,16 @@ public class PlayerMovement : MonoBehaviour
     private void OnJump()
     {
         if (!_isJumping){
-            AudioManager.Instance.StopBackgroundTrack(); // Stops driving sound while in air.
+            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air.
+            AudioManager.Instance.PlaySound("jump");
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
         }
+
+    
     }
 
     private void HandleJump()
