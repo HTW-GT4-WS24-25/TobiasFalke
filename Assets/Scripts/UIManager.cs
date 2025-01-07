@@ -38,8 +38,8 @@ public class UIManager : Utilities.Singleton<UIManager>
         SetMaxSpecial(stats._maxSpecial);
         UpdateHealthBar(stats._health);
         UpdateSpecialBar(stats._special);
-        UpdateSpeedCounter(stats._speedMultiplier);
-        UpdateJumpCounter(stats._speedMultiplier);
+        UpdateSpeedMultiplier(stats._speedMultiplier);
+        UpdateJumpMultiplier(stats._speedMultiplier);
     }
 
     public void UpdateHealthBar(int health)
@@ -66,7 +66,7 @@ public class UIManager : Utilities.Singleton<UIManager>
     
     public void UpdateJumpCounter(float currentJumpLength)
     {
-        jumpCounter.text = currentJumpLength + "s";
+        jumpCounter.text = currentJumpLength + " sec";
     }
     
     public void UpdateJumpMultiplier(float newJumpMultiplier)
