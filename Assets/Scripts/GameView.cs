@@ -7,24 +7,30 @@ using Slider = UnityEngine.UI.Slider;
 
 public class GameView : Utilities.Singleton<GameView>
 {
+    [SerializeField] private UIDocument _pauseUI;
+
     // health bar
     [SerializeField] private Slider healthBar;
     [SerializeField] private Gradient healthGradient;
     [SerializeField] private Image healthFill;
+
     // special bar
     [SerializeField] private Slider specialBar;
     [SerializeField] private Gradient specialGradiant;
     [SerializeField] private Image specialFill;
+    
     // movement
     public TextMeshProUGUI speedCounter;
     public TextMeshProUGUI speedMultiplier;
     public TextMeshProUGUI jumpCounter;
     public TextMeshProUGUI jumpMultiplier;
-    [SerializeField] private UIDocument _pauseUI;
+
     // score & time
+    public TextMeshProUGUI levelCounter;
     public TextMeshProUGUI scoreCounter;
     public TextMeshProUGUI timeCounter;
     public TextMeshProUGUI scoreMultiplier;
+    
     // pop-ups
     [SerializeField] private Image specialActionButton;
     public TextMeshProUGUI countDownUI;
@@ -82,7 +88,12 @@ public class GameView : Utilities.Singleton<GameView>
     {
         scoreCounter.text = ((int)score).ToString();
     }
-
+    
+    public void UpdateLevelCounter(int level)
+    {
+        levelCounter.text = (level + 1).ToString();
+    }
+    
     public void UpdateCountDown(float remainingTime)
     {
         countDownUI.text = (((int)remainingTime).ToString());
@@ -120,11 +131,6 @@ public class GameView : Utilities.Singleton<GameView>
     public void PlayScreenFlash(float time)
     {
         StartCoroutine(ScreenFlashCoroutine(time));
-    }
-
-    public void UpdateTimeCounter(string timeString)
-    {
-        timeCounter.text = timeString;
     }
 
     private IEnumerator ScreenFlashCoroutine(float time)

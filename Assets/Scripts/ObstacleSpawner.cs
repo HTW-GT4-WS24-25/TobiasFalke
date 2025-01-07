@@ -14,7 +14,7 @@ public class ObstacleSpawner : ObjectSpawner
 
     private void Update()
     {
-        spawnTimeInterval = 2f / GameManager.Instance.gameSpeed;
+        spawnTimeInterval = 2f / GameModel.Instance.GameSpeed;
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;

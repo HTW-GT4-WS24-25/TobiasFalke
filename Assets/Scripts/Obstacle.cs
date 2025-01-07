@@ -22,7 +22,7 @@ public class Obstacle : MonoBehaviour, IObject
 
     private void Update()
     {
-        fallSpeed = GameManager.Instance.gameSpeed / 2;
+        fallSpeed = GameModel.Instance.GameSpeed / 2;
         transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
     

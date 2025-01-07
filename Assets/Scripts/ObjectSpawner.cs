@@ -21,7 +21,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         if (GameModel.Instance.IsPlaying)
         {
-            _objectFallSpeed = GameModel.Instance.ScrollSpeed * 5;
+            _objectFallSpeed = GameModel.Instance.GameSpeed * 5;
         }
     }
         

@@ -13,7 +13,7 @@ public class ItemSpawner : ObjectSpawner
 
     private void Update()
     {
-        spawnTimeInterval = 30f / GameManager.Instance.gameSpeed;
+        spawnTimeInterval = 30f / GameModel.Instance.GameSpeed;
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;

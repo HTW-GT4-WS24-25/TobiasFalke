@@ -9,11 +9,6 @@ public class GameModel : PersistentSingleton<GameModel>
         set {countDownTime = value; }
         
     }
-    public float ScrollSpeed
-    {
-        get { return scrollSpeed; }
-        set { scrollSpeed = value; }
-    }
     public bool IsPlaying
     {
         get { return isPlaying; } 
@@ -24,10 +19,30 @@ public class GameModel : PersistentSingleton<GameModel>
         get { return playTime; }
         set{ playTime = value; } 
     }
+    public float GameSpeed
+    {
+        get { return gameSpeed; }
+        set { gameSpeed = value; }
+    }
+    
+    public int Level
+    {
+        get { return level; }
+        set { level = value; }
+    }
+
+    public int LevelDuration
+    {
+        get { return levelDuration; }
+        set { levelDuration = value; }
+    }
+    
 
     private float playTime;
+    private float gameSpeed = 10f;
     private bool isPlaying;
-    private float scrollSpeed = 10f;
     private float countDownTime = 3f;
-    
+    private int level;
+    private int levelDuration;
+
 }

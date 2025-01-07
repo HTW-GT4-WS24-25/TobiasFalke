@@ -5,6 +5,10 @@ public class GameController : PersistentSingleton<GameController>
 {
     private GameModel gameModel;
     [SerializeField]private GameView gameView;
+    
+    [SerializeField] private PlayerController _player;
+    [SerializeField] private BackgroundScroller _backgroundScroller;
+    
     private float remainingTime;
 
     void Start()
@@ -21,17 +25,13 @@ public class GameController : PersistentSingleton<GameController>
     {
         if (remainingTime > 0)
         {
-            remainingTime -= Time.unscaledDeltaTime;
-            float remainingSeconds = remainingTime % 60;
+            remainingTime -= Time.unscaledDeltaTime; // Use unscaled time
+            float remainingSeconds = Mathf.Ceil(remainingTime);
             gameView.UpdateCountDown(remainingSeconds);
         }
-        else if (remainingTime < 0)
+        if (remainingTime <= 0)
         {
-            remainingTime = 0;
-            gameModel.IsPlaying = true;
-            gameView.ToggleCountDownVisibility(false);
-            Time.timeScale = 1f; // Unpause time
-            AudioManager.Instance.PlaySound("openSettings");
+            StartGame();
         }
 
         if (gameModel.IsPlaying)
@@ -41,13 +41,26 @@ public class GameController : PersistentSingleton<GameController>
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TogglePauseGame();
+            TogglePauseMenu();
+            return;
         }
+        
+        // Only proceed if the game is playing
+        if (!gameModel.IsPlaying) return;
+
+        // Game running logic
+        gameModel.PlayTime += Time.deltaTime;
+        int levelByTime = (int)(gameModel.PlayTime / gameModel.LevelDuration);
+        if (levelByTime > gameModel.Level) ChangeLevel(levelByTime);
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        gameView.UpdateTimeCounter(UpdateTimer().ToString());
+        // Update time counter UI if game is playing
+        if (gameModel.IsPlaying)
+        {
+            gameView.timeCounter.text = Mathf.RoundToInt(gameModel.PlayTime).ToString();
+        }
     }
 
     public void TriggerGameOver()
@@ -55,34 +68,47 @@ public class GameController : PersistentSingleton<GameController>
         gameModel.IsPlaying = false;
     }
 
-    private void TogglePauseGame()
+    private void TogglePauseMenu()
     {
         if (gameModel.IsPlaying)
         {
-            Pause();
+            PauseGame();
         }
         else
         {
-            Resume();
+            ResumeGame();
         }
     }
-
-    public void Resume()
+    
+    public void ResumeGame()
     {
         gameView.SetPauseMenuUIVisibility(false);
-        Time.timeScale = 1f; // Unpause time
-        gameModel.IsPlaying = true;
+        Time.timeScale = 1f; // Resume time
+        gameModel.IsPlaying = false;
     }
 
-    public void Pause()
+    public void PauseGame()
     {
         gameView.SetPauseMenuUIVisibility(true);
         Time.timeScale = 0f; // Pause time
         gameModel.IsPlaying = false;
     }
-
-    private int UpdateTimer()
+    
+    private void StartGame()
     {
-        return Mathf.RoundToInt(gameModel.PlayTime);
+        
+        gameModel.IsPlaying = true;
+        remainingTime = 0;
+        gameView.ToggleCountDownVisibility(false);
+        Time.timeScale = 1f; // Unpause time
+        AudioManager.Instance.PlaySound("gameStart");
+    }
+    
+    private void ChangeLevel(int newLevel)
+    {
+        gameModel.GameSpeed = 2.5f * newLevel + 10f;
+        GameView.Instance.UpdateLevelCounter(newLevel);
+        _backgroundScroller.UpdateLevelBackground(newLevel);
+        gameModel.Level = newLevel;
     }
 }

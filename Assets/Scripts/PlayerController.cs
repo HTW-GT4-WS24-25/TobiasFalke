@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateScore()
     {
         // Increase score continuously while game is active.
-       stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.gameSpeed / 10);
+       stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameModel.Instance.GameSpeed / 10);
         
         // Grinding bonus.
         if (movement.IsGrinding)
