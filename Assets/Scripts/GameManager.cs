@@ -6,7 +6,7 @@ public class GameManager : PersistentSingleton<GameManager>
     [SerializeField] private PlayerController _player;
     [SerializeField] private BackgroundScroller _backgroundScroller;
 
-    public bool isPlaying = true;
+    public bool isPlaying = false;
     public float gameSpeed = 10f;
    
     private float playTime;
@@ -18,9 +18,8 @@ public class GameManager : PersistentSingleton<GameManager>
 
     private void Start()
     {
-        isPlaying = false;
-        Time.timeScale = 0f;
         remainingTime = countDownTime;
+        Time.timeScale = 0f;
         UIManager.Instance.ToggleCountDownVisibility(true);
     }
     
@@ -44,9 +43,9 @@ public class GameManager : PersistentSingleton<GameManager>
                 break;
         }
         
+        if (Input.GetKeyDown(KeyCode.Escape)) TogglePauseMenu(); // open or close pause menu on ESC
         if (!isPlaying) return; // only continue if game is running
         playTime += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Escape)) TogglePauseMenu(); // open or close pause menu on ESC
 
         int levelByTime = (int)(playTime / levelDuration);
         if (levelByTime > level) ChangeLevel(levelByTime);

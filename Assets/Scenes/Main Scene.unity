@@ -4490,16 +4490,28 @@ PrefabInstance:
       objectReference: {fileID: 7648411160879824319}
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: levelBackgrounds.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: 'levelBackgrounds.Array.data[0]'
       value: 
-      objectReference: {fileID: 214582040267025251, guid: 548ece06f7932b2488e1146c7cca1aa5, type: 3}
+      objectReference: {fileID: -8916465414849195152, guid: 76b191ab4f6789a4e9d654118c3653be, type: 3}
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: 'levelBackgrounds.Array.data[1]'
       value: 
       objectReference: {fileID: -6620242995395184455, guid: 6c15356128632e9478cbd384372cf58e, type: 3}
+    - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
+      propertyPath: 'levelBackgrounds.Array.data[2]'
+      value: 
+      objectReference: {fileID: 586278088730275903, guid: 169f016e63543b440bbfbd0272295743, type: 3}
+    - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
+      propertyPath: 'levelBackgrounds.Array.data[3]'
+      value: 
+      objectReference: {fileID: -548361080881072038, guid: 0e4b127fe35a1b84fbf607d158057a90, type: 3}
+    - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
+      propertyPath: 'levelBackgrounds.Array.data[4]'
+      value: 
+      objectReference: {fileID: 6004917865827980026, guid: 5481f100eea826549a3caaa6d480e538, type: 3}
     - target: {fileID: 4050717674675697110, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: m_FlipX
       value: 0
