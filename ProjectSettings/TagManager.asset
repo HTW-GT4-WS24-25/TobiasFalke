@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 3
   tags:
   - Obstacle
+  - Item
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacle
   - Water
   - UI
-  - 
+  - UI (Manual)
   - 
   - 
   - 
@@ -41,6 +42,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1823549301
+    locked: 0
+  - name: Game World
+    uniqueID: 788615541
     locked: 0
   m_RenderingLayers:
   - Default
