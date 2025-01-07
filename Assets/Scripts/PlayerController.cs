@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
     private Animator animator; // Reference to Animator component
-    
     private Animator _animator;
 
     private void Awake()
@@ -35,7 +34,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         // Increase score continuously while game is active.
-        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.level / 2);
+        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.gameSpeed / 10);
     }
 
     private void Update()
