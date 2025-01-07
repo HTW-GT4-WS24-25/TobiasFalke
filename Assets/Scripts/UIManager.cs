@@ -66,7 +66,7 @@ public class UIManager : Utilities.Singleton<UIManager>
     
     public void UpdateJumpCounter(float currentJumpLength)
     {
-        jumpCounter.text = currentJumpLength + "s";
+        jumpCounter.text = currentJumpLength + " sec";
     }
     
     public void UpdateJumpMultiplier(float newJumpMultiplier)
