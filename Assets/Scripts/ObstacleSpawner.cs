@@ -6,14 +6,15 @@ public class ObstacleSpawner : ObjectSpawner
     // adjustable depending on level or difficulty
     [FormerlySerializedAs("obstaclePrefabs")] [SerializeField] private GameObject[] spawnableObstacles;
     public Transform obstacleParent;
-    public float spawnTimeInterval = 5f;
-    public float initialSpawnDelay = 5f;
+    private float spawnTimeInterval = 2f;
+    private float initialSpawnDelay = 2f;
     // for inner calculation only
     private float _timeSinceLastSpawn;
     private bool _firstSpawnOccured;
 
     private void Update()
     {
+        spawnTimeInterval = 2f / GameManager.Instance.gameSpeed;
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;

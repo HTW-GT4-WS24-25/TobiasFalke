@@ -25,7 +25,7 @@ public class PauseMenuEvents : MonoBehaviour
 
     private void OnClickContinueButton(ClickEvent evt)
     {
-        GameController.Instance.Resume();
+        GameController.Instance.ResumeGame();
         Debug.Log("Game Continue Clicked");
     }
     // Update is called once per frame
