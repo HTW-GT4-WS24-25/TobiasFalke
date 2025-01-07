@@ -22,6 +22,7 @@ public class UIManager : Utilities.Singleton<UIManager>
     public TextMeshProUGUI jumpMultiplier;
     [SerializeField] private UIDocument _pauseUI;
     // score & time
+    public TextMeshProUGUI levelCounter;
     public TextMeshProUGUI scoreCounter;
     public TextMeshProUGUI timeCounter;
     public TextMeshProUGUI scoreMultiplier;
@@ -81,6 +82,11 @@ public class UIManager : Utilities.Singleton<UIManager>
     public void UpdateScoreCounter(float score)
     {
         scoreCounter.text = ((int)score).ToString();
+    }
+    
+    public void UpdateLevelCounter(int level)
+    {
+        levelCounter.text = (level + 1).ToString();
     }
 
     public void UpdateCountDown(float remainingTime)

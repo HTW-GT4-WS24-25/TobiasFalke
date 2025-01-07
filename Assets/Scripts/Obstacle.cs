@@ -1,12 +1,13 @@
 using System.Collections;
-using Mono.Cecil;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour, IObject
 {
     [SerializeField] private ObstacleType obstacleType;
+
+    private float fallSpeed;
     
-    private enum ObstacleType
+    public enum ObstacleType
     {
         Wall,
         BigObstacle,
@@ -16,42 +17,48 @@ public class Obstacle : MonoBehaviour, IObject
     }
 
     private bool IsJumpable => obstacleType != ObstacleType.Wall;
+    
+    public ObstacleType GetObstacleType => obstacleType;
 
+    private void Update()
+    {
+        fallSpeed = GameManager.Instance.gameSpeed / 2;
+        transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
+    }
+    
     public void Collide(GameObject obstacle, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
         if (playerMovement.IsJumping && IsJumpable)
         {
             IncreaseScore(playerStats);
-            return;
         }
         if (obstacleType == ObstacleType.Rail)
         {
-            HandleGrindCollision(playerStats);
+            playerMovement.SetIsOverRail = true;
+            Debug.Log("Player is over rail!");
         }
-        else if (!IsJumpable || !playerMovement.IsJumping)
+        if (!IsJumpable || !playerMovement.IsJumping)
         {
             TriggerCollisionEffect(playerStats, animator);
         }
     }
     
-    private void HandleGrindCollision(PlayerStats playerStats)
+    public void ExitCollision(GameObject obstacle, PlayerMovement playerMovement)
     {
-        Debug.Log("Grinding!");
-        // TODO: implement logic for grinding -> Coroutine?
-        AudioManager.Instance.PlaySound("grind");
-        playerStats.UpdateSpecial(15); // TODO: adjust based on balancing
+        if (obstacleType == ObstacleType.Rail)
+        {
+            playerMovement.SetIsOverRail = false;
+            Debug.Log("Player is no longer over rail!");
+        }
     }
     
     private void TriggerCollisionEffect(PlayerStats playerStats, Animator animator)
     {
         if(playerStats.isInvincible) return;
-        StartCoroutine(SetInvincibility(playerStats));
-        animator.Play("invincibility");
+        StartCoroutine(SetInvincibility(playerStats, animator));
         Debug.Log("Collision!");
         AudioManager.Instance.PlaySound("crash");
         UpdatePlayerHealth(playerStats);
-        // TODO: add animation to player when colliding
-        // TODO: have player phrase through obstacle or be pushed below the screen (game over)
     }
     
     private void IncreaseScore(PlayerStats playerStats)
@@ -89,18 +96,22 @@ public class Obstacle : MonoBehaviour, IObject
             case ObstacleType.Hole:
                 amount = -100;
                 break;
+            case ObstacleType.Rail:
+                amount = -30;
+                break;
         }
         
         playerStats.UpdateHealth(amount);
     }
     
-    private static IEnumerator SetInvincibility(PlayerStats playerStats)
+    private static IEnumerator SetInvincibility(PlayerStats playerStats, Animator animator)
     {
         playerStats.isInvincible = true;
+        animator.SetBool("isInvincible", true);
         Debug.Log("Player is invincible for " + playerStats.invincibilityDuration + " seconds.");
-        // TODO: trigger some visual indication.
         yield return new WaitForSeconds(playerStats.invincibilityDuration);
         playerStats.isInvincible = false;
+        animator.SetBool("isInvincible", false);
         Debug.Log("Player is no longer invincible.");
     }
 }

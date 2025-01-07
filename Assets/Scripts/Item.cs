@@ -4,6 +4,7 @@ public class Item : MonoBehaviour, IObject
 {
     [SerializeField] private ItemType itemType;
 
+    private float fallSpeed;
     public enum ItemType
     {
         HealthBoost,
@@ -17,6 +18,12 @@ public class Item : MonoBehaviour, IObject
         ScoreBoost,
         ScoreBoom,
         ScoreMultiplierBoost
+    }
+    
+    private void Update()
+    {
+        fallSpeed = GameManager.Instance.gameSpeed / 2;
+        transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
     
     public void Collide(GameObject item, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
