@@ -4,8 +4,8 @@ public class ItemSpawner : ObjectSpawner
 {
     // adjustable depending on level or difficulty
     [SerializeField] public GameObject[] spawnableItems;
-    public float spawnTimeInterval = 5f;
-    public float initialSpawnDelay = 5f;
+    private float spawnTimeInterval = 5f;
+    private float initialSpawnDelay = 5f;
     public Transform itemParent; 
     // for inner calculation only
     private float _timeSinceLastSpawn;
@@ -13,6 +13,7 @@ public class ItemSpawner : ObjectSpawner
 
     private void Update()
     {
+        spawnTimeInterval = 30f / GameManager.Instance.gameSpeed;
         _timeSinceLastSpawn += Time.deltaTime;
         var currentInterval = _firstSpawnOccured ? spawnTimeInterval : initialSpawnDelay;
         if (!(_timeSinceLastSpawn >= currentInterval)) return;

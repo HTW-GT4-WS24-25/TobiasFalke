@@ -5,6 +5,8 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour, IObject
 {
     [SerializeField] private ObstacleType obstacleType;
+
+    private float fallSpeed;
     
     private enum ObstacleType
     {
@@ -17,6 +19,12 @@ public class Obstacle : MonoBehaviour, IObject
 
     private bool IsJumpable => obstacleType != ObstacleType.Wall;
 
+    private void Update()
+    {
+        fallSpeed = GameManager.Instance.gameSpeed / 2;
+        transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
+    }
+    
     public void Collide(GameObject obstacle, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
         if (playerMovement.IsJumping && IsJumpable)

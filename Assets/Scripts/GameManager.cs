@@ -3,90 +3,91 @@ using Utilities;
 
 public class GameManager : PersistentSingleton<GameManager>
 {
-    [SerializeField] private UIManager _ui;
     [SerializeField] private PlayerController _player;
-    
-    [SerializeField]private float countDownTime = 3f;
-    public float scrollSpeed = 10f;
-    public bool isPlaying;
+    [SerializeField] private BackgroundScroller _backgroundScroller;
+
+    public bool isPlaying = true;
+    public float gameSpeed = 10f;
+   
     private float playTime;
+    private const float countDownTime = 3f;
     private float remainingTime;
+
+    public int levelDuration = 30;
+    public int level;
 
     private void Start()
     {
-        remainingTime = countDownTime;
         isPlaying = false;
-        Time.timeScale = 0f; // Unpause time
-        _ui.ToggleCountDownVisibility(true);
-
+        Time.timeScale = 0f;
+        remainingTime = countDownTime;
+        UIManager.Instance.ToggleCountDownVisibility(true);
     }
     
     private void Update()
     {        
-        if (remainingTime > 0)
+        switch (remainingTime)
         {
-            remainingTime -= Time.unscaledDeltaTime;
-            float remainingSeconds = remainingTime % 60;
-            _ui.UpdateCountDown(remainingSeconds);
-        } 
-        else if (remainingTime < 0)
-        {
-            remainingTime = 0;
-            isPlaying = true;
-            _ui.ToggleCountDownVisibility(false);
-            Time.timeScale = 1f; // Unpause time
-            AudioManager.Instance.PlaySound("openSettings");
+            case > 0:
+            {
+                remainingTime -= Time.unscaledDeltaTime;
+                float remainingSeconds = remainingTime % 60;
+                UIManager.Instance.UpdateCountDown(remainingSeconds);
+                break;
+            }
+            case <= 0:
+                isPlaying = true;
+                remainingTime = 0;
+                UIManager.Instance.ToggleCountDownVisibility(false);
+                Time.timeScale = 1f;
+                AudioManager.Instance.PlaySound("gameStart");
+                break;
         }
         
-        if (isPlaying)
-        {
-            playTime += Time.deltaTime;
-        }
+        if (!isPlaying) return; // only continue if game is running
+        playTime += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Escape)) TogglePauseMenu(); // open or close pause menu on ESC
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            TogglePauseGame();
-        }
+        int levelByTime = (int)(playTime / levelDuration);
+        if (levelByTime > level) ChangeLevel(levelByTime);
     }
 
     private void LateUpdate()
     {
-        _ui.timeCounter.text = UpdateTimer().ToString();
+        UIManager.Instance.timeCounter.text = Mathf.RoundToInt(playTime).ToString();
     }
-
-    public void TriggerGameOver()
-    {
-        isPlaying = false;
-    }
-
-    private void TogglePauseGame()
+    
+    private void TogglePauseMenu()
     {
         if (isPlaying)
         {
-            Pause();
+            PauseGame();
         }
         else
         {
-            Resume();
+            ResumeGame();
         }
     }
 
-    public void Resume()
+    public void ResumeGame()
     {
-        _ui.SetPauseMenuUIVisibility(false);
+        UIManager.Instance.SetPauseMenuUIVisibility(false);
         Time.timeScale = 1f; // Unpause time
         isPlaying = true;
     }
 
-    public void Pause()
+    public void PauseGame()
     {
-        _ui.SetPauseMenuUIVisibility(true);
+        UIManager.Instance.SetPauseMenuUIVisibility(true);
         Time.timeScale = 0f; // Pause time
         isPlaying = false;
     }
 
-    private int UpdateTimer()
+    private void ChangeLevel(int newLevel)
     {
-        return Mathf.RoundToInt(playTime);
+        gameSpeed = 2.5f * newLevel + 10f;
+        UIManager.Instance.UpdateLevelCounter(newLevel);
+        _backgroundScroller.UpdateLevelBackground(newLevel);
+        level = newLevel;
     }
 }

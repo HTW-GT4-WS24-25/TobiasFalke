@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         // Increase score continuously while game is active.
-        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier;
+        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier * (GameManager.Instance.level / 2);
     }
 
     private void Update()
