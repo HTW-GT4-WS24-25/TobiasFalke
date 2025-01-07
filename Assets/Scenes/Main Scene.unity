@@ -4499,11 +4499,11 @@ PrefabInstance:
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: 'levelBackgrounds.Array.data[1]'
       value: 
-      objectReference: {fileID: -6620242995395184455, guid: 6c15356128632e9478cbd384372cf58e, type: 3}
+      objectReference: {fileID: 214582040267025251, guid: 548ece06f7932b2488e1146c7cca1aa5, type: 3}
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: 'levelBackgrounds.Array.data[2]'
       value: 
-      objectReference: {fileID: 586278088730275903, guid: 169f016e63543b440bbfbd0272295743, type: 3}
+      objectReference: {fileID: -6620242995395184455, guid: 6c15356128632e9478cbd384372cf58e, type: 3}
     - target: {fileID: 4038463959315056699, guid: 9a48f196b3c989d4aaf5de42212062ec, type: 3}
       propertyPath: 'levelBackgrounds.Array.data[3]'
       value: 
