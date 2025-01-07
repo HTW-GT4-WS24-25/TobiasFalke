@@ -31,16 +31,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Increase score continuously while game is active.
-        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier;
+        UpdateScore();
     }
 
     private void Update()
     {
         // Trigger special action if conditions are met.
         if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction();
-        // Update animation.
-        _animator.SetBool("isInvincible", stats.isInvincible);
     }
 
     private void LateUpdate()
@@ -49,6 +46,18 @@ public class PlayerController : MonoBehaviour
         UIManager.Instance.UpdateScoreCounter(stats._score);
         // Show special action button when special bar is full.
         if (stats._special >= 100) UIManager.Instance.ToggleSpecialActionButton(true);
+    }
+
+    private void UpdateScore()
+    {
+        // Increase score continuously while game is active.
+        stats._score += Time.deltaTime * 5 * stats._scoreMultiplier;
+        
+        // Grinding bonus.
+        if (movement.IsGrinding)
+        {
+            stats.UpdateScore(50);
+        }
     }
     
     private void TriggerSpecialAction()
@@ -71,33 +80,37 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Collision is triggered.");
-        // Check whether collided object is power up or obstacle.
         var interactable = other.gameObject.GetComponent<IObject>();
         // Change player stats & movement according to collision effect.
         interactable?.Collide(other.gameObject, stats, movement, _animator);
         // Trigger game over screen if collision causes health to drop to 0.
         if (stats._health <= 0) TriggerGameOver(); 
     }
-    
+
+    private void OnTriggerExit2D(Collider2D other)
+    {   
+        var interactable = other.gameObject.GetComponent<IObject>();
+        if (interactable.GetType() != typeof(Obstacle)) return;
+        var obstacle = interactable as Obstacle;
+        obstacle?.ExitCollision(other.gameObject, movement);
+    }
+
     private void TriggerGameOver()
     {     
-        // Stop the game from playing
         GameManager.Instance.isPlaying = false;
-
-        // Trigger death animation
         animator.SetBool("isDead", true);
-        AudioManager.Instance.PlaySound("gameOver"); 
-        // Start coroutine to delay scene change
+        AudioManager.Instance.PlaySound("gameOver");
+        
+        // Delay the game over.
         Time.timeScale = 0f;
         StartCoroutine(DelayedGameOver());
     }
 
     private IEnumerator DelayedGameOver()
     {
-        // Wait for the length of the death animation (e.g., 2 seconds)
         yield return new WaitForSecondsRealtime(2f); 
 
-        // Change the scene after delay
+        // Change the scene after delay.
         SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
         AudioManager.Instance.PlayTrack("gameOverMusic");
     }
