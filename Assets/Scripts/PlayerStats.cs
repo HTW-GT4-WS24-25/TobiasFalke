@@ -22,7 +22,7 @@ public class PlayerStats: MonoBehaviour
     
     // For invincibility frames (after being hit).
     public bool isInvincible = false;
-    public float invincibilityDuration = 1.5f;
+    public float invincibilityDuration = 1.2f;
     
     internal void UpdateHealth(int amount)
     {
