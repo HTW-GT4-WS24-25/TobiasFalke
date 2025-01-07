@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
 using Slider = UnityEngine.UI.Slider;
 
-public class UIManager : Utilities.Singleton<UIManager>
+public class GameView : Utilities.Singleton<GameView>
 {
     // health bar
     [SerializeField] private Slider healthBar;
@@ -120,6 +120,11 @@ public class UIManager : Utilities.Singleton<UIManager>
     public void PlayScreenFlash(float time)
     {
         StartCoroutine(ScreenFlashCoroutine(time));
+    }
+
+    public void UpdateTimeCounter(string timeString)
+    {
+        timeCounter.text = timeString;
     }
 
     private IEnumerator ScreenFlashCoroutine(float time)

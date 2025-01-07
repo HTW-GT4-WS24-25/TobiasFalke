@@ -20,16 +20,16 @@ public class PlayerController : MonoBehaviour
     {
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
-        UIManager.Instance.InitializeStatusBars(stats);
+        GameView.Instance.InitializeStatusBars(stats);
         AudioManager.Instance.PlayTrack("mainSceneMusic");
 
         animator = GetComponent<Animator>(); // Get the Animator component
         
         // Initialize player's max health & special bars on UI.
-        UIManager.Instance.SetMaxHealth(stats._maxHealth);
-        UIManager.Instance.SetMaxSpecial(stats._maxSpecial);
-        UIManager.Instance.UpdateHealthBar(stats._health);
-        UIManager.Instance.UpdateSpecialBar(stats._special);
+        GameView.Instance.SetMaxHealth(stats._maxHealth);
+        GameView.Instance.SetMaxSpecial(stats._maxSpecial);
+        GameView.Instance.UpdateHealthBar(stats._health);
+        GameView.Instance.UpdateSpecialBar(stats._special);
     }
 
     private void FixedUpdate()
@@ -49,9 +49,9 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         // Update currently shown score in UI.
-        UIManager.Instance.UpdateScoreCounter(stats._score);
+        GameView.Instance.UpdateScoreCounter(stats._score);
         // Show special action button when special bar is full.
-        if (stats._special >= 100) UIManager.Instance.ToggleSpecialActionButton(true);
+        if (stats._special >= 100) GameView.Instance.ToggleSpecialActionButton(true);
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -70,10 +70,10 @@ public class PlayerController : MonoBehaviour
         // Trigger status changes of special action.
         stats.TriggerSpecialAction(); // TODO: make special action stat raise temporary (6 seconds (?))
         // Hide button for triggering special action.
-        UIManager.Instance.ToggleSpecialActionButton(false); 
+        GameView.Instance.ToggleSpecialActionButton(false); 
         AudioManager.Instance.PlaySound("specialAction");
         StartCoroutine(FlashBlue(6.0f));
-        UIManager.Instance.PlayScreenFlash(6.0f);
+        GameView.Instance.PlayScreenFlash(6.0f);
     }
     
     // TODO: move this method to separate player animation
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
     private void TriggerGameOver()
     {     
         // Stop the game from playing
-        GameManager.Instance.isPlaying = false;
+        GameModel.Instance.IsPlaying = false;
 
         // Trigger death animation
         animator.SetBool("isDead", true);

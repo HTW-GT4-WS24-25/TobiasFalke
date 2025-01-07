@@ -8,9 +8,9 @@ public class ObjectSpawner : MonoBehaviour
     
     private void Update()
     {
-        if (GameManager.Instance.isPlaying)
+        if (GameModel.Instance.IsPlaying)
         {
-            _objectFallSpeed = GameManager.Instance.scrollSpeed;
+            _objectFallSpeed = GameModel.Instance.ScrollSpeed;
         }
     }
         

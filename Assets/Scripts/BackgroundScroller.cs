@@ -15,8 +15,6 @@ public class ScrollingBackground : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.isPlaying) return;
-
         float newPosition = Mathf.Repeat(Time.time * scrollSpeed, backgroundHeight);
         transform.position = _startPosition + Vector3.down * newPosition;
     }
