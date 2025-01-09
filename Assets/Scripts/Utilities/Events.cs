@@ -5,7 +5,8 @@ public static class Events
     public static GameOverEvent GameOverEvent = new GameOverEvent();
     public static PlayerDeathEvent PlayerDeathEvent = new PlayerDeathEvent();
     public static PickupEvent PickupEvent = new PickupEvent();
-    public static ObstacleCollisionEvent CollisionEvent = new ObstacleCollisionEvent();
+    public static ObstacleCollisionEvent ObstacleCollisionEvent = new ObstacleCollisionEvent();
+    public static ObstacleCollisionExitEvent ObstacleCollisionExitEvent = new ObstacleCollisionExitEvent();
     public static TrickEvent TrickEvent = new TrickEvent();
 }
 
@@ -31,4 +32,9 @@ public class ObstacleCollisionEvent : GameEvent
 {
     public GameObject Sender;
     public int DamageValue;
+}
+
+public class ObstacleCollisionExitEvent : GameEvent
+{
+    public GameObject Sender;
 }
