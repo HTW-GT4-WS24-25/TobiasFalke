@@ -2801,6 +2801,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 260240199}
     m_Modifications:
+    - target: {fileID: 2363970294740858359, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
+      propertyPath: _playerSprite
+      value: 
+      objectReference: {fileID: 8006432536108561810}
     - target: {fileID: 3299548021241349369, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
       propertyPath: m_Camera
       value: 
@@ -4428,6 +4432,11 @@ SpriteRenderer:
 --- !u!4 &8006432536108561808 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5401914717460075009, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
+  m_PrefabInstance: {fileID: 4153896322503762629}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &8006432536108561810 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2670721954684221233, guid: 2dd01ba05e79ad545ad59930765a2438, type: 3}
   m_PrefabInstance: {fileID: 4153896322503762629}
   m_PrefabAsset: {fileID: 0}
 --- !u!222 &8006799812973780573
