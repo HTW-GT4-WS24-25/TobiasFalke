@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlayerController : MonoBehaviour
 { 
@@ -17,10 +18,14 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayTrack("mainSceneMusic");
 
         GameView.Instance.InitializeStatusBars(stats);
-        EventManager.AddListener<DamageEvent>(OnDamageTaken);
+        EventManager.AddListener<ObstacleCollisionEvent>(OnDamageTaken);
+        EventManager.AddListener<TrickEvent>(OnTrick);
     }
 
-
+    private void OnTrick(TrickEvent evt)
+    {
+        stats.ChangeScore(evt.Points);
+    }
 
     private void FixedUpdate()
     {
@@ -56,7 +61,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDamageTaken(DamageEvent evt)
+    private void OnCollision(ObstacleCollisionEvent evt){
+        Debug.Log("Collision is triggered.");  
+        // TODO implement: Collide from Obstacle 
+        // Trigger collision Effect in Player Controller
+
+    }
+
+    private void OnDamageTaken(ObstacleCollisionEvent evt)
     {
         stats.ChangeHealth(evt.DamageValue);
         
@@ -85,6 +97,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        //TODO Add Rail exit code
         var interactable = other.gameObject.GetComponent<IObject>();
         if (interactable.GetType() != typeof(Obstacle)) return;
         var obstacle = interactable as Obstacle;

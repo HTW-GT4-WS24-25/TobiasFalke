@@ -19,6 +19,7 @@ public class Obstacle : MonoBehaviour, IObject
         transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
     
+    //TOOD throw ObstacleCollisionEvent
     public void Collide(GameObject obstacle, PlayerMovement playerMovement)
     {
         if (playerMovement.IsJumping && IsJumpable)
@@ -44,14 +45,14 @@ public class Obstacle : MonoBehaviour, IObject
         }
     }
     
-    public void ExitCollision(GameObject obstacle, PlayerMovement playerMovement)
-    {
-        if (obstacleType == ObstacleType.Rail)
-        {
-            playerMovement.SetIsOverRail = false;
-            Debug.Log("Player is no longer over rail!");
-        }
-    }
+    // public void ExitCollision(GameObject obstacle, PlayerMovement playerMovement)
+    // {
+    //     if (obstacleType == ObstacleType.Rail)
+    //     {
+    //         playerMovement.SetIsOverRail = false;
+    //         Debug.Log("Player is no longer over rail!");
+    //     }
+    // }
     
     //TODO Move to AnimationController or something
     private void TriggerCollisionEffect()
@@ -65,6 +66,7 @@ public class Obstacle : MonoBehaviour, IObject
     
     private void IncreaseScore()
     {
+        //TODO remove event change to determinScore
         int amount = 10;
         switch (obstacleType)
         {
@@ -85,7 +87,7 @@ public class Obstacle : MonoBehaviour, IObject
         //playerStats.ChangeScore(amount);
     }
     
-    private void UpdatePlayerHealth(PlayerStats playerStats)
+    public int DeterminDamageAmount()
     {
         int amount = -20;
         switch (obstacleType)
@@ -107,7 +109,7 @@ public class Obstacle : MonoBehaviour, IObject
                 break;
         }
         
-        playerStats.ChangeHealth(amount);
+        return amount;
     }
     
     //TODO move to Animation Controller

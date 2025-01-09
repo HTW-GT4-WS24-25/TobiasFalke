@@ -38,11 +38,12 @@ public class Item : MonoBehaviour, IObject
     
     public void Collide(GameObject item, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
+        //TODO move to Player Controller
         AudioManager.Instance.PlaySound("item");
         TriggerItemEffect(playerStats, itemType);
         Destroy(gameObject); // Destroy the item after pickup
     }
-    
+    //TODO move throw event move logic to playercontroller
     public void TriggerItemEffect(PlayerStats playerStats, ItemType type)
     {
         switch (type)
