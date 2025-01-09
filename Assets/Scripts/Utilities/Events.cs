@@ -19,8 +19,7 @@ public class PlayerDeathEvent : GameEvent { }
 
 public class PickupEvent : GameEvent
 {
-    public Item.ItemType ItemType;
-    public int Amount;
+    public ItemType ItemType;
 }
 
 public class TrickEvent : GameEvent

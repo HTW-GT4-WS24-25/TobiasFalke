@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
     private Animator _animator;
-    
+    private static Dictionary<ItemType, IItemEffect> itemEffects;
     
     private void Start()
     {
@@ -15,6 +15,21 @@ public class PlayerController : MonoBehaviour
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         _animator = GetComponent<Animator>(); // Get the Animator component
         AudioManager.Instance.PlayTrack("mainSceneMusic");
+
+        itemEffects = new Dictionary<ItemType, IItemEffect>
+        {
+            { ItemType.HealthBoost, new HealthBoostEffect() },
+            { ItemType.HealthBoom, new HealthBoomEffect() },
+            { ItemType.SpecialBoost, new SpecialBoostEffect() },
+            { ItemType.SpecialBoom, new SpecialBoomEffect() },
+            { ItemType.SpeedBoost, new SpeedBoostEffect() },
+            { ItemType.SpeedBoom, new SpeedBoomEffect() },
+            { ItemType.JumpBoost, new JumpBoostEffect() },
+            { ItemType.JumpBoom, new JumpBoomEffect() },
+            { ItemType.ScoreBoost, new ScoreBoostEffect() },
+            { ItemType.ScoreBoom, new ScoreBoomEffect() },
+            { ItemType.ScoreMultiplierBoost, new ScoreMultiplierBoostEffect() }
+        };
 
         GameView.Instance.InitializeStatusBars(stats);
         EventManager.AddListener<ObstacleCollisionEvent>(OnCollision);
@@ -33,6 +48,19 @@ public class PlayerController : MonoBehaviour
     private void OnTrick(TrickEvent evt)
     {
         stats.ChangeScore(evt.Points);
+    }
+    private void OnItemPickup(PickupEvent evt){
+
+        AudioManager.Instance.PlaySound("item");
+        TriggerItemEffect(stats,evt.ItemType);
+    }
+
+    public void TriggerItemEffect(PlayerStats playerStats, ItemType type)
+    {
+        if (itemEffects.TryGetValue(type, out IItemEffect effect))
+        {
+            effect.ApplyEffect(playerStats);
+        }
     }
 
     private void FixedUpdate()

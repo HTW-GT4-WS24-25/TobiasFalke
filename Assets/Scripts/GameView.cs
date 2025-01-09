@@ -35,10 +35,13 @@ public class GameView : Utilities.Singleton<GameView>
     [SerializeField] private Image specialActionButton;
     public TextMeshProUGUI countDownUI;
     public Image specialActionFlashImage;
+    PlayerStats stats;
+
 
     private void Awake()
     {
-        
+        stats = PlayerStats.Instance;
+        PlayerStats.
     }
 
     private void OnDestroy()
@@ -113,9 +116,9 @@ public class GameView : Utilities.Singleton<GameView>
         countDownUI.gameObject.SetActive(isActive);
     }
 
-    public void ToggleSpecialActionButton(bool onOrOff)
+    public void ToggleSpecialActionButton(bool isActive)
     {
-        specialActionButton.gameObject.SetActive(onOrOff);
+        specialActionButton.gameObject.SetActive(isActive);
     }
     
     public void SetMaxHealth(int health)
@@ -132,9 +135,9 @@ public class GameView : Utilities.Singleton<GameView>
         specialFill.color = specialGradiant.Evaluate(1f);
     }
     
-    public void SetPauseMenuUIVisibility(bool state)
+    public void SetPauseMenuUIVisibility(bool isActive)
     {
-        _pauseUI.gameObject.SetActive(state);
+        _pauseUI.gameObject.SetActive(isActive);
     }
     
     public void PlayScreenFlash(float time)
