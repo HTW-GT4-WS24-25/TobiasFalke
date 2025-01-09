@@ -14,11 +14,11 @@ public enum ObstacleType
 
 public class Obstacle : MonoBehaviour
 {
-    [SerializeField] public ObstacleType ObstacleType {get; private set; }
+    [SerializeField] public ObstacleType Type;
 
     private float _fallSpeed;
 
-    public bool IsJumpable => ObstacleType != ObstacleType.Wall;
+    public bool IsJumpable => Type != ObstacleType.Wall;
     
     private void Update()
     {
@@ -26,25 +26,30 @@ public class Obstacle : MonoBehaviour
         transform.Translate(new Vector3(0f, -_fallSpeed * Time.deltaTime, 0f));
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("Collision is triggered.");
+        Debug.Log("Player Tag: " + other.gameObject.tag);
         if (!other.gameObject.CompareTag("Player")) return;
         var evt = Events.ObstacleCollisionEvent;
         evt.DamageValue = DetermineDamageAmount();
+        evt.Obstacle = this;
         EventManager.Broadcast(evt);
     }
 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log("Collision is exited.");
         if (!other.gameObject.CompareTag("Player")) return;
         var evt = Events.ObstacleCollisionEvent;
+        evt.Obstacle = this;
         EventManager.Broadcast(evt);
     }
     
     public int DetermineScore()
     {
         // Determine score based on obstacle type. Default is 10.
-        return ObstacleType switch
+        return Type switch
         {
             ObstacleType.BigObstacle => 50,
             ObstacleType.SmallObstacle => 10,
@@ -55,7 +60,7 @@ public class Obstacle : MonoBehaviour
     
     public int DetermineDamageAmount()
     {
-        return ObstacleType switch
+        return Type switch
         {
             ObstacleType.Wall => -50,
             ObstacleType.BigObstacle => -20,

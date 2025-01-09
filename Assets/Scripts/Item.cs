@@ -29,15 +29,12 @@ public class Item : MonoBehaviour
         transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
 
-    private void OnCollisionEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("Player"))
-        {
-            PickupEvent evt = Events.PickupEvent;
-            evt.ItemType = this.itemType;
-            EventManager.Broadcast(evt);
-            Destroy(gameObject); // Destroy the item after pickup
-
-        }
+        if (!other.gameObject.CompareTag("Player")) return;
+        var evt = Events.PickupEvent;
+        evt.ItemType = itemType;
+        EventManager.Broadcast(evt);
+        Destroy(gameObject); // Destroy the item after pickup.
     }
 }
