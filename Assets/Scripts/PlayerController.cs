@@ -5,30 +5,22 @@ public class PlayerController : MonoBehaviour
 { 
     private PlayerStats stats; // Handles player's current health, special & score.
     private PlayerMovement movement; // Handles player's movement input & animation.
-    private Animator animator; // Reference to Animator component
     private Animator _animator;
-
-    private void Awake()
-    {
-        _animator = GetComponent<Animator>();
-    }
+    
     
     private void Start()
     {
         
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
-        GameView.Instance.InitializeStatusBars(stats);
+        _animator = GetComponent<Animator>(); // Get the Animator component
         AudioManager.Instance.PlayTrack("mainSceneMusic");
 
-        animator = GetComponent<Animator>(); // Get the Animator component
-        
-        // Initialize player's max health & special bars on UI.
-        GameView.Instance.SetMaxHealth(stats._maxHealth);
-        GameView.Instance.SetMaxSpecial(stats._maxSpecial);
-        GameView.Instance.UpdateHealthBar(stats._health);
-        GameView.Instance.UpdateSpecialBar(stats._special);
+        GameView.Instance.InitializeStatusBars(stats);
+        EventManager.AddListener<DamageEvent>(OnDamageTaken);
     }
+
+
 
     private void FixedUpdate()
     {
@@ -60,11 +52,22 @@ public class PlayerController : MonoBehaviour
         // Grinding bonus.
         if (movement.IsGrinding)
         {
-            stats.UpdateScore(50);
+            stats.ChangeScore(50);
         }
     }
-    
 
+    private void OnDamageTaken(DamageEvent evt)
+    {
+        stats.ChangeHealth(evt.DamageValue);
+        
+        // Trigger game over screen if collision causes health to drop to 0.
+        if (stats._health <= 0)
+        {
+            TriggerGameOver();
+        }; 
+    }
+    
+    /*
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Collision is triggered.");
@@ -72,18 +75,34 @@ public class PlayerController : MonoBehaviour
         var interactable = other.gameObject.GetComponent<IObject>();
         // Change player stats & movement according to collision effect.
         interactable?.Collide(other.gameObject, stats, movement, _animator);
+        
         // Trigger game over screen if collision causes health to drop to 0.
-        if (stats._health <= 0) TriggerGameOver(); 
-    }
+        if (stats._health <= 0)
+        {
+            TriggerGameOver();
+        }; 
+    }*/
 
     private void OnTriggerExit2D(Collider2D other)
-    {   
+    {
         var interactable = other.gameObject.GetComponent<IObject>();
         if (interactable.GetType() != typeof(Obstacle)) return;
         var obstacle = interactable as Obstacle;
         obstacle?.ExitCollision(other.gameObject, movement);
+        
+        if (obstacle.obstacleType == ObstacleType.Rail)
+        {
+            movement.SetIsOverRail = false;
+            Debug.Log("Player is no longer over rail!");
+        }
     }
 
+    private void TriggerGameOver()
+    {
+        EventManager.Broadcast(Events.PlayerDeathEvent);
+        // Trigger death animation
+        _animator.SetBool("isDead", true);
+    }
     
     private void TriggerSpecialAction()
     {
@@ -101,7 +120,7 @@ public class PlayerController : MonoBehaviour
     {
         SpriteRenderer playerSprite = movement._playerSprite; // remove once method was moved
         Color originalColor = playerSprite.color;
-        Color flashColor = Color.blue;
+        Color flashColor = Color.cyan;
         
         float flashDuration = 0.1f;
         int flashCount = (int)(time * 10);
@@ -113,28 +132,5 @@ public class PlayerController : MonoBehaviour
             playerSprite.color = originalColor;
             yield return new WaitForSeconds(flashDuration);
         }
-    }
-    
-    private void TriggerGameOver()
-    {     
-        // Stop the game from playing
-        GameModel.Instance.IsPlaying = false;
-
-        // Trigger death animation
-        animator.SetBool("isDead", true);
-        AudioManager.Instance.PlaySound("gameOver"); 
-        // Start coroutine to delay scene change
-        Time.timeScale = 0f;
-        StartCoroutine(DelayedGameOver());
-    }
-
-    private IEnumerator DelayedGameOver()
-    {
-        // Wait for the length of the death animation (e.g., 2 seconds)
-        yield return new WaitForSecondsRealtime(2f); 
-
-        // Change the scene after delay
-        SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
-        AudioManager.Instance.PlayTrack("gameOverMusic");
     }
 }

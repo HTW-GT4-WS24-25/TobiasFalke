@@ -25,6 +25,16 @@ public class Item : MonoBehaviour, IObject
         fallSpeed = GameModel.Instance.GameSpeed / 2;
         transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            PickupEvent evt = Events.PickupEvent;
+            evt.Item = this;
+            EventManager.Broadcast(evt);
+        }
+    }
     
     public void Collide(GameObject item, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
     {
@@ -38,37 +48,37 @@ public class Item : MonoBehaviour, IObject
         switch (type)
         {
             case ItemType.HealthBoost:
-                playerStats.UpdateHealth(50);
+                playerStats.ChangeHealth(50);
                 break;
             case ItemType.HealthBoom:
-                playerStats.UpdateHealth(100);
+                playerStats.ChangeHealth(100);
                 break;
             case ItemType.SpecialBoost:
-                playerStats.UpdateSpecial(25);
+                playerStats.ChangeSpecial(25);
                 break;
             case ItemType.SpecialBoom:
-                playerStats.UpdateSpecial(50);
+                playerStats.ChangeSpecial(50);
                 break;
             case ItemType.SpeedBoost:
-                playerStats.UpdateSpeedMultiplier(50);
+                playerStats.ChangeSpeedMultiplier(50);
                 break;
             case ItemType.SpeedBoom:
-                playerStats.UpdateSpeedMultiplier(100);
+                playerStats.ChangeSpeedMultiplier(100);
                 break;
             case ItemType.JumpBoom:
-                playerStats.UpdateJumpDuration(50);
+                playerStats.ChangeJumpDuration(50);
                 break;
             case ItemType.JumpBoost:
-                playerStats.UpdateJumpDuration(100);
+                playerStats.ChangeJumpDuration(100);
                 break;
             case ItemType.ScoreBoost:
-                playerStats.UpdateSpecial(100);
+                playerStats.ChangeSpecial(100);
                 break;
             case ItemType.ScoreBoom:
-                playerStats.UpdateSpecial(500);
+                playerStats.ChangeSpecial(500);
                 break;
             case ItemType.ScoreMultiplierBoost:
-                playerStats.UpdateSpecial(30);
+                playerStats.ChangeSpecial(30);
                 break;
         }
     }

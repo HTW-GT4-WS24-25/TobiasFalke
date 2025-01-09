@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -24,10 +25,21 @@ public class PlayerStats: MonoBehaviour
     public bool isInvincible = false;
     public float invincibilityDuration = 1.2f;
     
-    internal void UpdateHealth(int amount)
+    // Events
+    public event Action HealthChanged;
+    public event Action SpecialChanged;
+    public event Action ScoreChanged;
+    public event Action ScoreMultiplyerChanged;
+    public event Action JumpDurationChanged;
+    public event Action JumpMultiplierChanged;
+    public event Action SpeedMultiplierChanged;
+    
+    
+    internal void ChangeHealth(int amount)
     {
         _health = Mathf.Clamp(_health + amount, 0, _maxHealth);
         GameView.Instance.UpdateHealthBar(_health);
+        HealthChanged?.Invoke();
         Debug.Log("Health was in/decreased by " + amount + " and is now " + _health);
     }
 
@@ -35,13 +47,15 @@ public class PlayerStats: MonoBehaviour
     {
         _health = Mathf.Clamp(newHealth, 0, _maxHealth);
         GameView.Instance.UpdateHealthBar(_health);
+        HealthChanged?.Invoke();
         Debug.Log("Health was set to " + _health);
     }
 
-    internal void UpdateSpecial(int amount)
+    internal void ChangeSpecial(int amount)
     {
         _special = Mathf.Clamp(_special + amount, 0, _maxSpecial);
         GameView.Instance.UpdateSpecialBar(_special);
+        SpecialChanged?.Invoke();
         Debug.Log("Special was in/decreased by " + amount + " and is now " + _special);
     }
 
@@ -49,13 +63,15 @@ public class PlayerStats: MonoBehaviour
     {
         _special = Mathf.Clamp(newSpecial, 0, _maxSpecial);
         GameView.Instance.UpdateSpecialBar(_special);
+        SpecialChanged?.Invoke();
         Debug.Log("Special was set to " + _special);
     }
 
-    internal void UpdateSpeedMultiplier(float percent)
+    internal void ChangeSpeedMultiplier(float percent)
     {
         _speedMultiplier = Mathf.Clamp(_speedMultiplier + percent / 100, 0, _maxSpeedMultiplier);
         GameView.Instance.UpdateSpeedMultiplier(_speedMultiplier);
+        SpeedMultiplierChanged?.Invoke();
         Debug.Log("Speed multiplier in/decreased by " + percent + "% and is now " + _speedMultiplier);
     }
 
@@ -63,13 +79,15 @@ public class PlayerStats: MonoBehaviour
     {
         _speedMultiplier = Mathf.Clamp(newSpeedMultiplier, 0, _maxSpeedMultiplier);
         GameView.Instance.UpdateSpeedMultiplier(_speedMultiplier);
+        SpeedMultiplierChanged?.Invoke();
         Debug.Log("Speed was set to " + _speedMultiplier);
     }
 
-    internal void UpdateJumpDuration(float percent)
+    internal void ChangeJumpDuration(float percent)
     {
         _jumpMultiplier = Mathf.Clamp(_jumpMultiplier + percent / 100, 0, _maxJumpMultiplier);
         GameView.Instance.UpdateJumpMultiplier(_jumpMultiplier);
+        JumpDurationChanged?.Invoke();
         Debug.Log("Jump duration was in/decreased by " + percent + "% and is now " + _jumpMultiplier);
     }
 
@@ -77,20 +95,23 @@ public class PlayerStats: MonoBehaviour
     {
         _jumpMultiplier = Mathf.Clamp(newJumpMultiplier, 0, _maxJumpMultiplier);
         GameView.Instance.UpdateJumpMultiplier(_jumpMultiplier);
+        JumpMultiplierChanged?.Invoke();
         Debug.Log("Jump duration multiplier was set to " + _jumpMultiplier);
     }
 
-    internal void UpdateScore(int amount)
+    internal void ChangeScore(int amount)
     {
         _score += amount;
         GameView.Instance.UpdateScoreCounter(_score);
+        ScoreChanged?.Invoke();
         Debug.Log("Score was changed by " + amount + " and is now " + _score);
     }
 
-    internal void UpdateScoreMultiplier(float percent)
+    internal void ChangeScoreMultiplier(float percent)
     {
         _scoreMultiplier = Mathf.Clamp(_scoreMultiplier + percent / 100, 0, _maxScoreMultiplier);
         GameView.Instance.UpdateScoreMultiplier(_scoreMultiplier);
+        ScoreMultiplyerChanged?.Invoke();
         Debug.Log("Score multiplication was in/decreased by " + percent + "% and is now " + _scoreMultiplier);
     }
 
@@ -98,15 +119,16 @@ public class PlayerStats: MonoBehaviour
     {
         _scoreMultiplier = Mathf.Clamp(multiplier, 0, _maxScoreMultiplier);
         GameView.Instance.UpdateScoreMultiplier(_scoreMultiplier);
+        ScoreMultiplyerChanged?.Invoke();
         Debug.Log("Score multiplier was set to " + _scoreMultiplier);
     }
 
     internal void TriggerSpecialAction()
     {
         SetHealth(100);
-        UpdateScoreMultiplier(100);
-        UpdateSpeedMultiplier(50);
-        UpdateJumpDuration(50);
+        ChangeScoreMultiplier(100);
+        ChangeSpeedMultiplier(50);
+        ChangeJumpDuration(50);
         // Reset special points to 0.
         SetSpecial(0);
     }

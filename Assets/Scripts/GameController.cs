@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Utilities;
 
@@ -63,11 +64,6 @@ public class GameController : PersistentSingleton<GameController>
         }
     }
 
-    public void TriggerGameOver()
-    {
-        gameModel.IsPlaying = false;
-    }
-
     private void TogglePauseMenu()
     {
         if (gameModel.IsPlaying)
@@ -110,5 +106,27 @@ public class GameController : PersistentSingleton<GameController>
         GameView.Instance.UpdateLevelCounter(newLevel);
         _backgroundScroller.UpdateLevelBackground(newLevel);
         gameModel.Level = newLevel;
+    }
+    
+        
+    private void OnGameOver()
+    {     
+        // Stop the game from playing
+        GameModel.Instance.IsPlaying = false;
+        Time.timeScale = 0f;
+        
+        AudioManager.Instance.PlaySound("gameOver"); 
+        // Start coroutine to delay scene change
+        StartCoroutine(DelayedGameOver());
+    }
+
+    private IEnumerator DelayedGameOver()
+    {
+        // Wait for the length of the death animation (e.g., 2 seconds)
+        yield return new WaitForSecondsRealtime(2f); 
+
+        // Change the scene after delay
+        SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
+        AudioManager.Instance.PlayTrack("gameOverMusic");
     }
 }

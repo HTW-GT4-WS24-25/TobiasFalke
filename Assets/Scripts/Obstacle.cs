@@ -3,18 +3,11 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour, IObject
 {
-    [SerializeField] private ObstacleType obstacleType;
+    [SerializeField] public ObstacleType obstacleType {get; private set; }
 
     private float fallSpeed;
     
-    public enum ObstacleType
-    {
-        Wall,
-        BigObstacle,
-        SmallObstacle,
-        Rail,
-        Hole
-    }
+
 
     private bool IsJumpable => obstacleType != ObstacleType.Wall;
     
@@ -26,11 +19,11 @@ public class Obstacle : MonoBehaviour, IObject
         transform.Translate(new Vector3(0f, -fallSpeed * Time.deltaTime, 0f));
     }
     
-    public void Collide(GameObject obstacle, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator)
+    public void Collide(GameObject obstacle, PlayerMovement playerMovement)
     {
         if (playerMovement.IsJumping && IsJumpable)
         {
-            IncreaseScore(playerStats);
+            IncreaseScore();
         }
         if (obstacleType == ObstacleType.Rail)
         {
@@ -39,7 +32,15 @@ public class Obstacle : MonoBehaviour, IObject
         }
         if (!IsJumpable || !playerMovement.IsJumping)
         {
-            TriggerCollisionEffect(playerStats, animator);
+            TriggerCollisionEffect();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!IsJumpable)
+        {
+            
         }
     }
     
@@ -52,7 +53,8 @@ public class Obstacle : MonoBehaviour, IObject
         }
     }
     
-    private void TriggerCollisionEffect(PlayerStats playerStats, Animator animator)
+    //TODO Move to AnimationController or something
+    private void TriggerCollisionEffect()
     {
         if(playerStats.isInvincible) return;
         StartCoroutine(SetInvincibility(playerStats, animator));
@@ -61,7 +63,7 @@ public class Obstacle : MonoBehaviour, IObject
         UpdatePlayerHealth(playerStats);
     }
     
-    private void IncreaseScore(PlayerStats playerStats)
+    private void IncreaseScore()
     {
         int amount = 10;
         switch (obstacleType)
@@ -76,7 +78,11 @@ public class Obstacle : MonoBehaviour, IObject
                 amount = 60;
                 break;
         }
-        playerStats.UpdateScore(amount);
+
+        TrickEvent evt = Events.TrickEvent;
+        evt.Points = amount;
+        EventManager.Broadcast(evt);
+        //playerStats.ChangeScore(amount);
     }
     
     private void UpdatePlayerHealth(PlayerStats playerStats)
@@ -101,9 +107,10 @@ public class Obstacle : MonoBehaviour, IObject
                 break;
         }
         
-        playerStats.UpdateHealth(amount);
+        playerStats.ChangeHealth(amount);
     }
     
+    //TODO move to Animation Controller
     private static IEnumerator SetInvincibility(PlayerStats playerStats, Animator animator)
     {
         playerStats.isInvincible = true;
@@ -114,4 +121,12 @@ public class Obstacle : MonoBehaviour, IObject
         animator.SetBool("isInvincible", false);
         Debug.Log("Player is no longer invincible.");
     }
+}
+public enum ObstacleType
+{
+    Wall,
+    BigObstacle,
+    SmallObstacle,
+    Rail,
+    Hole
 }
