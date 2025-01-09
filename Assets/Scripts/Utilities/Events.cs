@@ -29,11 +29,11 @@ public class TrickEvent : GameEvent
 
 public class ObstacleCollisionEvent : GameEvent
 {
-    public GameObject Sender;
+    public Obstacle Obstacle;
     public int DamageValue;
 }
 
 public class ObstacleCollisionExitEvent : GameEvent
 {
-    public GameObject Sender;
+    public Obstacle Obstacle;
 }
