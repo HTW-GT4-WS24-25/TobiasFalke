@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
         EventManager.AddListener<ObstacleCollisionEvent>(OnCollision);
         EventManager.AddListener<ObstacleCollisionExitEvent>(OnExitCollision);
         EventManager.AddListener<TrickEvent>(OnTrick);
+        EventManager.AddListener<PickupEvent>(OnItemPickup);
     }
 
     private void OnDestroy()
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
         EventManager.RemoveListener<ObstacleCollisionEvent>(OnCollision);
         EventManager.RemoveListener<ObstacleCollisionExitEvent>(OnExitCollision);
         EventManager.RemoveListener<TrickEvent>(OnTrick);
+        EventManager.RemoveListener<PickupEvent>(OnItemPickup);
     }
 
     private void OnTrick(TrickEvent evt)
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviour
         TriggerItemEffect(stats,evt.ItemType);
     }
 
-    public void TriggerItemEffect(PlayerStats playerStats, ItemType type)
+    private static void TriggerItemEffect(PlayerStats playerStats, ItemType type)
     {
         if (itemEffects.TryGetValue(type, out IItemEffect effect))
         {
@@ -97,15 +99,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // TODO: Fix collision logic (refactoring broke it).
     private void OnCollision(ObstacleCollisionEvent evt){
-        Debug.Log("Collision is triggered.");  
-        var obstacle = evt.Sender.gameObject.GetComponent<Obstacle>();
+        Debug.Log("Collision is triggered.");
+        var obstacle = evt.Obstacle;
         if (movement.IsJumping && obstacle.IsJumpable)
         {
             var score = obstacle.DetermineScore();
             stats.ChangeScore(score);
         }
-        if (obstacle.ObstacleType == ObstacleType.Rail)
+        if (obstacle.Type == ObstacleType.Rail)
         {
             movement.SetIsOverRail = true;
             Debug.Log("Player is over rail!");
@@ -116,10 +119,11 @@ public class PlayerController : MonoBehaviour
         }
     }
     
+    // TODO: Fix rail grinding bug where player keeps grinding (Happened after refactoring).
     private void OnExitCollision(ObstacleCollisionExitEvent evt)
     {
-        var obstacle = evt.Sender.gameObject.GetComponent<Obstacle>();
-        if (obstacle.ObstacleType == ObstacleType.Rail)
+        var obstacle = evt.Obstacle;
+        if (obstacle.Type == ObstacleType.Rail)
         {
             movement.SetIsOverRail = false;
             Debug.Log("Player is no longer over rail!");
@@ -140,6 +144,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // TODO: Broken game over after refactoring.
     private void TriggerGameOver()
     {
         EventManager.Broadcast(Events.PlayerDeathEvent);
@@ -157,6 +162,8 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(FlashBlue(6.0f));
         GameView.Instance.PlayScreenFlash(6.0f);
     }
+    
+    // TODO: Animations broke after refactoring.
     
     // TODO: move this method to separate player animation
     private IEnumerator FlashBlue(float time)
