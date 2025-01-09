@@ -36,18 +36,7 @@ public class GameView : Utilities.Singleton<GameView>
     public TextMeshProUGUI countDownUI;
     public Image specialActionFlashImage;
     PlayerStats stats;
-
-
-    private void Awake()
-    {
-        stats = PlayerStats.Instance;
-        PlayerStats.
-    }
-
-    private void OnDestroy()
-    {
-        
-    }
+    
     public void InitializeStatusBars(PlayerStats stats)
     {
         // Initialize player's max health & special bars on UI.
