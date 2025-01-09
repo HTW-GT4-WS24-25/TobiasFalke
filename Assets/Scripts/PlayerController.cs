@@ -1,6 +1,6 @@
+using System;
 using UnityEngine;
 using System.Collections;
-using System;
 
 public class PlayerController : MonoBehaviour
 { 
@@ -11,15 +11,23 @@ public class PlayerController : MonoBehaviour
     
     private void Start()
     {
-        
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         _animator = GetComponent<Animator>(); // Get the Animator component
         AudioManager.Instance.PlayTrack("mainSceneMusic");
 
         GameView.Instance.InitializeStatusBars(stats);
-        EventManager.AddListener<ObstacleCollisionEvent>(OnDamageTaken);
+        EventManager.AddListener<ObstacleCollisionEvent>(OnCollision);
+        EventManager.AddListener<ObstacleCollisionExitEvent>(OnExitCollision);
         EventManager.AddListener<TrickEvent>(OnTrick);
+    }
+
+    private void OnDestroy()
+    {
+        // Remove all event listeners when the player is destroyed.
+        EventManager.RemoveListener<ObstacleCollisionEvent>(OnCollision);
+        EventManager.RemoveListener<ObstacleCollisionExitEvent>(OnExitCollision);
+        EventManager.RemoveListener<TrickEvent>(OnTrick);
     }
 
     private void OnTrick(TrickEvent evt)
@@ -63,57 +71,51 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollision(ObstacleCollisionEvent evt){
         Debug.Log("Collision is triggered.");  
-        // TODO implement: Collide from Obstacle 
-        // Trigger collision Effect in Player Controller
-
-    }
-
-    private void OnDamageTaken(ObstacleCollisionEvent evt)
-    {
-        stats.ChangeHealth(evt.DamageValue);
-        
-        // Trigger game over screen if collision causes health to drop to 0.
-        if (stats._health <= 0)
+        var obstacle = evt.Sender.gameObject.GetComponent<Obstacle>();
+        if (movement.IsJumping && obstacle.IsJumpable)
         {
-            TriggerGameOver();
-        }; 
+            var score = obstacle.DetermineScore();
+            stats.ChangeScore(score);
+        }
+        if (obstacle.ObstacleType == ObstacleType.Rail)
+        {
+            movement.SetIsOverRail = true;
+            Debug.Log("Player is over rail!");
+        }
+        if (!obstacle.IsJumpable || !movement.IsJumping)
+        {
+            TriggerCollisionEffect(obstacle);
+        }
     }
     
-    /*
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnExitCollision(ObstacleCollisionExitEvent evt)
     {
-        Debug.Log("Collision is triggered.");
-        // Check whether collided object is power up or obstacle.
-        var interactable = other.gameObject.GetComponent<IObject>();
-        // Change player stats & movement according to collision effect.
-        interactable?.Collide(other.gameObject, stats, movement, _animator);
-        
-        // Trigger game over screen if collision causes health to drop to 0.
-        if (stats._health <= 0)
-        {
-            TriggerGameOver();
-        }; 
-    }*/
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        //TODO Add Rail exit code
-        var interactable = other.gameObject.GetComponent<IObject>();
-        if (interactable.GetType() != typeof(Obstacle)) return;
-        var obstacle = interactable as Obstacle;
-        obstacle?.ExitCollision(other.gameObject, movement);
-        
-        if (obstacle.obstacleType == ObstacleType.Rail)
+        var obstacle = evt.Sender.gameObject.GetComponent<Obstacle>();
+        if (obstacle.ObstacleType == ObstacleType.Rail)
         {
             movement.SetIsOverRail = false;
             Debug.Log("Player is no longer over rail!");
+        }
+    }
+    
+    private void TriggerCollisionEffect(Obstacle obstacle)
+    {
+        if(stats.isInvincible) return;
+        StartCoroutine(SetInvincibility());
+        Debug.Log("Collision!");
+        AudioManager.Instance.PlaySound("crash");
+        var damage = obstacle.DetermineDamageAmount();
+        stats.ChangeHealth(damage);
+        if(stats._health <= 0)
+        {
+            TriggerGameOver();
         }
     }
 
     private void TriggerGameOver()
     {
         EventManager.Broadcast(Events.PlayerDeathEvent);
-        // Trigger death animation
+        // Trigger death animation.
         _animator.SetBool("isDead", true);
     }
     
@@ -145,5 +147,17 @@ public class PlayerController : MonoBehaviour
             playerSprite.color = originalColor;
             yield return new WaitForSeconds(flashDuration);
         }
+    }
+    
+    // TODO: Move to separate animation controller.
+    private IEnumerator SetInvincibility()
+    {
+        stats.isInvincible = true;
+        _animator.SetBool("isInvincible", true);
+        Debug.Log("Player is invincible for " + stats.invincibilityDuration + " seconds.");
+        yield return new WaitForSeconds(stats.invincibilityDuration);
+        stats.isInvincible = false;
+        _animator.SetBool("isInvincible", false);
+        Debug.Log("Player is no longer invincible.");
     }
 }
