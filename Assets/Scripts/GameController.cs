@@ -20,8 +20,14 @@ public class GameController : PersistentSingleton<GameController>
         
         Time.timeScale = 0f; // Pause time
         gameView.ToggleCountDownVisibility(true);
+        EventManager.AddListener<GameOverEvent>(OnGameOver);
     }
-
+    private void OnDestroy()
+    {
+        // Remove all event listeners when the player is destroyed.
+        EventManager.RemoveListener<GameOverEvent>(OnGameOver);
+    }
+    
     void Update()
     {
         if (remainingTime > 0)
@@ -109,7 +115,7 @@ public class GameController : PersistentSingleton<GameController>
     }
     
         
-    private void OnGameOver()
+    private void OnGameOver(GameOverEvent evt)
     {     
         // Stop the game from playing
         GameModel.Instance.IsPlaying = false;

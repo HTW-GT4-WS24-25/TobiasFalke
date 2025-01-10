@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using Utilities;
 
 public class PlayerController : MonoBehaviour
 { 
@@ -147,7 +148,9 @@ public class PlayerController : MonoBehaviour
     // TODO: Broken game over after refactoring.
     private void TriggerGameOver()
     {
-        EventManager.Broadcast(Events.PlayerDeathEvent);
+        GameOverEvent evt = Events.GameOverEvent;
+        evt.Score = stats._score;
+        EventManager.Broadcast(evt);
         // Trigger death animation.
         _animator.SetBool("isDead", true);
     }

@@ -3,7 +3,6 @@ using UnityEngine;
 public static class Events
 {
     public static GameOverEvent GameOverEvent = new GameOverEvent();
-    public static PlayerDeathEvent PlayerDeathEvent = new PlayerDeathEvent();
     public static PickupEvent PickupEvent = new PickupEvent();
     public static ObstacleCollisionEvent ObstacleCollisionEvent = new ObstacleCollisionEvent();
     public static ObstacleCollisionExitEvent ObstacleCollisionExitEvent = new ObstacleCollisionExitEvent();
@@ -12,10 +11,8 @@ public static class Events
 
 public class GameOverEvent : GameEvent
 {
-    public bool Win;
+    public float Score;
 }
-
-public class PlayerDeathEvent : GameEvent { }
 
 public class PickupEvent : GameEvent
 {
