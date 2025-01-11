@@ -3,9 +3,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed = 5;
+    public float baseSpeed = 5;
+    public float baseJumpDuration = 1.0f;
+    [SerializeField] public float speed = 5;
     [SerializeField] private float jumpHeight = 1.0f;
-    [SerializeField] private float jumpDuration = 0.5f;
+    [SerializeField] public float jumpDuration = 0.5f;
     [SerializeField] private SpriteRenderer shadowSprite;
     
     private Rigidbody2D _rigidBody;

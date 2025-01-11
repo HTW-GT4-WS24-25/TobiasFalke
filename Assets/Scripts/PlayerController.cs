@@ -73,6 +73,14 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // update movement & jump increases from item pickups & special action
+        movement.speed = movement.baseSpeed * stats._speedMultiplier;
+        movement.jumpDuration = movement.baseJumpDuration * stats._jumpMultiplier;
+        UIManager.Instance.UpdateSpeedCounter(movement.speed);
+        UIManager.Instance.UpdateSpeedMultiplier(stats._speedMultiplier);
+        UIManager.Instance.UpdateJumpCounter(movement.jumpDuration);
+        UIManager.Instance.UpdateJumpMultiplier(stats._jumpMultiplier);
+
         // Trigger special action if conditions are met.
         if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction();
         // Update animation.
