@@ -36,6 +36,12 @@ public class GameModel : PersistentSingleton<GameModel>
         get { return levelDuration; }
         set { levelDuration = value; }
     }
+
+    public bool IsCountingDown
+    {
+        get { return isCountingDown; }
+        set { isCountingDown = value; }
+    }
     
 
     private float playTime;
@@ -44,5 +50,6 @@ public class GameModel : PersistentSingleton<GameModel>
     private float countDownTime = 3f;
     private int level;
     private int levelDuration;
+    private bool isCountingDown;
 
 }

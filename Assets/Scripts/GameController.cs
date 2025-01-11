@@ -12,35 +12,29 @@ public class GameController : PersistentSingleton<GameController>
     
     private float remainingTime;
 
-    void Start()
+    private void Start()
     {
         gameModel = GameModel.Instance; // Access the singleton instance
-        gameModel.IsPlaying = false;
-        remainingTime = gameModel.CountDownTime;
-        
-        Time.timeScale = 0f; // Pause time
-        gameView.ToggleCountDownVisibility(true);
-        EventManager.AddListener<GameOverEvent>(OnGameOver);
+        StartGame();
+
     }
+
+    private void OnEnable()
+    {
+        EventManager.AddListener<GameOverEvent>(OnGameOver);
+        EventManager.AddListener<GameStartEvent>(OnStartGameEvent);
+    }
+
     private void OnDestroy()
     {
         // Remove all event listeners when the player is destroyed.
         EventManager.RemoveListener<GameOverEvent>(OnGameOver);
+        EventManager.RemoveListener<GameStartEvent>(OnStartGameEvent);
+        
     }
     
     void Update()
     {
-        if (remainingTime > 0)
-        {
-            remainingTime -= Time.unscaledDeltaTime; // Use unscaled time
-            float remainingSeconds = Mathf.Ceil(remainingTime);
-            gameView.UpdateCountDown(remainingSeconds);
-        }
-        if (remainingTime <= 0)
-        {
-            StartGame();
-        }
-
         if (gameModel.IsPlaying)
         {
             gameModel.PlayTime += Time.deltaTime;
@@ -63,11 +57,28 @@ public class GameController : PersistentSingleton<GameController>
 
     private void LateUpdate()
     {
+        if (gameModel.IsCountingDown)
+        {
+            if (remainingTime > 0)
+            {
+                remainingTime -= Time.unscaledDeltaTime; // Use unscaled time 
+                gameView.UpdateCountDown(Mathf.Ceil(remainingTime));
+            }
+
+            if (remainingTime <= 0)
+            {
+                //TODO Fix Currently beging called right after GameOver because is player is being set to false 
+                gameModel.IsCountingDown = false;
+                StartGamePlay();
+                Debug.Log("Started Game");
+            }
+        }
         // Update time counter UI if game is playing
         if (gameModel.IsPlaying)
         {
             gameView.timeCounter.text = Mathf.RoundToInt(gameModel.PlayTime).ToString();
         }
+        
     }
 
     private void TogglePauseMenu()
@@ -98,12 +109,28 @@ public class GameController : PersistentSingleton<GameController>
     
     private void StartGame()
     {
-        
+        gameModel.IsCountingDown = true;
+        remainingTime = gameModel.CountDownTime;
+        gameView.ToggleCountDownVisibility(true);
+
+        AudioManager.Instance.PlayTrack("mainSceneMusic");
+
+        gameModel.IsPlaying = false;
+        Time.timeScale = 0f; // Pause time
+    }
+
+    private void StartGamePlay()
+    {
         gameModel.IsPlaying = true;
         remainingTime = 0;
         gameView.ToggleCountDownVisibility(false);
         Time.timeScale = 1f; // Unpause time
         AudioManager.Instance.PlaySound("gameStart");
+    }
+    
+    private void OnStartGameEvent(GameStartEvent evt)
+    {
+        StartGame();
     }
     
     private void ChangeLevel(int newLevel)
@@ -114,13 +141,14 @@ public class GameController : PersistentSingleton<GameController>
         gameModel.Level = newLevel;
     }
     
-        
     private void OnGameOver(GameOverEvent evt)
     {     
         // Stop the game from playing
         GameModel.Instance.IsPlaying = false;
+        Debug.Log("It's Game Over!");
         Time.timeScale = 0f;
         
+        //TODO GameOver Sounds aren't playing only appears if started from Main Scene
         AudioManager.Instance.PlaySound("gameOver"); 
         // Start coroutine to delay scene change
         StartCoroutine(DelayedGameOver());

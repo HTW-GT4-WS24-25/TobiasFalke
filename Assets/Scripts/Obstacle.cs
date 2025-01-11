@@ -28,9 +28,11 @@ public class Obstacle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collision is triggered.");
+
         Debug.Log("Player Tag: " + other.gameObject.tag);
         if (!other.gameObject.CompareTag("Player")) return;
+        
+        Debug.Log("'Player collision is triggered.");
         var evt = Events.ObstacleCollisionEvent;
         evt.DamageValue = DetermineDamageAmount();
         evt.Obstacle = this;
@@ -39,8 +41,9 @@ public class Obstacle : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("Collision is exited.");
+
         if (!other.gameObject.CompareTag("Player")) return;
+        Debug.Log("Player collision is exited.");
         var evt = Events.ObstacleCollisionEvent;
         evt.Obstacle = this;
         EventManager.Broadcast(evt);

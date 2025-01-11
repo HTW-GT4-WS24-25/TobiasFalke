@@ -14,6 +14,8 @@ public class GameOverEvent : GameEvent
     public float Score;
 }
 
+public class GameStartEvent : GameEvent {}
+
 public class PickupEvent : GameEvent
 {
     public ItemType ItemType;
