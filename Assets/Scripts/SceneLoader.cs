@@ -5,9 +5,10 @@ public class SceneLoader : MonoBehaviour, IScene
 {
     public static IScene Instance { get; private set; } // singleton instance for easy access
 
-    public const string mainMenu = "Main Menu";
-    public const string gameOver = "Game Over";
-    public const string gameLevel = "Main Scene";
+    public const string MainMenuScene = "Main Menu";
+    public const string GameOverScene = "Game Over";
+    public const string GameLevelScene = "Main Scene";
+    public const string TutorialScene = "Tutorial Scene";
         
     private void Awake()
     { 

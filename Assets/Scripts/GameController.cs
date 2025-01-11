@@ -160,7 +160,7 @@ public class GameController : PersistentSingleton<GameController>
         yield return new WaitForSecondsRealtime(2f); 
 
         // Change the scene after delay
-        SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
+        SceneLoader.Instance.LoadScene(SceneLoader.GameOverScene);
         AudioManager.Instance.PlayTrack("gameOverMusic");
     }
 }
