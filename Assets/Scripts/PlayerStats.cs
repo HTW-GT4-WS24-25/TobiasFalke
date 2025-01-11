@@ -34,6 +34,7 @@ public class PlayerStats: MonoBehaviour
     public event Action JumpMultiplierChanged;
     public event Action SpeedMultiplierChanged;
     
+    //TODO remove GameView and use event actions
     
     internal void ChangeHealth(int amount)
     {

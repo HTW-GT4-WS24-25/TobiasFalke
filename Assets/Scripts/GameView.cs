@@ -37,6 +37,7 @@ public class GameView : Utilities.Singleton<GameView>
     public Image specialActionFlashImage;
     PlayerStats stats;
     
+    //TODO connect event actions to update functions 
     public void InitializeStatusBars(PlayerStats stats)
     {
         // Initialize player's max health & special bars on UI.

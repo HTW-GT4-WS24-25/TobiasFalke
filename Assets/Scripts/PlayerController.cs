@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour
         stats = new PlayerStats(); // Is created with default values for each stat.
         movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
         _animator = GetComponent<Animator>(); // Get the Animator component
-        AudioManager.Instance.PlayTrack("mainSceneMusic");
 
         itemEffects = new Dictionary<ItemType, IItemEffect>
         {
@@ -144,8 +143,7 @@ public class PlayerController : MonoBehaviour
             TriggerGameOver();
         }
     }
-
-    // TODO: Broken game over after refactoring.
+    
     private void TriggerGameOver()
     {
         GameOverEvent evt = Events.GameOverEvent;
@@ -166,7 +164,7 @@ public class PlayerController : MonoBehaviour
         GameView.Instance.PlayScreenFlash(6.0f);
     }
     
-    // TODO: Animations broke after refactoring.
+    // TODO: Animations broke after refactoring. Flashing active longer than supposed
     
     // TODO: move this method to separate player animation
     private IEnumerator FlashBlue(float time)
