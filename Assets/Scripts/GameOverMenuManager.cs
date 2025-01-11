@@ -31,13 +31,6 @@ public class GameOverMenuManager : MonoBehaviour
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
     }
 
-    private void Start()
-    {
-        AudioManager.Instance.PlayTrack("mainMenuMusic");
-    }
-
-    
-    
     private void OnDisable()
     {
         _tryAgainButton.UnregisterCallback<ClickEvent>(OnClickTryAgainButton);
