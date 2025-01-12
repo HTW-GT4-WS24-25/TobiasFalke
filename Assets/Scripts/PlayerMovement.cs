@@ -8,12 +8,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float speed = 5;
     [SerializeField] private float jumpHeight = 1.0f;
     [SerializeField] public float jumpDuration = 0.5f;
-    [SerializeField] private SpriteRenderer shadowSprite;
     
-    private Rigidbody2D _rigidBody;
     private Vector2 _movementInput;
-    public SpriteRenderer _playerSprite;
-    private Animator _animator;
+    
+    [SerializeField] public SpriteRenderer _playerSprite;
+    [SerializeField] private SpriteRenderer shadowSprite;
+    [SerializeField] private Rigidbody2D _rigidBody;
+    [SerializeField] private Animator _animator;
+    
     private Animator _shadowAnimator;
 
     private bool _isJumping;
@@ -34,9 +36,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        _rigidBody = GetComponent<Rigidbody2D>();
-        _playerSprite = GetComponent<SpriteRenderer>();
-        _animator = GetComponent<Animator>();
         _shadowAnimator = shadowSprite.GetComponent<Animator>();
     }
 
@@ -59,12 +58,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnMove(InputValue inputValue)
     {
-        if(!_isGrinding) _movementInput = inputValue.Get<Vector2>();
+        if (!_isGrinding) _movementInput = inputValue.Get<Vector2>();
     }
     
     private void OnJump()
     {
-        if (!_isJumping){
+        if (!_isJumping)
+        {
             AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air.
             AudioManager.Instance.PlaySound("jump");
             _isJumping = true;
@@ -73,8 +73,6 @@ public class PlayerMovement : MonoBehaviour
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
         }
-
-    
     }
 
     private void HandleJump()
@@ -114,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void HandleGrinding()
     {
-        if(!_isGrinding) return;
+        if (!_isGrinding) return;
         if (_isJumping || !_isOverRail)
         {
             FinishGrinding();

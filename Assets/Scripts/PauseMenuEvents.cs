@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 public class PauseMenuEvents : MonoBehaviour
 {
+    [SerializeField] private GameController _gameController;
     private UIDocument _pauseUI;
     private Button _continueButton;
     private Button _quitButton;
@@ -25,7 +26,7 @@ public class PauseMenuEvents : MonoBehaviour
 
     private void OnClickContinueButton(ClickEvent evt)
     {
-        GameController.Instance.ResumeGame();
+        _gameController.ResumeGame();
         Debug.Log("Game Continue Clicked");
     }
     // Update is called once per frame

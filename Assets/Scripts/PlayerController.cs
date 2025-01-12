@@ -1,21 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
-using Utilities;
 
 public class PlayerController : MonoBehaviour
 { 
-    private PlayerStats stats; // Handles player's current health, special & score.
-    private PlayerMovement movement; // Handles player's movement input & animation.
-    private Animator _animator;
+    [SerializeField] public PlayerStats stats;
+    [SerializeField] private PlayerMovement movement; 
+    [SerializeField] private Animator _animator;
     private static Dictionary<ItemType, IItemEffect> itemEffects;
     
     private void Start()
     {
-        stats = new PlayerStats(); // Is created with default values for each stat.
-        movement = GetComponent<PlayerMovement>(); // Values specified in component attached within the player prefab.
-        _animator = GetComponent<Animator>(); // Get the Animator component
-
+        stats = new PlayerStats();
         itemEffects = new Dictionary<ItemType, IItemEffect>
         {
             { ItemType.HealthBoost, new HealthBoostEffect() },
@@ -44,15 +40,13 @@ public class PlayerController : MonoBehaviour
         EventManager.RemoveListener<ObstacleCollisionEvent>(OnCollision);
         EventManager.RemoveListener<ObstacleCollisionExitEvent>(OnExitCollision);
         EventManager.RemoveListener<TrickEvent>(OnTrick);
-        EventManager.RemoveListener<PickupEvent>(OnItemPickup);
-    }
+        EventManager.RemoveListener<PickupEvent>(OnItemPickup);    }
 
     private void OnTrick(TrickEvent evt)
     {
         stats.ChangeScore(evt.Points);
     }
     private void OnItemPickup(PickupEvent evt){
-
         AudioManager.Instance.PlaySound("item");
         TriggerItemEffect(stats,evt.ItemType);
     }
@@ -76,10 +70,10 @@ public class PlayerController : MonoBehaviour
         // update movement & jump increases from item pickups & special action
         movement.speed = movement.baseSpeed * stats._speedMultiplier;
         movement.jumpDuration = movement.baseJumpDuration * stats._jumpMultiplier;
-        UIManager.Instance.UpdateSpeedCounter(movement.speed);
-        UIManager.Instance.UpdateSpeedMultiplier(stats._speedMultiplier);
-        UIManager.Instance.UpdateJumpCounter(movement.jumpDuration);
-        UIManager.Instance.UpdateJumpMultiplier(stats._jumpMultiplier);
+        GameView.Instance.UpdateSpeedCounter(movement.speed);
+        GameView.Instance.UpdateSpeedMultiplier(stats._speedMultiplier);
+        GameView.Instance.UpdateJumpCounter(movement.jumpDuration);
+        GameView.Instance.UpdateJumpMultiplier(stats._jumpMultiplier);
 
         // Trigger special action if conditions are met.
         if (Input.GetKeyDown("x") && stats._special == 100) TriggerSpecialAction();

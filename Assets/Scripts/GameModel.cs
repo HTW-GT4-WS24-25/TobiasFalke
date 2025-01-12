@@ -3,11 +3,16 @@ using Utilities;
 
 public class GameModel : PersistentSingleton<GameModel>
 {
+    
+    private void Update()
+    {
+        //Debug.Log(isPlaying);
+    }
+
     public float CountDownTime
     {
         get { return countDownTime; } 
         set {countDownTime = value; }
-        
     }
     public bool IsPlaying
     {

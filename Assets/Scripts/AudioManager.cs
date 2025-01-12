@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour, IAudio
 {
-    public static IAudio Instance { get; private set; } // singleton instance for easy access
+    public static IAudio Instance { get; private set; }
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource backgroundSource;
     [SerializeField] private AudioSource soundSource;
@@ -31,7 +31,7 @@ public class AudioManager : MonoBehaviour, IAudio
 
     public void PlayTrack(string fileName)
     {
-        if (this.musicSource == null) return;
+        if (musicSource == null) return;
         // load audio by file name
         AudioClip musicClip = Resources.Load<AudioClip>(fileName);
         if (musicClip == null) return;

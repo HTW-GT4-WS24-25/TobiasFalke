@@ -1,12 +1,10 @@
 using System.Collections;
 using UnityEngine;
-using Utilities;
 
-public class GameController : PersistentSingleton<GameController>
+public class GameController : MonoBehaviour
 {
     private GameModel gameModel;
-    [SerializeField]private GameView gameView;
-    
+    [SerializeField] private GameView gameView;
     [SerializeField] private PlayerController _player;
     [SerializeField] private BackgroundScroller _backgroundScroller;
     
@@ -16,7 +14,6 @@ public class GameController : PersistentSingleton<GameController>
     {
         gameModel = GameModel.Instance; // Access the singleton instance
         StartGame();
-
     }
 
     private void OnEnable()
@@ -30,7 +27,6 @@ public class GameController : PersistentSingleton<GameController>
         // Remove all event listeners when the player is destroyed.
         EventManager.RemoveListener<GameOverEvent>(OnGameOver);
         EventManager.RemoveListener<GameStartEvent>(OnStartGameEvent);
-        
     }
     
     void Update()
@@ -46,10 +42,8 @@ public class GameController : PersistentSingleton<GameController>
             return;
         }
         
-        // Only proceed if the game is playing
         if (!gameModel.IsPlaying) return;
-
-        // Game running logic
+        
         gameModel.PlayTime += Time.deltaTime;
         int levelByTime = (int)(gameModel.PlayTime / gameModel.LevelDuration);
         if (levelByTime > gameModel.Level) ChangeLevel(levelByTime);
@@ -67,18 +61,18 @@ public class GameController : PersistentSingleton<GameController>
 
             if (remainingTime <= 0)
             {
-                //TODO Fix Currently beging called right after GameOver because is player is being set to false 
+                //TODO Fix currently being called right after GameOver because is player is being set to false 
                 gameModel.IsCountingDown = false;
                 StartGamePlay();
                 Debug.Log("Started Game");
             }
         }
+
         // Update time counter UI if game is playing
         if (gameModel.IsPlaying)
         {
             gameView.timeCounter.text = Mathf.RoundToInt(gameModel.PlayTime).ToString();
         }
-        
     }
 
     private void TogglePauseMenu()

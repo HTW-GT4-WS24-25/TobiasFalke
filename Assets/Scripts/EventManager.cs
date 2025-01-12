@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-
-// Created after Unity Technologies  FPS Microgame 
 public class GameEvent
 {
 }
 
-// A simple Event System that can be used for remote systems communication
 public static class EventManager
 {
     static readonly Dictionary<Type, Action<GameEvent>> s_Events = new Dictionary<Type, Action<GameEvent>>();
@@ -19,7 +16,7 @@ public static class EventManager
     {
         if (!s_EventLookups.ContainsKey(evt))
         {
-            Action<GameEvent> newAction = (e) => evt((T) e);
+            Action<GameEvent> newAction = (e) => evt((T)e);
             s_EventLookups[evt] = newAction;
 
             if (s_Events.TryGetValue(typeof(T), out Action<GameEvent> internalAction))

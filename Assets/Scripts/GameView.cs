@@ -35,9 +35,40 @@ public class GameView : Utilities.Singleton<GameView>
     [SerializeField] private Image specialActionButton;
     public TextMeshProUGUI countDownUI;
     public Image specialActionFlashImage;
-    PlayerStats stats;
+    public PlayerStats stats;
     
     //TODO connect event actions to update functions 
+    
+    private void OnEnable()
+    {
+        if (stats == null) InitializeStats();
+       
+        stats.HealthChanged += UpdateHealthBar;
+        stats.SpecialChanged += UpdateSpecialBar;
+        stats.SpeedMultiplierChanged += UpdateSpeedMultiplier;
+        stats.JumpDurationChanged += UpdateJumpMultiplier;
+        stats.ScoreChanged += UpdateScoreCounter;
+        stats.ScoreMultiplierChanged += UpdateScoreMultiplier;
+    }
+
+    private void OnDisable()
+    {
+        if (stats == null) return;
+
+        stats.HealthChanged -= UpdateHealthBar;
+        stats.SpecialChanged -= UpdateSpecialBar;
+        stats.SpeedMultiplierChanged -= UpdateSpeedMultiplier;
+        stats.JumpDurationChanged -= UpdateJumpMultiplier;
+        stats.ScoreChanged -= UpdateScoreCounter;
+        stats.ScoreMultiplierChanged -= UpdateScoreMultiplier;
+    }
+
+    private void InitializeStats()
+    {
+        stats = FindObjectOfType<PlayerStats>(); // Or another method of getting a reference
+        if (stats != null) InitializeStatusBars(stats);
+    }
+    
     public void InitializeStatusBars(PlayerStats stats)
     {
         // Initialize player's max health & special bars on UI.
