@@ -3,30 +3,35 @@ using UnityEngine.UIElements;
 
 public class PauseMenuManager : MonoBehaviour
 {
-    public UIDocument _pauseUI;
-    private Button _continueButton;
-    private Button _quitButton;
-    
+    public UIDocument pauseUI;
+    private Button continueButton;
+    private Button quitButton;
+
+    private void Awake()
+    {
+        pauseUI.rootVisualElement.style.display = DisplayStyle.None;
+    }
 
     private void OnEnable()
     {
-        _quitButton = _pauseUI.rootVisualElement.Q("QuitButton") as Button;
-        _continueButton = _pauseUI.rootVisualElement.Q("ContinueButton") as Button;
-        _quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
-        _continueButton?.RegisterCallback<ClickEvent>(OnClickContinueButton);
+        quitButton = pauseUI.rootVisualElement.Q<Button>("QuitButton");
+        continueButton = pauseUI.rootVisualElement.Q<Button>("ContinueButton");
+
+        quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
+        continueButton?.RegisterCallback<ClickEvent>(OnClickContinueButton);
         EventManagerR.AddListener<GameEvents.TogglePauseMenuEvent>(OnTogglePauseMenu);
     }
 
     private void OnDisable()
     {
-        _continueButton?.UnregisterCallback<ClickEvent>(OnClickContinueButton);
-        _quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
+        continueButton?.UnregisterCallback<ClickEvent>(OnClickContinueButton);
+        quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
         EventManagerR.RemoveListener<GameEvents.TogglePauseMenuEvent>(OnTogglePauseMenu);
     }
 
     private void OnClickContinueButton(ClickEvent evt)
     {
-        GameControllerR.Instance.ResumeGame(); 
+        GameControllerR.Instance.ResumeGame();
     }
 
     private void OnClickExitButton(ClickEvent evt)
@@ -36,6 +41,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private void OnTogglePauseMenu(GameEvents.TogglePauseMenuEvent evt)
     {
-        _pauseUI.rootVisualElement.style.display = evt.IsPaused ? DisplayStyle.Flex : DisplayStyle.None;
+        pauseUI.rootVisualElement.style.display = evt.IsPaused ? DisplayStyle.Flex : DisplayStyle.None;
+        Debug.Log("Pause Menu " + (evt.IsPaused ? "Displayed" : "Hidden"));
     }
 }

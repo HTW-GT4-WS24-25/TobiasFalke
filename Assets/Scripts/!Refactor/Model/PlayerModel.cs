@@ -1,55 +1,43 @@
 using UnityEngine;
 
-public class PlayerModel : MonoBehaviour, IMovable
+public class PlayerModel
 {
-    // Player attributes
-    public int Health { get; private set; }
-    public int Score { get; private set; }
-    public float Speed { get; set; } = 5f;
+    private float score;
+    private Vector2 velocity;
+    private int health;
+    private int special;
+    private float scoreMultiplier = 1f;
+    private float speedMultiplier = 1f;
+    private float jumpDurationMultiplier;
+    private float speed = 5f;
+    private float jumpDuration = 5f;
+    private bool isInvincible;
+    private float invincibilityDuration = 1f;
 
-    private Rigidbody2D rb2d;
-
-    void Awake()
+    public PlayerModel()
     {
-        Health = 100; // Initialize health
-        Score = 0; // Initialize score
-        rb2d = GetComponent<Rigidbody2D>(); // Ensure a Rigidbody2D component is attached
+        health = 100;
+        score = 0;
     }
 
-    // Method to increase the player's health
-    public void IncreaseHealth(int amount)
-    {
-        Health += amount;
-    }
+    public float GetScore() => score;
+    public void SetScore(float newScore) => score = newScore;
+    public void IncreaseScore(float points) => score += (int)(points * scoreMultiplier);
+    public int GetHealth() => health;
+    public void SetHealth(int newHealth) => health = Mathf.Clamp(newHealth, 0, 100);
+    public void IncreaseHealth(int amount) => SetHealth(health + amount);
+    public int GetSpecial() => special;
+    public void SetSpecial(int newSpecial) => special = newSpecial;
 
-    // Method to increase the player's score
-    public void IncreaseScore(int points)
-    {
-        Score += points;
-    }
+    public Vector2 GetVelocity() => velocity;
+    public void SetVelocity(Vector2 newVelocity) => velocity = newVelocity;
+    public float GetSpeed() => speed;
+    public void SetSpeed(float newSpeed) { speed = newSpeed; }
 
-    // Implementing the IMovable interface's Move method
-    public void Move()
-    {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        Vector2 newVelocity = new Vector2(horizontalInput * Speed, rb2d.linearVelocity.y);
-        rb2d.linearVelocity = newVelocity;
-    }
-
-    // Call Move in FixedUpdate for consistent physics-based movement
-    void FixedUpdate()
-    {
-        Move();
-    }
-
-    // Handle collisions with other game objects
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        ICollectable collectable = other.GetComponent<ICollectable>();
-        if (collectable != null)
-        {
-            collectable.OnCollect(this);
-        }
-        // Additional handling for other interactions (like obstacles) can be added here
-    }
+    public float GetJumpDuration() => jumpDuration;
+    public void SetJumpDuration(float newDuration) { jumpDuration = newDuration; }
+    public bool GetIsInvincible() => isInvincible;
+    public void SetIsInvincible(bool invincible) => isInvincible = invincible;
+    public float GetInvincibilityDuration() => invincibilityDuration;
+    public void SetInvincibilityDuration(float newDuration) => invincibilityDuration = newDuration;
 }

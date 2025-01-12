@@ -13,7 +13,6 @@ public class GameControllerR : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             gameModel = new GameModelR();
-            Debug.Log("Game controller initialized, game model created.");
             inputManager = InputManager.Instance;
         }
         else
@@ -33,6 +32,10 @@ public class GameControllerR : MonoBehaviour
         {
             TogglePause();
         }
+        if (gameModel.CurrentGameState == GameModelR.GameState.Running)
+        {
+            gameModel.UpdateElapsedTime(Time.deltaTime);
+        }
     }
 
     public void StartGame()
@@ -41,18 +44,13 @@ public class GameControllerR : MonoBehaviour
         gameModel.CurrentGameState = GameModelR.GameState.Running;
         gameModel.startCountDownActive = true;
         Time.timeScale = 0f; 
+        gameModel.ResetElapsedTime();
     }
 
     private void TogglePause()
     {
-        if (gameModel.CurrentGameState == GameModelR.GameState.Running)
-        {
-            PauseGame();
-        }
-        else if (gameModel.CurrentGameState == GameModelR.GameState.Paused)
-        {
-            ResumeGame();
-        }
+        if (gameModel.CurrentGameState == GameModelR.GameState.Running) PauseGame();
+        else if (gameModel.CurrentGameState == GameModelR.GameState.Paused) ResumeGame();
     }
 
     public void PauseGame()

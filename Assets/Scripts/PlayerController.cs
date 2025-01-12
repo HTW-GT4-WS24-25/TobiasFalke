@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         stats = new PlayerStats();
+        
+        // TODO: put in UPGRADECONTROLLER
         itemEffects = new Dictionary<ItemType, IItemEffect>
         {
             { ItemType.HealthBoost, new HealthBoostEffect() },

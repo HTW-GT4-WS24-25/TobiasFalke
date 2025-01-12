@@ -1,72 +1,117 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerControllerR : MonoBehaviour
 {
-    // Reference to the Player's model and view
-    private Player playerModel;
-    private Rigidbody2D rb2d;  // Assuming you're using Rigidbody2D for physics
-
-    public float moveSpeed = 5f;
+    public PlayerView playerView;
+    private PlayerModel playerModel;
+    private Rigidbody2D rb2d;
+    private Vector2 _movementInput;
 
     void Awake()
     {
-        // Initialize the model and get necessary components
-        playerModel = new Player();  // Assume a simple Player model with relevant properties
+        playerModel = new PlayerModel();
         rb2d = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    private void Start()
     {
-        // Handle input in Update to ensure responsiveness
+        // Register events here
+        EventManagerR.AddListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManagerR.AddListener<GameEvents.TrickActionEvent>(OnTrickAction);
+        EventManagerR.AddListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManagerR.AddListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManagerR.AddListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
+
+        // initialize UI
+        EventManagerR.Broadcast(new GameEvents.ScoreChangedEvent(playerModel.GetScore()));
+        EventManagerR.Broadcast(new GameEvents.HealthChangedEvent(playerModel.GetHealth()));
+        EventManagerR.Broadcast(new GameEvents.SpecialChangedEvent(playerModel.GetSpecial()));
+        EventManagerR.Broadcast(new GameEvents.SpeedChangedEvent(playerModel.GetSpeed()));
+        EventManagerR.Broadcast(new GameEvents.JumpDurationChangedEvent(playerModel.GetJumpDuration()));
+    }
+
+    private void OnDestroy()
+    {
+        // Unregister events here
+        EventManagerR.RemoveListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManagerR.RemoveListener<GameEvents.TrickActionEvent>(OnTrickAction);
+        EventManagerR.RemoveListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManagerR.RemoveListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManagerR.RemoveListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
+    }
+
+    private void Update()
+    {
         HandleInput();
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+        UpdateScore();
+    }
+    
+    private void OnMove(InputValue inputValue)
+    {
+        _movementInput = inputValue.Get<Vector2>();
     }
 
     private void HandleInput()
     {
-        // Example for horizontal movement, you can expand on this for other controls
-        float horizontalInput = Input.GetAxis("Horizontal");
-
-        // Update the player model state based on input
-        playerModel.Velocity = new Vector2(horizontalInput * moveSpeed, rb2d.linearVelocity.y);
-
-        // More input handling logic can go here (e.g., jump, special abilities)
+        float moveSpeed = playerModel.GetSpeed();
+        playerModel.SetVelocity(new Vector2(_movementInput.x * moveSpeed, _movementInput.y * moveSpeed / 2));
+        playerView.SetRunning(_movementInput.x != 0);
+        playerView.UpdateDirection(_movementInput.x);
     }
-
-    void FixedUpdate()
-    {
-        // Apply the movement logic here using the physics engine for smoother movement
-        MovePlayer();
-    }
-
+    
     private void MovePlayer()
     {
-        rb2d.linearVelocity = new Vector2(playerModel.Velocity.x, rb2d.linearVelocity.y);
+        rb2d.linearVelocity = playerModel.GetVelocity();
     }
 
-    // Example collision handling where the player might pick up upgrades or hit obstacles
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Upgrade"))
         {
-            // Handle upgrade logic, probably interacting with player model
             Debug.Log("Upgrade collected!");
-            // Implement upgrade application logic
-
-            Destroy(collision.gameObject);  // Destroy or deactivate the upgrade
+            Destroy(collision.gameObject);
         }
         else if (collision.CompareTag("Obstacle"))
         {
-            // Handle collision with obstacles, possibly reducing health or ending the game
             Debug.Log("Obstacle hit!");
-            // Implement collision handling logic
         }
     }
-}
 
-public class Player
-{
-    public Vector2 Velocity { get; set; }
+    void UpdateScore()
+    {
+        playerModel.IncreaseScore(Time.deltaTime);
+    }
 
-    // Additional player properties and methods would go here
-    // For example, health, score, and methods to increase these values
+    private void OnSpecialAction(GameEvents.SpecialActionEvent obj)
+    {
+        // Handle special action
+    }
+
+    private void OnTrickAction(GameEvents.TrickActionEvent obj)
+    {
+        playerModel.SetScore(playerModel.GetScore() + obj.Points);
+    }
+
+    private void OnObstacleExit(GameEvents.ObstacleCollisionExitEvent obj)
+    {
+        // Handle obstacle exit
+    }
+
+    private void OnObstacleCollision(GameEvents.ObstacleCollisionEvent obj)
+    {
+        // Handle obstacle collision
+    }
+
+    private void OnUpgradeCollision(GameEvents.UpgradeCollisionEvent obj)
+    {
+        // Handle upgrade collision
+    }
 }
