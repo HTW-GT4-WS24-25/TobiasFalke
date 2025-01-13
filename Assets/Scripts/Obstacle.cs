@@ -43,8 +43,9 @@ public class Obstacle : MonoBehaviour
     {
 
         if (!other.gameObject.CompareTag("Player")) return;
+        if (Type != ObstacleType.Rail) return;
         Debug.Log("Player collision is exited.");
-        var evt = Events.ObstacleCollisionEvent;
+        var evt = Events.ObstacleCollisionExitEvent;
         evt.Obstacle = this;
         EventManager.Broadcast(evt);
     }
