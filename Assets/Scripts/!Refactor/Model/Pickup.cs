@@ -22,13 +22,13 @@ public class Pickup : MonoBehaviour, IObject
 
     private void OnEnable()
     {
-        EventManagerR.AddListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
         InitializeFallSpeed(LevelModel.GetStageSpeed());
     }
 
     private void OnDisable()
     {
-        EventManagerR.RemoveListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
     }
 
     private void Update()
@@ -49,12 +49,12 @@ public class Pickup : MonoBehaviour, IObject
 
     public void MoveDownwards()
     {
-        transform.Translate(Vector3.down * fallSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
     }
 
-    private void OnLevelSpeedChanged(GameEvents.LevelSpeedChangedEvent evt)
+    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
     {
-        UpdateFallSpeed(evt.LevelSpeed);
+        UpdateFallSpeed(evt.StageSpeed);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

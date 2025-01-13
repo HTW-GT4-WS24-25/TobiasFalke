@@ -29,20 +29,20 @@ public class PlayerControllerR : MonoBehaviour
 
     private void RegisterEvents()
     {
-        EventManagerR.AddListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
-        EventManagerR.AddListener<GameEvents.TrickActionEvent>(OnTrickAction);
-        EventManagerR.AddListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-        EventManagerR.AddListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
-        EventManagerR.AddListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
+        EventManagerR.AddListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManagerR.AddListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
+        EventManagerR.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManagerR.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManagerR.AddListener<PlayerEvents.PickupCollisionEvent>(OnUpgradeCollision);
     }
 
     private void BroadcastPlayerStatus()
     {
-        EventManagerR.Broadcast(new GameEvents.ScoreChangedEvent(playerModel.GetScore()));
-        EventManagerR.Broadcast(new GameEvents.HealthChangedEvent(playerModel.GetHealth()));
-        EventManagerR.Broadcast(new GameEvents.SpecialChangedEvent(playerModel.GetSpecial()));
-        EventManagerR.Broadcast(new GameEvents.SpeedChangedEvent(playerModel.GetSpeed()));
-        EventManagerR.Broadcast(new GameEvents.JumpDurationChangedEvent(playerModel.GetJumpDuration()));
+        EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEvent(playerModel.GetScore()));
+        EventManagerR.Broadcast(new PlayerEvents.HealthChangedEvent(playerModel.GetHealth()));
+        EventManagerR.Broadcast(new PlayerEvents.SpecialChangedEvent(playerModel.GetSpecial()));
+        EventManagerR.Broadcast(new PlayerEvents.SpeedChangedEvent(playerModel.GetSpeed()));
+        EventManagerR.Broadcast(new PlayerEvents.JumpDurationChangedEvent(playerModel.GetJumpDuration()));
     }
 
     private void OnDestroy()
@@ -52,11 +52,11 @@ public class PlayerControllerR : MonoBehaviour
 
     private void UnregisterEvents()
     {
-        EventManagerR.RemoveListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
-        EventManagerR.RemoveListener<GameEvents.TrickActionEvent>(OnTrickAction);
-        EventManagerR.RemoveListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-        EventManagerR.RemoveListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
-        EventManagerR.RemoveListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
+        EventManagerR.RemoveListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManagerR.RemoveListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
+        EventManagerR.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManagerR.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManagerR.RemoveListener<PlayerEvents.PickupCollisionEvent>(OnUpgradeCollision);
     }
 
     private void Update()
@@ -144,7 +144,7 @@ public class PlayerControllerR : MonoBehaviour
         rb2d.linearVelocity = playerModel.GetVelocity();
     }
 
-    private void OnObstacleCollision(GameEvents.ObstacleCollisionEvent evt)
+    private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent evt)
     {
         Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
         Debug.Log("Collision is triggered.");
@@ -166,7 +166,7 @@ public class PlayerControllerR : MonoBehaviour
         }
     }
 
-    private void OnObstacleExit(GameEvents.ObstacleCollisionExitEvent evt)
+    private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent evt)
     {
         Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
         if (obstacle.Type == ObstacleType.Rail)
@@ -184,7 +184,7 @@ public class PlayerControllerR : MonoBehaviour
         Debug.Log("Collision!");
         AudioManager.Instance.PlaySound("crash");
         int damage = obstacle.DetermineDamageAmount();
-        EventManagerR.Broadcast(new GameEvents.HealthChangedEvent(damage));
+        EventManagerR.Broadcast(new PlayerEvents.HealthChangedEvent(damage));
         if (playerModel.GetHealth() <= 0)
         {
            // TODO:  EventManagerR.Broadcast(new GameEvents.TriggerGameOver());
@@ -203,17 +203,17 @@ public class PlayerControllerR : MonoBehaviour
         playerModel.IncreaseScore(Time.deltaTime);
     }
 
-    private void OnSpecialAction(GameEvents.SpecialActionEvent obj)
+    private void OnSpecialAction(PlayerEvents.SpecialActionEvent obj)
     {
         // Handle special action
     }
 
-    private void OnTrickAction(GameEvents.TrickActionEvent obj)
+    private void OnTrickAction(PlayerEvents.TrickActionEvent obj)
     {
         playerModel.SetScore(playerModel.GetScore() + obj.Points);
     }
 
-    private void OnUpgradeCollision(GameEvents.UpgradeCollisionEvent obj)
+    private void OnUpgradeCollision(PlayerEvents.PickupCollisionEvent obj)
     {
         // Handle upgrade collision
     }

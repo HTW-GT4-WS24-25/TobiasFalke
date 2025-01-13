@@ -18,14 +18,14 @@ public class LevelView : MonoBehaviour
     private void Start()
     {
         InitializeBackgrounds();
-        EventManagerR.AddListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
-        EventManagerR.AddListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManagerR.AddListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
+        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
     }
 
     private void OnDestroy()
     {
-        EventManagerR.RemoveListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
-        EventManagerR.RemoveListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
     }
 
     private void Update()
@@ -71,15 +71,14 @@ public class LevelView : MonoBehaviour
         }
     }
 
-    private void OnLevelSpeedChanged(GameEvents.LevelSpeedChangedEvent evt)
+    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
     {
-        currentScrollSpeed = evt.LevelSpeed;
-       // Debug.Log("Updated Level Speed to: " + currentScrollSpeed);
+        currentScrollSpeed = evt.StageSpeed;
     }
 
-    private void OnLevelChanged(GameEvents.LevelChangedEvent evt)
+    private void OnLevelChanged(LevelEvents.StageChangedEvent evt)
     {
-        UpdateLevelBackground(evt.NewLevel);
+        UpdateLevelBackground(evt.NewStage);
     }
 
     private void UpdateLevelBackground(int level)

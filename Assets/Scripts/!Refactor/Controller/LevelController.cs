@@ -18,7 +18,7 @@ public class LevelController : MonoBehaviour
     {
         UpdateLevelView();
         BroadcastLevelSpeedChange();
-        EventManagerR.AddListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManagerR.AddListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
     }
     void Update()
     {
@@ -27,13 +27,13 @@ public class LevelController : MonoBehaviour
     
     private void OnDestroy()
     {
-        EventManagerR.RemoveListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
     }
 
     private void UpdateLevelView()
     {
-        EventManagerR.Broadcast(new GameEvents.LevelSpeedChangedEvent(LevelModel.GetStageSpeed()));
-        EventManagerR.Broadcast(new GameEvents.LevelChangedEvent(levelModel.GetCurrentStage()));
+        EventManagerR.Broadcast(new LevelEvents.StageSpeedChangedEvent(LevelModel.GetStageSpeed()));
+        EventManagerR.Broadcast(new LevelEvents.StageChangedEvent(levelModel.GetCurrentStage()));
     }
     
     void TriggerSpawnInterval()
@@ -54,7 +54,7 @@ public class LevelController : MonoBehaviour
 
     private void SpawnObject(GameObject[] spawnables, string layer)
     {
-        float spawnXPosition = Random.Range(-levelModel.GetLevelWidth(), levelModel.GetLevelWidth());
+        float spawnXPosition = Random.Range(-levelModel.GetStageWidth(), levelModel.GetStageWidth());
         Vector3 spawnPosition = new Vector3(spawnXPosition, 10, 0);
 
         if (spawnables.Length == 0)
@@ -68,12 +68,12 @@ public class LevelController : MonoBehaviour
     private void BroadcastLevelSpeedChange()
     {
         float newSpeed = LevelModel.GetStageSpeed();
-        EventManagerR.Broadcast(new GameEvents.LevelSpeedChangedEvent(newSpeed));
+        EventManagerR.Broadcast(new LevelEvents.StageSpeedChangedEvent(newSpeed));
     }
 
-    private void OnLevelChanged(GameEvents.LevelChangedEvent evt)
+    private void OnLevelChanged(LevelEvents.StageChangedEvent evt)
     {
-        levelModel.SetCurrentStage(evt.NewLevel);
+        levelModel.SetCurrentStage(evt.NewStage);
         BroadcastLevelSpeedChange();
     }
 }

@@ -35,7 +35,7 @@ public class GameModelR
     private void IncreaseLevel()
     {
         CurrentLevel++;
-        EventManagerR.Broadcast(new GameEvents.LevelChangedEvent(CurrentLevel));
+        EventManagerR.Broadcast(new LevelEvents.StageChangedEvent(CurrentLevel));
     }
     
     public static float GetElapsedTime() => elapsedTime;
@@ -44,9 +44,8 @@ public class GameModelR
     {
         elapsedTime += deltaTime;
         
-        if (elapsedTime >= CurrentLevel * secondsPerLevel)  IncreaseLevel();
+        if (elapsedTime >= CurrentLevel * secondsPerLevel) IncreaseLevel();
     }
     
     public void ResetElapsedTime() => elapsedTime = 0f;
-    
 }

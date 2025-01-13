@@ -21,7 +21,7 @@ public class LevelModel
 
     public void SetCurrentStage(int newLevel) => currentStage = newLevel;
 
-    public float GetLevelWidth() => stageWidth;
+    public float GetStageWidth() => stageWidth;
 
     public void SetLevelWidth(float width) => stageWidth = width;
 
