@@ -5,7 +5,7 @@ public class GameControllerR : MonoBehaviour
     public static GameControllerR Instance { get; private set; }
     private GameModelR gameModel;
     private InputManager inputManager;
-    
+
     void Awake()
     {
         if (Instance == null)
@@ -42,7 +42,7 @@ public class GameControllerR : MonoBehaviour
     {
         Debug.Log("Game has been started.");
         gameModel.CurrentGameState = GameModelR.GameState.Running;
-        gameModel.startCountDownActive = true;
+        gameModel.countDownActive = true;
         Time.timeScale = 0f; 
         gameModel.ResetElapsedTime();
     }
@@ -66,8 +66,7 @@ public class GameControllerR : MonoBehaviour
         Time.timeScale = 1f; // Resume game physics and updates
         EventManagerR.Broadcast(new GameEvents.TogglePauseMenuEvent(false));
     }
-
-
+    
     public void GameOver()
     {
         gameModel.CurrentGameState = GameModelR.GameState.GameOver;

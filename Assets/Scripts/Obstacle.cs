@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ObstacleType
@@ -12,24 +10,50 @@ public enum ObstacleType
     Hole
 }
 
-public class Obstacle : MonoBehaviour
+public class Obstacle : MonoBehaviour, IObject
 {
-    [SerializeField] public ObstacleType Type;
-
-    private float _fallSpeed;
-
+    [SerializeField] internal ObstacleType Type;
+    private float fallSpeed;
     public bool IsJumpable => Type != ObstacleType.Wall;
-    
+
+    private void OnEnable()
+    {
+        EventManagerR.AddListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
+        InitializeFallSpeed(LevelModel.GetStageSpeed());
+    }
+
+    private void OnDisable()
+    {
+        EventManagerR.RemoveListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
+    }
+
     private void Update()
     {
-        _fallSpeed = GameModel.Instance.GameSpeed / 2;
-        transform.Translate(new Vector3(0f, -_fallSpeed * Time.deltaTime, 0f));
+        MoveDownwards();
+    }
+
+    public void InitializeFallSpeed(float initialSpeed)
+    {
+        fallSpeed = initialSpeed;
+    }
+
+    public void UpdateFallSpeed(float newSpeed)
+    {
+        fallSpeed = newSpeed;
+    }
+
+    public void MoveDownwards()
+    {
+        transform.Translate(Vector3.down * fallSpeed * Time.deltaTime);
+    }
+
+    private void OnLevelSpeedChanged(GameEvents.LevelSpeedChangedEvent evt)
+    {
+        UpdateFallSpeed(evt.LevelSpeed);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-
-        Debug.Log("Player Tag: " + other.gameObject.tag);
         if (!other.gameObject.CompareTag("Player")) return;
         
         Debug.Log("'Player collision is triggered.");
@@ -41,17 +65,15 @@ public class Obstacle : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-
         if (!other.gameObject.CompareTag("Player")) return;
         Debug.Log("Player collision is exited.");
         var evt = Events.ObstacleCollisionEvent;
         evt.Obstacle = this;
         EventManager.Broadcast(evt);
     }
-    
+
     public int DetermineScore()
     {
-        // Determine score based on obstacle type. Default is 10.
         return Type switch
         {
             ObstacleType.BigObstacle => 50,

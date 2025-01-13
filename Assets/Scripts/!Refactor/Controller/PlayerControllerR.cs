@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerControllerR : MonoBehaviour
 {
     public PlayerView playerView;
     private PlayerModel playerModel;
+    
+    // movement
     private Rigidbody2D rb2d;
     private Vector2 _movementInput;
     private float jumpTime;
@@ -23,7 +26,7 @@ public class PlayerControllerR : MonoBehaviour
         RegisterEvents();
         BroadcastPlayerStatus();
     }
-    
+
     private void RegisterEvents()
     {
         EventManagerR.AddListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
@@ -32,7 +35,7 @@ public class PlayerControllerR : MonoBehaviour
         EventManagerR.AddListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
         EventManagerR.AddListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
     }
-    
+
     private void BroadcastPlayerStatus()
     {
         EventManagerR.Broadcast(new GameEvents.ScoreChangedEvent(playerModel.GetScore()));
@@ -46,7 +49,7 @@ public class PlayerControllerR : MonoBehaviour
     {
         UnregisterEvents();
     }
-    
+
     private void UnregisterEvents()
     {
         EventManagerR.RemoveListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
@@ -68,12 +71,12 @@ public class PlayerControllerR : MonoBehaviour
         HandleJump();
         HandleGrinding();
     }
-    
+
     private void OnMove(InputValue inputValue)
     {
         _movementInput = inputValue.Get<Vector2>();
     }
-    
+
     private void HandleInput()
     {
         float moveSpeed = playerModel.GetSpeed();
@@ -81,18 +84,16 @@ public class PlayerControllerR : MonoBehaviour
         playerView.SetRunning(_movementInput.x != 0);
         playerView.UpdateDirection(_movementInput.x);
     }
-    
+
     private void OnJump()
     {
         if (!playerModel.GetIsJumping())
         {
-            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air.
+            AudioManager.Instance.StopBackgroundTrack();
             AudioManager.Instance.PlaySound("jump");
             playerModel.SetIsJumping(true);
             jumpTime = 0;
             initialJumpY = transform.position.y;
-            // _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
-            // ToggleShadowSprite();
         }
     }
 
@@ -100,36 +101,30 @@ public class PlayerControllerR : MonoBehaviour
     {
         if (!playerModel.GetIsJumping())
         {
-            // TODO: add music track for driving
-            // AudioManager.Instance.PlayBackgroundTrack("driving");
             return;
         }
-        
+
         jumpTime += Time.fixedDeltaTime;
         var progress = jumpTime / playerModel.GetJumpDuration();
         var verticalOffset = playerModel.GetJumpHeight() * Mathf.Sin(Mathf.PI * progress);
         transform.position = new Vector3(transform.position.x, initialJumpY + verticalOffset, transform.position.z);
-        // shadowSprite.transform.position = new Vector3(shadowSprite.transform.position.x, _shadowSpriteY, shadowSprite.transform.position.z);
-        if (!(progress >= 1)) return;
-        HandleLanding();
+
+        if (progress >= 1) HandleLanding();
     }
-    
+
     private void HandleLanding()
     {
         AudioManager.Instance.PlaySound("land");
         if (isAboveRail) StartGrinding();
         playerModel.SetIsJumping(false);
-        transform.position = new Vector3(transform.position.x, initialJumpY, transform.position.z);
-        // ToggleShadowSprite();
     }
-    
+
     private void StartGrinding()
     {
         playerModel.SetIsGrinding(true);
         AudioManager.Instance.PlaySound("grinding");
-        transform.Rotate(0, 0, 10);
     }
-    
+
     private void HandleGrinding()
     {
         if (!playerModel.GetIsGrinding()) return;
@@ -138,33 +133,72 @@ public class PlayerControllerR : MonoBehaviour
             FinishGrinding();
         }
     }
-    
+
     private void FinishGrinding()
     {
         playerModel.SetIsGrinding(false);
-        transform.Rotate(0, 0, -10);
     }
-
 
     private void MovePlayer()
     {
         rb2d.linearVelocity = playerModel.GetVelocity();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnObstacleCollision(GameEvents.ObstacleCollisionEvent evt)
     {
-        if (collision.CompareTag("Upgrade"))
+        Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+        Debug.Log("Collision is triggered.");
+
+        if (playerModel.GetIsJumping() && obstacle.IsJumpable)
         {
-            Debug.Log("Upgrade collected!");
-            Destroy(collision.gameObject);
+            playerModel.IncreaseScore(obstacle.DetermineScore());
         }
-        else if (collision.CompareTag("Obstacle"))
+
+        if (obstacle.Type == ObstacleType.Rail)
         {
-            Debug.Log("Obstacle hit!");
+            isAboveRail = true;
+            Debug.Log("Player is over rail!");
+        }
+
+        if (!obstacle.IsJumpable || !playerModel.GetIsJumping())
+        {
+            TriggerCollisionEffect(obstacle);
         }
     }
 
-    void UpdateScore()
+    private void OnObstacleExit(GameEvents.ObstacleCollisionExitEvent evt)
+    {
+        Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+        if (obstacle.Type == ObstacleType.Rail)
+        {
+            isAboveRail = false;
+            Debug.Log("Player is no longer over rail!");
+        }
+    }
+
+    private void TriggerCollisionEffect(Obstacle obstacle)
+    {
+        if (playerModel.GetIsInvincible()) return;
+
+        StartCoroutine(SetInvincibility());
+        Debug.Log("Collision!");
+        AudioManager.Instance.PlaySound("crash");
+        int damage = obstacle.DetermineDamageAmount();
+        EventManagerR.Broadcast(new GameEvents.HealthChangedEvent(damage));
+        if (playerModel.GetHealth() <= 0)
+        {
+           // TODO:  EventManagerR.Broadcast(new GameEvents.TriggerGameOver());
+        }
+    }
+
+    private IEnumerator SetInvincibility()
+    {
+        playerModel.SetIsInvincible(true);
+        yield return new WaitForSeconds(playerModel.GetInvincibilityDuration());
+        playerModel.SetIsInvincible(false);
+    }
+
+    private void UpdateScore()
     {
         playerModel.IncreaseScore(Time.deltaTime);
     }
@@ -177,16 +211,6 @@ public class PlayerControllerR : MonoBehaviour
     private void OnTrickAction(GameEvents.TrickActionEvent obj)
     {
         playerModel.SetScore(playerModel.GetScore() + obj.Points);
-    }
-
-    private void OnObstacleExit(GameEvents.ObstacleCollisionExitEvent obj)
-    {
-        // Handle obstacle exit
-    }
-
-    private void OnObstacleCollision(GameEvents.ObstacleCollisionEvent obj)
-    {
-        // Handle obstacle collision
     }
 
     private void OnUpgradeCollision(GameEvents.UpgradeCollisionEvent obj)

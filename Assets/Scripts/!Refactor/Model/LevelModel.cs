@@ -2,56 +2,41 @@ using UnityEngine;
 
 public class LevelModel
 {
+    private int currentStage;
+    private static float stageSpeed;
+    private float stageWidth;
     private float obstacleSpawnInterval;
     private float pickUpSpawnInterval;
-    private static float levelSpeed;
-    private float levelWidth;
 
     public LevelModel()
     {
-        obstacleSpawnInterval = 0.5f;
+        currentStage = 1;
+        stageSpeed = 5f;
+        stageWidth = 10f;
+        obstacleSpawnInterval = 0.1f;
         pickUpSpawnInterval = 5f;
-        levelSpeed = 1f;
-        levelWidth = 10f;
     }
 
-    public float GetObstacleSpawnInterval()
-    {
-        return obstacleSpawnInterval;
-    }
+    public int GetCurrentStage() => currentStage;
 
-    public void SetObstacleSpawnInterval(float interval)
-    {
-        obstacleSpawnInterval = interval;
-    }
+    public void SetCurrentStage(int newLevel) => currentStage = newLevel;
 
-    public float GetPickUpSpawnInterval()
-    {
-        return pickUpSpawnInterval;
-    }
+    public float GetLevelWidth() => stageWidth;
 
-    public void SetPickUpSpawnInterval(float interval)
-    {
-        pickUpSpawnInterval = interval;
-    }
+    public void SetLevelWidth(float width) => stageWidth = width;
 
-    public static float GetLevelSpeed()
-    {
-        return levelSpeed;
-    }
+    // TODO: implement getters & setters for level height
 
-    public static void SetLevelSpeed(float speed)
-    {
-        levelSpeed = speed;
-    }
+    public float GetObstacleSpawnInterval() => obstacleSpawnInterval;
 
-    public float GetLevelWidth()
-    {
-        return levelWidth;
-    }
+    public void SetObstacleSpawnInterval(float interval) => obstacleSpawnInterval = interval;
 
-    public void SetLevelWidth(float width)
-    {
-        levelWidth = width;
-    }
+    public float GetPickUpSpawnInterval() => pickUpSpawnInterval;
+
+    public void SetPickUpSpawnInterval(float interval) => pickUpSpawnInterval = interval;
+
+    public static float GetStageSpeed() => stageSpeed;
+
+    public static void SetStageSpeed(float speed) => stageSpeed = speed;
+
 }

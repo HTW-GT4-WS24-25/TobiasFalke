@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
             var score = obstacle.DetermineScore();
             stats.ChangeScore(score);
         }
-        if (obstacle.Type == ObstacleType.Rail)
+       // if (obstacle.Type == ObstacleType.Rail)
         {
             movement.SetIsOverRail = true;
             Debug.Log("Player is over rail!");
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour
     private void OnExitCollision(ObstacleCollisionExitEvent evt)
     {
         var obstacle = evt.Obstacle;
-        if (obstacle.Type == ObstacleType.Rail)
+       // if (obstacle.Type == ObstacleType.Rail)
         {
             movement.SetIsOverRail = false;
             Debug.Log("Player is no longer over rail!");

@@ -42,6 +42,16 @@ public class GameEvents
         }
     }
     
+    public class LevelSpeedChangedEvent : GameEvent
+    {
+        public float LevelSpeed { get; private set; }
+
+        public LevelSpeedChangedEvent(float levelSpeed)
+        {
+            LevelSpeed = levelSpeed;
+        }
+    }
+    
     public class ScoreChangedEvent : GameEvent
     {
         public float NewScore { get; }

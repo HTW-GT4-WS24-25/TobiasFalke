@@ -2,21 +2,6 @@ using UnityEngine;
 
 public class PlayerModel
 {
-    private float score;
-    private Vector2 velocity;
-    private int health;
-    private int special;
-    private float scoreMultiplier;
-    private float speedMultiplier;
-    private float jumpDurationMultiplier;
-    private float speed;
-    private float jumpDuration;
-    private float jumpHeight;
-    private bool isJumping;
-    private bool isGrinding;
-    private bool isInvincible;
-    private float invincibilityDuration;
-
     public PlayerModel()
     {
         health = 100;
@@ -29,7 +14,11 @@ public class PlayerModel
         jumpDurationMultiplier = 1f;
         invincibilityDuration = 1f;
     }
-
+    
+    private float score;
+    private int health;
+    private int special;
+    
     public float GetScore() => score;
     public void SetScore(float newScore) => score = newScore;
     public void IncreaseScore(float points) => score += (int)(points * scoreMultiplier);
@@ -39,6 +28,12 @@ public class PlayerModel
     public int GetSpecial() => special;
     public void SetSpecial(int newSpecial) => special = newSpecial;
 
+    // movement
+    private Vector2 velocity;
+    private float speed;
+    private float jumpHeight;
+    private float jumpDuration;
+    
     public Vector2 GetVelocity() => velocity;
     public void SetVelocity(Vector2 newVelocity) => velocity = newVelocity;
     public float GetSpeed() => speed;
@@ -47,10 +42,22 @@ public class PlayerModel
     public float GetJumpHeight() => jumpHeight;
     
     public float GetJumpDuration() => jumpDuration;
+    
+    // multipliers
+    private float scoreMultiplier;
+    private float speedMultiplier;
+    private float jumpDurationMultiplier;
+    
+    // states
+   
+    private bool isJumping;
+    private bool isGrinding;
+    private bool isInvincible;
+    private float invincibilityDuration;
+    
     public void SetJumpDuration(float newDuration) { jumpDuration = newDuration; }
     public bool GetIsJumping() => isJumping;
     public void SetIsJumping(bool jumping) => isJumping = jumping;
-    
     public bool GetIsGrinding() => isGrinding;
     public void SetIsGrinding(bool grinding) => isGrinding = grinding;
     public bool GetIsInvincible() => isInvincible;

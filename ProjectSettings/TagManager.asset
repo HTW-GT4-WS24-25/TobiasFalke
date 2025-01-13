@@ -10,10 +10,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Obstacle
+  - World
   - Water
   - UI
-  - UI (Manual)
+  - Menu
   - 
   - 
   - 
@@ -46,8 +46,14 @@ TagManager:
   - name: Background
     uniqueID: 1823549301
     locked: 0
-  - name: Game World
+  - name: Obstacle
     uniqueID: 788615541
+    locked: 0
+  - name: Pickup
+    uniqueID: 1139323499
+    locked: 0
+  - name: Player
+    uniqueID: 4054956421
     locked: 0
   m_RenderingLayers:
   - Default

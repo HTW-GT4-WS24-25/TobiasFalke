@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class LevelView : MonoBehaviour
 {
-    public float baseScrollSpeed = 2f;
-    public float backgroundHeight = 10f;
     public List<Sprite> levelBackgrounds;
-
     private List<SpriteRenderer> activeBackgrounds;
     private Vector3 startPosition;
     private SpriteRenderer originalBackground;
+    private float backgroundHeight = 10f;
+    private float currentScrollSpeed = 2f;
 
     private void Awake()
     {
@@ -19,11 +18,13 @@ public class LevelView : MonoBehaviour
     private void Start()
     {
         InitializeBackgrounds();
+        EventManagerR.AddListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
         EventManagerR.AddListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
     }
 
     private void OnDestroy()
     {
+        EventManagerR.RemoveListener<GameEvents.LevelSpeedChangedEvent>(OnLevelSpeedChanged);
         EventManagerR.RemoveListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
     }
 
@@ -35,7 +36,6 @@ public class LevelView : MonoBehaviour
     private void InitializeBackgrounds()
     {
         startPosition = transform.position;
-
         activeBackgrounds = new List<SpriteRenderer>();
 
         for (int i = 0; i < 2; i++)
@@ -61,25 +61,30 @@ public class LevelView : MonoBehaviour
         foreach (var bg in activeBackgrounds)
         {
             Vector3 pos = bg.transform.position;
-            pos.y -= baseScrollSpeed * Time.deltaTime;
+            pos.y -= currentScrollSpeed * Time.deltaTime;
             bg.transform.position = pos;
 
             if (bg.transform.position.y < startPosition.y - backgroundHeight)
             {
-                bg.transform.position += Vector3.up * (2 * backgroundHeight);
+                bg.transform.position += new Vector3(0, 2 * backgroundHeight, 0);  // Correct reset logic
             }
         }
     }
-    
+
+    private void OnLevelSpeedChanged(GameEvents.LevelSpeedChangedEvent evt)
+    {
+        currentScrollSpeed = evt.LevelSpeed;
+       // Debug.Log("Updated Level Speed to: " + currentScrollSpeed);
+    }
+
     private void OnLevelChanged(GameEvents.LevelChangedEvent evt)
     {
-        baseScrollSpeed = 2f + evt.NewLevel; 
         UpdateLevelBackground(evt.NewLevel);
     }
 
     private void UpdateLevelBackground(int level)
     {
-        int levelId = level % levelBackgrounds.Count; // Ensure index is within bounds
+        int levelId = level % levelBackgrounds.Count;
         foreach (var bg in activeBackgrounds)
         {
             bg.sprite = levelBackgrounds[levelId];

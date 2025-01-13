@@ -2,5 +2,7 @@ using UnityEngine;
 
 public interface IObject
 {
-    void Collide(GameObject collidingObject, PlayerStats playerStats, PlayerMovement playerMovement, Animator animator);
+    void InitializeFallSpeed(float initialSpeed);
+    void UpdateFallSpeed(float newSpeed);
+    void MoveDownwards();
 }
