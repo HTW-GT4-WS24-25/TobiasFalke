@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +8,9 @@ public class PlayerControllerR : MonoBehaviour
     private PlayerModel playerModel;
     private Rigidbody2D rb2d;
     private Vector2 _movementInput;
+    private float jumpTime;
+    private float initialJumpY;
+    private bool isAboveRail;
 
     void Awake()
     {
@@ -18,14 +20,21 @@ public class PlayerControllerR : MonoBehaviour
 
     private void Start()
     {
-        // Register events here
+        RegisterEvents();
+        BroadcastPlayerStatus();
+    }
+    
+    private void RegisterEvents()
+    {
         EventManagerR.AddListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
         EventManagerR.AddListener<GameEvents.TrickActionEvent>(OnTrickAction);
         EventManagerR.AddListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
         EventManagerR.AddListener<GameEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
         EventManagerR.AddListener<GameEvents.UpgradeCollisionEvent>(OnUpgradeCollision);
-
-        // initialize UI
+    }
+    
+    private void BroadcastPlayerStatus()
+    {
         EventManagerR.Broadcast(new GameEvents.ScoreChangedEvent(playerModel.GetScore()));
         EventManagerR.Broadcast(new GameEvents.HealthChangedEvent(playerModel.GetHealth()));
         EventManagerR.Broadcast(new GameEvents.SpecialChangedEvent(playerModel.GetSpecial()));
@@ -35,7 +44,11 @@ public class PlayerControllerR : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Unregister events here
+        UnregisterEvents();
+    }
+    
+    private void UnregisterEvents()
+    {
         EventManagerR.RemoveListener<GameEvents.SpecialActionEvent>(OnSpecialAction);
         EventManagerR.RemoveListener<GameEvents.TrickActionEvent>(OnTrickAction);
         EventManagerR.RemoveListener<GameEvents.ObstacleCollisionEvent>(OnObstacleCollision);
@@ -52,13 +65,15 @@ public class PlayerControllerR : MonoBehaviour
     {
         MovePlayer();
         UpdateScore();
+        HandleJump();
+        HandleGrinding();
     }
     
     private void OnMove(InputValue inputValue)
     {
         _movementInput = inputValue.Get<Vector2>();
     }
-
+    
     private void HandleInput()
     {
         float moveSpeed = playerModel.GetSpeed();
@@ -67,6 +82,70 @@ public class PlayerControllerR : MonoBehaviour
         playerView.UpdateDirection(_movementInput.x);
     }
     
+    private void OnJump()
+    {
+        if (!playerModel.GetIsJumping())
+        {
+            AudioManager.Instance.StopBackgroundTrack(); // stops driving sound while in air.
+            AudioManager.Instance.PlaySound("jump");
+            playerModel.SetIsJumping(true);
+            jumpTime = 0;
+            initialJumpY = transform.position.y;
+            // _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
+            // ToggleShadowSprite();
+        }
+    }
+
+    private void HandleJump()
+    {
+        if (!playerModel.GetIsJumping())
+        {
+            // TODO: add music track for driving
+            // AudioManager.Instance.PlayBackgroundTrack("driving");
+            return;
+        }
+        
+        jumpTime += Time.fixedDeltaTime;
+        var progress = jumpTime / playerModel.GetJumpDuration();
+        var verticalOffset = playerModel.GetJumpHeight() * Mathf.Sin(Mathf.PI * progress);
+        transform.position = new Vector3(transform.position.x, initialJumpY + verticalOffset, transform.position.z);
+        // shadowSprite.transform.position = new Vector3(shadowSprite.transform.position.x, _shadowSpriteY, shadowSprite.transform.position.z);
+        if (!(progress >= 1)) return;
+        HandleLanding();
+    }
+    
+    private void HandleLanding()
+    {
+        AudioManager.Instance.PlaySound("land");
+        if (isAboveRail) StartGrinding();
+        playerModel.SetIsJumping(false);
+        transform.position = new Vector3(transform.position.x, initialJumpY, transform.position.z);
+        // ToggleShadowSprite();
+    }
+    
+    private void StartGrinding()
+    {
+        playerModel.SetIsGrinding(true);
+        AudioManager.Instance.PlaySound("grinding");
+        transform.Rotate(0, 0, 10);
+    }
+    
+    private void HandleGrinding()
+    {
+        if (!playerModel.GetIsGrinding()) return;
+        if (playerModel.GetIsJumping() || !isAboveRail)
+        {
+            FinishGrinding();
+        }
+    }
+    
+    private void FinishGrinding()
+    {
+        playerModel.SetIsGrinding(false);
+        transform.Rotate(0, 0, -10);
+    }
+
+
     private void MovePlayer()
     {
         rb2d.linearVelocity = playerModel.GetVelocity();

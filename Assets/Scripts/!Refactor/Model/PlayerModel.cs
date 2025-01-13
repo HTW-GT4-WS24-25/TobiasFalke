@@ -6,18 +6,28 @@ public class PlayerModel
     private Vector2 velocity;
     private int health;
     private int special;
-    private float scoreMultiplier = 1f;
-    private float speedMultiplier = 1f;
+    private float scoreMultiplier;
+    private float speedMultiplier;
     private float jumpDurationMultiplier;
-    private float speed = 5f;
-    private float jumpDuration = 5f;
+    private float speed;
+    private float jumpDuration;
+    private float jumpHeight;
+    private bool isJumping;
+    private bool isGrinding;
     private bool isInvincible;
-    private float invincibilityDuration = 1f;
+    private float invincibilityDuration;
 
     public PlayerModel()
     {
         health = 100;
         score = 0;
+        speed = 5f;
+        jumpDuration = 1f;
+        jumpHeight = 1f;
+        scoreMultiplier = 1f;
+        speedMultiplier = 1f;
+        jumpDurationMultiplier = 1f;
+        invincibilityDuration = 1f;
     }
 
     public float GetScore() => score;
@@ -33,9 +43,16 @@ public class PlayerModel
     public void SetVelocity(Vector2 newVelocity) => velocity = newVelocity;
     public float GetSpeed() => speed;
     public void SetSpeed(float newSpeed) { speed = newSpeed; }
-
+    
+    public float GetJumpHeight() => jumpHeight;
+    
     public float GetJumpDuration() => jumpDuration;
     public void SetJumpDuration(float newDuration) { jumpDuration = newDuration; }
+    public bool GetIsJumping() => isJumping;
+    public void SetIsJumping(bool jumping) => isJumping = jumping;
+    
+    public bool GetIsGrinding() => isGrinding;
+    public void SetIsGrinding(bool grinding) => isGrinding = grinding;
     public bool GetIsInvincible() => isInvincible;
     public void SetIsInvincible(bool invincible) => isInvincible = invincible;
     public float GetInvincibilityDuration() => invincibilityDuration;
