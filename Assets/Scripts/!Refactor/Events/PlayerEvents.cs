@@ -2,122 +2,122 @@ using UnityEngine;
 
 public static class PlayerEvents
 {
-    public class ObstacleCollisionEvent : GameEvent
+    public class ObstacleCollisionEventR : GameEvent
     {
         public GameObject Obstacle { get; }
 
-        public ObstacleCollisionEvent(GameObject obstacle)
+        public ObstacleCollisionEventR(GameObject obstacle)
         {
             Obstacle = obstacle;
         }
     }
 
-    public class ObstacleCollisionExitEvent : GameEvent
+    public class ObstacleCollisionExitEventR : GameEvent
     {
         public GameObject Obstacle { get; }
 
-        public ObstacleCollisionExitEvent(GameObject obstacle)
+        public ObstacleCollisionExitEventR(GameObject obstacle)
         {
             Obstacle = obstacle;
         }
     }
 
-    public class PickupCollisionEvent : GameEvent
+    public class PickupCollisionEventR : GameEvent
     {
         public GameObject Pickup { get; }
 
-        public PickupCollisionEvent(GameObject pickup)
+        public PickupCollisionEventR(GameObject pickup)
         {
             Pickup = pickup;
         }
     }
-    public class ScoreChangedEvent : GameEvent
+    public class ScoreChangedEventR : GameEvent
     {
         public float NewScore { get; }
 
-        public ScoreChangedEvent(float newScore)
+        public ScoreChangedEventR(float newScore)
         {
             NewScore = newScore;
         }
     }
 
-    public class HealthChangedEvent : GameEvent
+    public class HealthChangedEventR : GameEvent
     {
         public float NewHealth { get; private set; }
 
-        public HealthChangedEvent(float newHealth)
+        public HealthChangedEventR(float newHealth)
         {
             NewHealth = newHealth;
         }
     }
 
-    public class SpecialChangedEvent : GameEvent
+    public class SpecialChangedEventR : GameEvent
     {
         public float NewSpecial { get; private set; }
 
-        public SpecialChangedEvent(float newSpecial)
+        public SpecialChangedEventR(float newSpecial)
         {
             NewSpecial = newSpecial;
         }
     }
 
-    public class SpeedChangedEvent : GameEvent
+    public class SpeedChangedEventR : GameEvent
     {
         public float NewSpeed { get; private set; }
 
-        public SpeedChangedEvent(float newSpeed)
+        public SpeedChangedEventR(float newSpeed)
         {
             NewSpeed = newSpeed;
         }
     }
 
-    public class JumpDurationChangedEvent : GameEvent
+    public class JumpDurationChangedEventR : GameEvent
     {
         public float NewJumpDuration { get; private set; }
 
-        public JumpDurationChangedEvent(float newJumpDuration)
+        public JumpDurationChangedEventR(float newJumpDuration)
         {
             NewJumpDuration = newJumpDuration;
         }
     }
 
-    public class JumpEvent : GameEvent
+    public class JumpEventR : GameEvent
     {
         public float initialJumpHeight;
         public float jumpDuration { get; }
 
-        public JumpEvent(float jumpHeight)
+        public JumpEventR(float jumpHeight)
         {
             initialJumpHeight = jumpHeight;
         }
     }
     
-    public class TrickActionEvent : GameEvent
+    public class TrickActionEventR : GameEvent
     {
         public int Points;
         public string TrickName { get; }
 
-        public TrickActionEvent(string trickName)
+        public TrickActionEventR(string trickName)
         {
             TrickName = trickName;
         }
 
-        public TrickActionEvent()
+        public TrickActionEventR()
         {
             throw new System.NotImplementedException();
         }
     }
 
-    public class SpecialActionEvent : GameEvent
+    public class SpecialActionEventR : GameEvent
     {
         public string SpecialAction { get; }
 
-        public SpecialActionEvent(string specialAction)
+        public SpecialActionEventR(string specialAction)
         {
             SpecialAction = specialAction;
         }
 
-        public SpecialActionEvent()
+        public SpecialActionEventR()
         {
             throw new System.NotImplementedException();
         }

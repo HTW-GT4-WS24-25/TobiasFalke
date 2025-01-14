@@ -22,13 +22,13 @@ public class Pickup : MonoBehaviour, IObject
 
     private void OnEnable()
     {
-        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
         InitializeFallSpeed(LevelModel.GetStageSpeed());
     }
 
     private void OnDisable()
     {
-        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
     }
 
     private void Update()
@@ -51,7 +51,7 @@ public class Pickup : MonoBehaviour, IObject
         transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
     }
 
-    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEventR evt)
     {
         UpdateFallSpeed(evt.StageSpeed);
     }
@@ -59,7 +59,7 @@ public class Pickup : MonoBehaviour, IObject
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        var evt = new PlayerEvents.PickupCollisionEvent(gameObject);
+        var evt = new PlayerEvents.PickupCollisionEventR(gameObject);
         EventManagerR.Broadcast(evt);
         TriggerItemEffect();
         Destroy(gameObject);
@@ -70,19 +70,19 @@ public class Pickup : MonoBehaviour, IObject
         switch (itemType)
         {
             case ItemType.HealthBoost:
-                EventManagerR.Broadcast(new PlayerEvents.HealthChangedEvent(50f));
+                EventManagerR.Broadcast(new PlayerEvents.HealthChangedEventR(50f));
                 break;
             case ItemType.SpecialBoost:
-                EventManagerR.Broadcast(new PlayerEvents.SpecialChangedEvent(30f));
+                EventManagerR.Broadcast(new PlayerEvents.SpecialChangedEventR(30f));
                 break;
             case ItemType.ScoreBoost:
-                EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEvent(100f));
+                EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEventR(100f));
                 break;
             case ItemType.SpeedBoost:
-                EventManagerR.Broadcast(new PlayerEvents.SpeedChangedEvent(1f));
+                EventManagerR.Broadcast(new PlayerEvents.SpeedChangedEventR(1f));
                 break;
             case ItemType.JumpBoost:
-                EventManagerR.Broadcast(new PlayerEvents.JumpDurationChangedEvent(50f));
+                EventManagerR.Broadcast(new PlayerEvents.JumpDurationChangedEventR(50f));
                 break;
         }
     }

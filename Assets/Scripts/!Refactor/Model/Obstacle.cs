@@ -17,13 +17,13 @@ public class Obstacle : MonoBehaviour, IObject
 
     private void OnEnable()
     {
-        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
         InitializeFallSpeed(LevelModel.GetStageSpeed());
     }
 
     private void OnDisable()
     {
-        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
     }
 
     private void Update()
@@ -50,7 +50,7 @@ public class Obstacle : MonoBehaviour, IObject
         transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
     }
 
-    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEventR evt)
     {
         UpdateFallSpeed(evt.StageSpeed);
     }
@@ -59,17 +59,16 @@ public class Obstacle : MonoBehaviour, IObject
     {
         if (!other.gameObject.CompareTag("Player")) return;
         DetermineDamageAmount();
-        var evt = new PlayerEvents.ObstacleCollisionEvent(gameObject);
+        var evt = new PlayerEvents.ObstacleCollisionEventR(gameObject);
         EventManagerR.Broadcast(evt);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        Debug.Log("Player collision is exited.");
-        var evt = Events.ObstacleCollisionEvent;
-        evt.Obstacle = this;
-        EventManager.Broadcast(evt);
+        DetermineDamageAmount();
+        var evt = new PlayerEvents.ObstacleCollisionExitEventR(gameObject);
+        EventManagerR.Broadcast(evt);
     }
 
     public int DetermineScore()

@@ -61,11 +61,11 @@ public class PlayerModel
 
     private void RegisterEvents()
     {
-        EventManagerR.AddListener<PlayerEvents.HealthChangedEvent>(OnHealthChanged);
-        EventManagerR.AddListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
-        EventManagerR.AddListener<PlayerEvents.ScoreChangedEvent>(OnScoreChanged);
-        EventManagerR.AddListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
-        EventManagerR.AddListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManagerR.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManagerR.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManagerR.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManagerR.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManagerR.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
     }
 
     private void OnDestroy()
@@ -75,34 +75,34 @@ public class PlayerModel
 
     private void UnregisterEvents()
     {
-        EventManagerR.RemoveListener<PlayerEvents.HealthChangedEvent>(OnHealthChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
-        EventManagerR.RemoveListener<PlayerEvents.ScoreChangedEvent>(OnScoreChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
-        EventManagerR.RemoveListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManagerR.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManagerR.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManagerR.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManagerR.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManagerR.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
     }
 
-    private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEvent obj)
+    private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEventR obj)
     {
         SetJumpDuration(jumpDuration + obj.NewJumpDuration);
     }
 
-    private void OnSpeedChanged(PlayerEvents.SpeedChangedEvent obj)
+    private void OnSpeedChanged(PlayerEvents.SpeedChangedEventR obj)
     {
         SetSpeed(speed + obj.NewSpeed);
     }
 
-    private void OnScoreChanged(PlayerEvents.ScoreChangedEvent obj)
+    private void OnScoreChanged(PlayerEvents.ScoreChangedEventR obj)
     {
         SetScore(score + obj.NewScore);
     }
 
-    private void OnSpecialChanged(PlayerEvents.SpecialChangedEvent obj)
+    private void OnSpecialChanged(PlayerEvents.SpecialChangedEventR obj)
     {
         SetSpecial(special + obj.NewSpecial);
     }
 
-    private void OnHealthChanged(PlayerEvents.HealthChangedEvent obj)
+    private void OnHealthChanged(PlayerEvents.HealthChangedEventR obj)
     {
         SetHealth(health + obj.NewHealth);
     }

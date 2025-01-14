@@ -1,40 +1,40 @@
 public static class GameEvents
 {
-    public class GameStateChangedEvent : GameEvent
+    public class GameStateChangedEventR : GameEvent
     {
         public GameModelR.GameState NewGameState { get; }
 
-        public GameStateChangedEvent(GameModelR.GameState newGameState)
+        public GameStateChangedEventR(GameModelR.GameState newGameState)
         {
             NewGameState = newGameState;
         }
     }
 
-    public class ToggleCountDownEvent : GameEvent
+    public class ToggleCountDownEventR : GameEvent
     {
         public bool SetActive { get; }
 
-        public ToggleCountDownEvent(bool setActive)
+        public ToggleCountDownEventR(bool setActive)
         {
             SetActive = setActive;
         }
     }
 
-    public class TogglePauseMenuEvent : GameEvent
+    public class TogglePauseMenuEventR : GameEvent
     {
         public bool IsPaused { get; }
 
-        public TogglePauseMenuEvent(bool isPaused)
+        public TogglePauseMenuEventR(bool isPaused)
         {
             IsPaused = isPaused;
         }
     }
     
-    public class LevelChangedEvent : GameEvent
+    public class LevelChangedEventR : GameEvent
     {
         public int NewLevel { get; }
 
-        public LevelChangedEvent(int newLevel)
+        public LevelChangedEventR(int newLevel)
         {
             NewLevel = newLevel;
         }

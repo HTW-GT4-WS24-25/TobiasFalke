@@ -46,13 +46,13 @@ public class InputManager : MonoBehaviour
     private void ProcessTrickAction()
     {
         // TODO: implement triggering
-        EventManagerR.Broadcast(new PlayerEvents.TrickActionEvent());
+        EventManagerR.Broadcast(new PlayerEvents.TrickActionEventR());
     }
 
     private void ProcessSpecialAction()
     {
         // implement triggering
-        EventManagerR.Broadcast(new PlayerEvents.SpecialActionEvent());
+        EventManagerR.Broadcast(new PlayerEvents.SpecialActionEventR());
     }
 
     public Vector2 GetMovementInput()

@@ -19,14 +19,14 @@ public class PauseMenuManager : MonoBehaviour
 
         quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
         continueButton?.RegisterCallback<ClickEvent>(OnClickContinueButton);
-        EventManagerR.AddListener<GameEvents.TogglePauseMenuEvent>(OnTogglePauseMenu);
+        EventManagerR.AddListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
     }
 
     private void OnDisable()
     {
         continueButton?.UnregisterCallback<ClickEvent>(OnClickContinueButton);
         quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
-        EventManagerR.RemoveListener<GameEvents.TogglePauseMenuEvent>(OnTogglePauseMenu);
+        EventManagerR.RemoveListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
     }
 
     private void OnClickContinueButton(ClickEvent evt)
@@ -39,7 +39,7 @@ public class PauseMenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    private void OnTogglePauseMenu(GameEvents.TogglePauseMenuEvent evt)
+    private void OnTogglePauseMenu(GameEvents.TogglePauseMenuEventR evt)
     {
         pauseUI.rootVisualElement.style.display = evt.IsPaused ? DisplayStyle.Flex : DisplayStyle.None;
         Debug.Log("Pause Menu " + (evt.IsPaused ? "Displayed" : "Hidden"));

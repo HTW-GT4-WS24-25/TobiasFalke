@@ -57,14 +57,14 @@ public class GameControllerR : MonoBehaviour
     {
         gameModel.CurrentGameState = GameModelR.GameState.Paused;
         Time.timeScale = 0f; // Pause game physics and updates
-        EventManagerR.Broadcast(new GameEvents.TogglePauseMenuEvent(true));
+        EventManagerR.Broadcast(new GameEvents.TogglePauseMenuEventR(true));
     }
 
     public void ResumeGame()
     {
         gameModel.CurrentGameState = GameModelR.GameState.Running;
         Time.timeScale = 1f; // Resume game physics and updates
-        EventManagerR.Broadcast(new GameEvents.TogglePauseMenuEvent(false));
+        EventManagerR.Broadcast(new GameEvents.TogglePauseMenuEventR(false));
     }
     
     public void GameOver()

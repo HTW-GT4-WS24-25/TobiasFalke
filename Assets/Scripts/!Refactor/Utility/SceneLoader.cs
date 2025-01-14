@@ -20,7 +20,7 @@ public class SceneLoader : MonoBehaviour, IScene
     }
     public void LoadScene(string sceneName)
     {
-        AudioManager.Instance.StopTrack();
+        AudioManagerR.Instance.StopTrack();
         // only load if scene is not already loaded
         if (SceneManager.GetActiveScene().name != sceneName) SceneManager.LoadScene(sceneName);
     }

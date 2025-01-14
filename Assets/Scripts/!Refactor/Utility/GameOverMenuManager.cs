@@ -20,14 +20,13 @@ public class GameOverMenuManager : MonoBehaviour
 
     private void OnClickReturnButton(ClickEvent evt)
     {
-        AudioManager.Instance.PlaySound("clickPlay");
+        AudioManagerR.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.mainMenu);
     }
 
     private void OnClickTryAgainButton(ClickEvent evt)
     {
-        
-        AudioManager.Instance.PlaySound("clickPlay");
+        AudioManagerR.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
     }
 

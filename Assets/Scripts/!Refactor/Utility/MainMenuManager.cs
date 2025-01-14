@@ -11,8 +11,6 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
-        
-        
         _uiDocument = GetComponent<UIDocument>();
         _playButton = _uiDocument.rootVisualElement.Q("PlayButton") as Button;
         _tutorialButton = _uiDocument.rootVisualElement.Q("TutorialButton") as Button;
@@ -25,24 +23,24 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.Instance.PlayTrack("mainMenuMusic");
+        AudioManagerR.Instance.PlayTrack("mainMenuMusic");
     }
 
     private void OnClickPlayButton(ClickEvent evt)
     {
-        AudioManager.Instance.PlaySound("clickPlay");
+        AudioManagerR.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
     }
     private void OnClickExitButton(ClickEvent evt)
     {
-        AudioManager.Instance.PlaySound("quitGame");
+        AudioManagerR.Instance.PlaySound("quitGame");
         //TODO Fix structure (currently also in GameManager)
         HideMenu();
         Application.Quit();
     }
     private void OnClickTutorialButton(ClickEvent evt)
     {
-        AudioManager.Instance.PlaySound("openSettings");
+        AudioManagerR.Instance.PlaySound("openSettings");
         // SceneLoader.Instance.LoadSettingsMenu();
     }
     
