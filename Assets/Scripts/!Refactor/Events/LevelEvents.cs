@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public static class LevelEvents
 {
     public class StageChangedEvent : GameEvent

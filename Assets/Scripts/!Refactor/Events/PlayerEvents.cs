@@ -2,8 +2,6 @@ using UnityEngine;
 
 public static class PlayerEvents
 {
-    
-    
     public class ObstacleCollisionEvent : GameEvent
     {
         public GameObject Obstacle { get; }
@@ -83,6 +81,17 @@ public static class PlayerEvents
         }
     }
 
+    public class JumpEvent : GameEvent
+    {
+        public float initialJumpHeight;
+        public float jumpDuration { get; }
+
+        public JumpEvent(float jumpHeight)
+        {
+            initialJumpHeight = jumpHeight;
+        }
+    }
+    
     public class TrickActionEvent : GameEvent
     {
         public int Points;
@@ -91,6 +100,11 @@ public static class PlayerEvents
         public TrickActionEvent(string trickName)
         {
             TrickName = trickName;
+        }
+
+        public TrickActionEvent()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -102,7 +116,10 @@ public static class PlayerEvents
         {
             SpecialAction = specialAction;
         }
+
+        public SpecialActionEvent()
+        {
+            throw new System.NotImplementedException();
+        }
     }
-    
-    
 }

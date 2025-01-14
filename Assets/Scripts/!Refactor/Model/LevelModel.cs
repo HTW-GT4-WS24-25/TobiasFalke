@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class LevelModel
 {
     private int currentStage;
@@ -38,5 +36,4 @@ public class LevelModel
     public static float GetStageSpeed() => stageSpeed;
 
     public static void SetStageSpeed(float speed) => stageSpeed = speed;
-
 }

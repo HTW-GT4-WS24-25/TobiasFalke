@@ -66,7 +66,7 @@ public class LevelView : MonoBehaviour
 
             if (bg.transform.position.y < startPosition.y - backgroundHeight)
             {
-                bg.transform.position += new Vector3(0, 2 * backgroundHeight, 0);  // Correct reset logic
+                bg.transform.position += new Vector3(0, 2 * backgroundHeight, 0);
             }
         }
     }

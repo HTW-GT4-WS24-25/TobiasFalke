@@ -14,8 +14,7 @@ public class GameModelR
     private static float elapsedTime { get; set; }
     public bool countDownActive;
     private int initialCountDownTime = 5;
-
-
+    
     public GameState CurrentGameState
     {
         get => _currentGameState;

@@ -44,7 +44,6 @@ public class Pickup : MonoBehaviour, IObject
     public void UpdateFallSpeed(float newSpeed)
     {
         fallSpeed = newSpeed;
-       // Debug.Log("Pickup fall speed updated to: " + fallSpeed);
     }
 
     public void MoveDownwards()
@@ -60,9 +59,31 @@ public class Pickup : MonoBehaviour, IObject
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        var evt = Events.PickupEvent;
-        evt.ItemType = itemType;
-        EventManager.Broadcast(evt);
+        var evt = new PlayerEvents.PickupCollisionEvent(gameObject);
+        EventManagerR.Broadcast(evt);
+        TriggerItemEffect();
         Destroy(gameObject);
+    }
+
+    private void TriggerItemEffect()
+    {
+        switch (itemType)
+        {
+            case ItemType.HealthBoost:
+                EventManagerR.Broadcast(new PlayerEvents.HealthChangedEvent(50f));
+                break;
+            case ItemType.SpecialBoost:
+                EventManagerR.Broadcast(new PlayerEvents.SpecialChangedEvent(30f));
+                break;
+            case ItemType.ScoreBoost:
+                EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEvent(100f));
+                break;
+            case ItemType.SpeedBoost:
+                EventManagerR.Broadcast(new PlayerEvents.SpeedChangedEvent(1f));
+                break;
+            case ItemType.JumpBoost:
+                EventManagerR.Broadcast(new PlayerEvents.JumpDurationChangedEvent(50f));
+                break;
+        }
     }
 }

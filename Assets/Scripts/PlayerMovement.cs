@@ -70,6 +70,9 @@ public class PlayerMovement : MonoBehaviour
             _isJumping = true;
             _jumpTime = 0;
             _initialJumpY = transform.position.y;
+
+           
+
             _shadowSpriteY = _initialJumpY - _playerSprite.bounds.extents.y;
             ToggleShadowSprite();
         }

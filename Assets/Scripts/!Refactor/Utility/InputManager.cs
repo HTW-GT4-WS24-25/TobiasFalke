@@ -42,6 +42,18 @@ public class InputManager : MonoBehaviour
     {
         pauseInput = Input.GetKeyDown(KeyCode.Escape);
     }
+    
+    private void ProcessTrickAction()
+    {
+        // TODO: implement triggering
+        EventManagerR.Broadcast(new PlayerEvents.TrickActionEvent());
+    }
+
+    private void ProcessSpecialAction()
+    {
+        // implement triggering
+        EventManagerR.Broadcast(new PlayerEvents.SpecialActionEvent());
+    }
 
     public Vector2 GetMovementInput()
     {

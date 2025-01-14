@@ -9,6 +9,9 @@ public class LevelController : MonoBehaviour
     private float timeSinceLastObstacleSpawn;
     private float timeSinceLastPickUpSpawn;
 
+    [SerializeField] private int maxSpawnAttempts = 10; // Maximum number of attempts to find a free spot
+    [SerializeField] private float spawnCheckRadius = 1.0f; // Radius for overlap check
+
     void Awake()
     {
         levelModel = new LevelModel();
@@ -20,11 +23,12 @@ public class LevelController : MonoBehaviour
         BroadcastLevelSpeedChange();
         EventManagerR.AddListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
     }
+
     void Update()
     {
         TriggerSpawnInterval();
     }
-    
+
     private void OnDestroy()
     {
         EventManagerR.RemoveListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
@@ -35,7 +39,7 @@ public class LevelController : MonoBehaviour
         EventManagerR.Broadcast(new LevelEvents.StageSpeedChangedEvent(LevelModel.GetStageSpeed()));
         EventManagerR.Broadcast(new LevelEvents.StageChangedEvent(levelModel.GetCurrentStage()));
     }
-    
+
     void TriggerSpawnInterval()
     {
         HandleSpawning(ref timeSinceLastObstacleSpawn, levelModel.GetObstacleSpawnInterval(), spawnableObstacles);
@@ -54,15 +58,29 @@ public class LevelController : MonoBehaviour
 
     private void SpawnObject(GameObject[] spawnables, string layer)
     {
-        float spawnXPosition = Random.Range(-levelModel.GetStageWidth(), levelModel.GetStageWidth());
-        Vector3 spawnPosition = new Vector3(spawnXPosition, 10, 0);
-
         if (spawnables.Length == 0)
             return;
 
-        GameObject objectToSpawn = spawnables[Random.Range(0, spawnables.Length)];
-        GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
-        spawnedObject.layer = LayerMask.NameToLayer(layer);
+        for (int attempt = 0; attempt < maxSpawnAttempts; attempt++)
+        {
+            float spawnXPosition = Random.Range(-levelModel.GetStageWidth(), levelModel.GetStageWidth());
+            Vector3 spawnPosition = new Vector3(spawnXPosition, 10, 0);
+
+            if (!IsPositionOccupied(spawnPosition, spawnCheckRadius))
+            {
+                GameObject objectToSpawn = spawnables[Random.Range(0, spawnables.Length)];
+                GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+                spawnedObject.layer = LayerMask.NameToLayer(layer);
+                break; // Exit loop once successfully spawned
+            }
+        }
+    }
+
+    private bool IsPositionOccupied(Vector3 position, float radius)
+    {
+        // Check for overlapping colliders which indicate occupation
+        Collider2D hit = Physics2D.OverlapCircle(position, radius);
+        return hit != null;
     }
 
     private void BroadcastLevelSpeedChange()

@@ -138,7 +138,6 @@ public class PlayerController : MonoBehaviour
     {
         if(stats.isInvincible) return;
         StartCoroutine(SetInvincibility());
-        Debug.Log("Collision!");
         AudioManager.Instance.PlaySound("crash");
         var damage = obstacle.DetermineDamageAmount();
         stats.ChangeHealth(damage);

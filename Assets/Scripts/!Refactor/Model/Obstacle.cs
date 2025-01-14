@@ -29,6 +29,10 @@ public class Obstacle : MonoBehaviour, IObject
     private void Update()
     {
         MoveDownwards();
+        if (transform.position.y <= -10)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void InitializeFallSpeed(float initialSpeed)
@@ -54,12 +58,9 @@ public class Obstacle : MonoBehaviour, IObject
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        
-        Debug.Log("'Player collision is triggered.");
-        var evt = Events.ObstacleCollisionEvent;
-        evt.DamageValue = DetermineDamageAmount();
-        evt.Obstacle = this;
-        EventManager.Broadcast(evt);
+        DetermineDamageAmount();
+        var evt = new PlayerEvents.ObstacleCollisionEvent(gameObject);
+        EventManagerR.Broadcast(evt);
     }
 
     private void OnTriggerExit2D(Collider2D other)

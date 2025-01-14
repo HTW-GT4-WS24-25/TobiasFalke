@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public static class GameEvents
 {
     public class GameStateChangedEvent : GameEvent

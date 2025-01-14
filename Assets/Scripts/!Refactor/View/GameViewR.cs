@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +14,10 @@ public class GameViewR : MonoBehaviour
     [SerializeField] private Slider specialBar;
     [SerializeField] private Gradient specialGradiant;
     [SerializeField] private Image specialFill;
-    
     public TextMeshProUGUI speedCounter;
     public TextMeshProUGUI jumpDurationCounter;
+
+    public Image specialActionButtonPopUp;
     
     private void Awake()
     {
@@ -28,6 +28,7 @@ public class GameViewR : MonoBehaviour
         EventManagerR.AddListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
         EventManagerR.AddListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
         EventManagerR.AddListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManagerR.AddListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
     }
 
     private void OnDestroy()
@@ -39,6 +40,7 @@ public class GameViewR : MonoBehaviour
         EventManagerR.RemoveListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
         EventManagerR.RemoveListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
         EventManagerR.RemoveListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManagerR.RemoveListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
     }
     
     private void Update()
@@ -82,6 +84,7 @@ public class GameViewR : MonoBehaviour
     {
         specialBar.value = evt.NewSpecial;
         specialFill.color = specialGradiant.Evaluate(specialBar.normalizedValue);
+        if (evt.NewSpecial == 100) specialActionButtonPopUp.gameObject.SetActive(true);
     }
     
     private void OnSpeedChanged(PlayerEvents.SpeedChangedEvent evt)
@@ -94,6 +97,11 @@ public class GameViewR : MonoBehaviour
         jumpDurationCounter.text = evt.NewJumpDuration.ToString();
     }
 
+    private void OnSpecialAction(PlayerEvents.SpecialActionEvent evt)
+    {
+        specialActionButtonPopUp.gameObject.SetActive(false);
+    }
+
     private void UpdateTimeCounter()
     {
         float elapsedTime = GameModelR.GetElapsedTime();
@@ -104,12 +112,11 @@ public class GameViewR : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(timeInSeconds / 60F);
         int seconds = Mathf.FloorToInt(timeInSeconds % 60F);
-        return string.Format("{0:0}:{1:00}", minutes, seconds);
+        return $"{minutes:0}:{seconds:00}";
     }
 
     public void ToggleCountDown(bool setActive)
     {
         EventManagerR.Broadcast(new GameEvents.ToggleCountDownEvent(setActive));
     }
-    
 }
