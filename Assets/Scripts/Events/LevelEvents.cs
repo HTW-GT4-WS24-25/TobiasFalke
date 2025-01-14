@@ -1,22 +1,25 @@
-public static class LevelEvents
+namespace Events
 {
-    public class StageChangedEventR : GameEvent
+    public static class LevelEvents
     {
-        public int NewStage { get; }
-
-        public StageChangedEventR(int newStage)
+        public class StageChangedEvent : GameEvent
         {
-            NewStage = newStage;
+            public int NewStage { get; }
+
+            public StageChangedEvent(int newStage)
+            {
+                NewStage = newStage;
+            }
         }
-    }
 
-    public class StageSpeedChangedEventR : GameEvent
-    {
-        public float StageSpeed { get; private set; }
-
-        public StageSpeedChangedEventR(float stageSpeed)
+        public class StageSpeedChangedEvent : GameEvent
         {
-            StageSpeed = stageSpeed;
+            public float StageSpeed { get; private set; }
+
+            public StageSpeedChangedEvent(float stageSpeed)
+            {
+                StageSpeed = stageSpeed;
+            }
         }
     }
 }

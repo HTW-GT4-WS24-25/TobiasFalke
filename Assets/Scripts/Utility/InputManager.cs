@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -46,13 +47,13 @@ public class InputManager : MonoBehaviour
     private void ProcessTrickAction()
     {
         // TODO: implement triggering
-        EventManager.Broadcast(new PlayerEvents.TrickActionEventR());
+        EventManager.Broadcast(new PlayerEvents.TrickActionEvent(1f));
     }
 
     private void ProcessSpecialAction()
     {
         // implement triggering
-        EventManager.Broadcast(new PlayerEvents.SpecialActionEventR());
+        EventManager.Broadcast(new PlayerEvents.SpecialActionEvent(5f));
     }
 
     public Vector2 GetMovementInput()

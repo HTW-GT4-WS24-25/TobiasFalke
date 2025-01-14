@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -23,25 +24,30 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        gameModel.CurrentGameState = GameModel.GameState.Running; // Start the game in the running state for development
-        EventManager.AddListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
+        gameModel.CurrentGameState = GameModel.GameState.Running;
+        EventManager.AddListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
     }
 
     private void OnDestroy()
     {
-        EventManager.RemoveListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
+        EventManager.RemoveListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
     }
 
-    private void OnGameStateChanged(GameEvents.GameStateChangedEventR obj)
+    private void OnGameStateChanged(GameEvents.GameStateChangedEvent evt)
     {
-        if (obj.NewGameState == GameModel.GameState.GameOver)
+        switch (evt.NewGameState)
         {
-            SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
-            AudioManager.Instance.PlayTrack("gameOverMusic");
-        }
-        else if (obj.NewGameState == GameModel.GameState.Running)
-        {
-            AudioManager.Instance.PlayTrack("mainSceneMusic");
+            case GameModel.GameState.Running:
+                AudioManager.Instance.PlayTrack("mainSceneMusic");
+                break;
+            case GameModel.GameState.Paused:
+                break;
+            case GameModel.GameState.Menu:
+                break;
+            case GameModel.GameState.GameOver:
+                SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
+                AudioManager.Instance.PlayTrack("gameOverMusic");
+                break;
         }
     }
 
@@ -61,28 +67,28 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Game has been started.");
         gameModel.CurrentGameState = GameModel.GameState.Running;
-        gameModel.countDownActive = true;
-        Time.timeScale = 0f; 
         gameModel.ResetElapsedTime();
     }
 
     private void TogglePause()
     {
-        if (gameModel.CurrentGameState == GameModel.GameState.Running) PauseGame();
-        else if (gameModel.CurrentGameState == GameModel.GameState.Paused) ResumeGame();
+        if (gameModel.CurrentGameState == GameModel.GameState.Running)
+            PauseGame();
+        else if (gameModel.CurrentGameState == GameModel.GameState.Paused)
+            ResumeGame();
     }
 
     public void PauseGame()
     {
         gameModel.CurrentGameState = GameModel.GameState.Paused;
-        Time.timeScale = 0f; // Pause game physics and updates
-        EventManager.Broadcast(new GameEvents.TogglePauseMenuEventR(true));
+        Time.timeScale = 0f;
+        EventManager.Broadcast(new GameEvents.TogglePauseMenuEvent(true));
     }
 
     public void ResumeGame()
     {
         gameModel.CurrentGameState = GameModel.GameState.Running;
-        Time.timeScale = 1f; // Resume game physics and updates
-        EventManager.Broadcast(new GameEvents.TogglePauseMenuEventR(false));
+        Time.timeScale = 1f;
+        EventManager.Broadcast(new GameEvents.TogglePauseMenuEvent(false));
     }
 }

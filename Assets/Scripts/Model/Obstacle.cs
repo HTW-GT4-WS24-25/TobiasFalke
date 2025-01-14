@@ -1,93 +1,97 @@
+using Events;
 using UnityEngine;
 
-public enum ObstacleType
+namespace Model
 {
-    Wall,
-    BigObstacle,
-    SmallObstacle,
-    Rail,
-    Hole
-}
-
-public class Obstacle : MonoBehaviour, IObject
-{
-    [SerializeField] internal ObstacleType Type;
-    private float fallSpeed;
-    public bool IsJumpable => Type != ObstacleType.Wall;
-
-    private void OnEnable()
+    public enum ObstacleType
     {
-        EventManager.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
-        InitializeFallSpeed(LevelModel.GetStageSpeed());
+        Wall,
+        BigObstacle,
+        SmallObstacle,
+        Rail,
+        Hole
     }
 
-    private void OnDisable()
+    public class Obstacle : MonoBehaviour, IObject
     {
-        EventManager.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
-    }
+        [SerializeField] internal ObstacleType Type;
+        private float fallSpeed;
+        public bool IsJumpable => Type != ObstacleType.Wall;
 
-    private void Update()
-    {
-        MoveDownwards();
-        if (transform.position.y <= -10)
+        private void OnEnable()
         {
-            Destroy(gameObject);
+            EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+            InitializeFallSpeed(LevelModel.GetStageSpeed());
         }
-    }
 
-    public void InitializeFallSpeed(float initialSpeed)
-    {
-        fallSpeed = initialSpeed;
-    }
-
-    public void UpdateFallSpeed(float newSpeed)
-    {
-        fallSpeed = newSpeed;
-    }
-
-    public void MoveDownwards()
-    {
-        transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
-    }
-
-    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEventR evt)
-    {
-        UpdateFallSpeed(evt.StageSpeed);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.gameObject.CompareTag("Player")) return;
-        EventManager.Broadcast(new PlayerEvents.ObstacleCollisionEventR(gameObject));
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (!other.gameObject.CompareTag("Player")) return;
-        EventManager.Broadcast(new PlayerEvents.ObstacleCollisionExitEventR(gameObject));
-    }
-
-    public int DetermineScore()
-    {
-        return Type switch
+        private void OnDisable()
         {
-            ObstacleType.BigObstacle => 50,
-            ObstacleType.SmallObstacle => 10,
-            ObstacleType.Hole => 60,
-            _ => 10
-        };
-    }
+            EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        }
+
+        private void Update()
+        {
+            MoveDownwards();
+            if (transform.position.y <= -10)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        public void InitializeFallSpeed(float initialSpeed)
+        {
+            fallSpeed = initialSpeed;
+        }
+
+        public void UpdateFallSpeed(float newSpeed)
+        {
+            fallSpeed = newSpeed;
+        }
+
+        public void MoveDownwards()
+        {
+            transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
+        }
+
+        private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+        {
+            UpdateFallSpeed(evt.StageSpeed);
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+            EventManager.Broadcast(new PlayerEvents.ObstacleCollisionEvent(gameObject));
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+            EventManager.Broadcast(new PlayerEvents.ObstacleCollisionExitEvent(gameObject));
+        }
+
+        public int DetermineScore()
+        {
+            return Type switch
+            {
+                ObstacleType.BigObstacle => 50,
+                ObstacleType.SmallObstacle => 10,
+                ObstacleType.Hole => 60,
+                _ => 10
+            };
+        }
     
-    public int DetermineDamageAmount()
-    {
-        return Type switch
+        public int DetermineDamageAmount()
         {
-            ObstacleType.Wall => -50,
-            ObstacleType.BigObstacle => -20,
-            ObstacleType.SmallObstacle => -10,
-            ObstacleType.Hole => -100,
-            ObstacleType.Rail => -30,
-            _ => -20
-        };
+            return Type switch
+            {
+                ObstacleType.Wall => -50,
+                ObstacleType.BigObstacle => -20,
+                ObstacleType.SmallObstacle => -10,
+                ObstacleType.Hole => -100,
+                ObstacleType.Rail => -30,
+                _ => -20
+            };
+        }
     }
 }

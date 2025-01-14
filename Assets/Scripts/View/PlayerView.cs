@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Events;
 using UnityEngine;
 
 public class PlayerView : MonoBehaviour
@@ -25,12 +26,12 @@ public class PlayerView : MonoBehaviour
     
     private void RegisterEvents()
     {
-        EventManager.AddListener<PlayerEvents.JumpEventR>(OnJumpAction);
-        EventManager.AddListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
-        EventManager.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
-        EventManager.AddListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
-        EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
-        EventManager.AddListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
+        EventManager.AddListener<PlayerEvents.JumpEvent>(OnJumpAction);
+        EventManager.AddListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
+        EventManager.AddListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManager.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManager.AddListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
     }
     
     private void OnDestroy()
@@ -40,12 +41,12 @@ public class PlayerView : MonoBehaviour
 
     private void UnregisterEvents()
     {
-        EventManager.RemoveListener<PlayerEvents.JumpEventR>(OnJumpAction);
-        EventManager.RemoveListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
-        EventManager.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
-        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
-        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
-        EventManager.RemoveListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
+        EventManager.RemoveListener<PlayerEvents.JumpEvent>(OnJumpAction);
+        EventManager.RemoveListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
+        EventManager.RemoveListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
+        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+        EventManager.RemoveListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
     }
     
     // sprite transformation
@@ -66,28 +67,28 @@ public class PlayerView : MonoBehaviour
         playerAnimator.Play(animationName);
     }
     
-    private void OnJumpAction(PlayerEvents.JumpEventR obj)
+    private void OnJumpAction(PlayerEvents.JumpEvent obj)
     {
         float newHeight = obj.initialJumpHeight - playerSprite.bounds.extents.y;
         playerShadowSprite.enabled = !playerShadowSprite.enabled;
     }
 
-    private void OnPickupCollision(PlayerEvents.PickupCollisionEventR obj)
+    private void OnPickupCollision(PlayerEvents.PickupCollisionEvent obj)
     {
         throw new NotImplementedException();
     }
 
-    private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEventR obj)
+    private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent obj)
     {
         //
     }
 
-    private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEventR obj)
+    private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent obj)
     {
         playerAnimator.SetBool("isInvincible", true);
     }
 
-    private void OnTrickAction(PlayerEvents.TrickActionEventR obj)
+    private void OnTrickAction(PlayerEvents.TrickActionEvent obj)
     {
         AudioManager.Instance.PlaySound("flip");
         playerAnimator.SetTrigger("Flip");
@@ -95,7 +96,7 @@ public class PlayerView : MonoBehaviour
     }
 
     
-    private void OnSpecialAction(PlayerEvents.SpecialActionEventR obj)
+    private void OnSpecialAction(PlayerEvents.SpecialActionEvent obj)
     {
         StartCoroutine(FlashBlue(6.0f));
     }

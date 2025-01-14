@@ -1,3 +1,4 @@
+using Events;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,6 @@ public class GameView : MonoBehaviour
     public TextMeshProUGUI levelCounter;
     public TextMeshProUGUI timeCounter;
     public TextMeshProUGUI scoreCounter;
-    
     [SerializeField] private Slider healthBar;
     [SerializeField] private Gradient healthGradient;
     [SerializeField] private Image healthFill;
@@ -16,44 +16,43 @@ public class GameView : MonoBehaviour
     [SerializeField] private Image specialFill;
     public TextMeshProUGUI speedCounter;
     public TextMeshProUGUI jumpDurationCounter;
-
     public Image specialActionButtonPopUp;
-    
+
     private void Awake()
     {
-        EventManager.AddListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
-        EventManager.AddListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
-        EventManager.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManager.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManager.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManager.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManager.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-        EventManager.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.AddListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
+        EventManager.AddListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManager.AddListener<PlayerEvents.ScoreChangedEvent>(OnScoreChanged);
+        EventManager.AddListener<PlayerEvents.HealthChangedEvent>(OnHealthChanged);
+        EventManager.AddListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
+        EventManager.AddListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
+        EventManager.AddListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManager.AddListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
     }
 
     private void OnDestroy()
     {
-        EventManager.RemoveListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
-        EventManager.RemoveListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
-        EventManager.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManager.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManager.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManager.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManager.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-        EventManager.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.RemoveListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
+        EventManager.RemoveListener<GameEvents.LevelChangedEvent>(OnLevelChanged);
+        EventManager.RemoveListener<PlayerEvents.ScoreChangedEvent>(OnScoreChanged);
+        EventManager.RemoveListener<PlayerEvents.HealthChangedEvent>(OnHealthChanged);
+        EventManager.RemoveListener<PlayerEvents.SpecialChangedEvent>(OnSpecialChanged);
+        EventManager.RemoveListener<PlayerEvents.SpeedChangedEvent>(OnSpeedChanged);
+        EventManager.RemoveListener<PlayerEvents.JumpDurationChangedEvent>(OnJumpDurationChanged);
+        EventManager.RemoveListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
     }
-    
+
     private void Update()
     {
         UpdateTimeCounter();
     }
-    
-    private void OnGameStateChanged(GameEvents.GameStateChangedEventR evt)
+
+    private void OnGameStateChanged(GameEvents.GameStateChangedEvent evt)
     {
         switch (evt.NewGameState)
         {
+            // TODO: potential visual effects on game state changes?
             case GameModel.GameState.Menu:
-                // Handle other UI elements as needed
                 break;
             case GameModel.GameState.Running:
                 break;
@@ -63,41 +62,42 @@ public class GameView : MonoBehaviour
                 break;
         }
     }
-    
-    private void OnLevelChanged(GameEvents.LevelChangedEventR evt)
+
+    private void OnLevelChanged(GameEvents.LevelChangedEvent evt)
     {
         levelCounter.text = evt.NewLevel.ToString();
     }
-    
-    private void OnScoreChanged(PlayerEvents.ScoreChangedEventR evt)
+
+    private void OnScoreChanged(PlayerEvents.ScoreChangedEvent evt)
     {
         scoreCounter.text = ((int)evt.NewScore).ToString();
     }
-    
-    private void OnHealthChanged(PlayerEvents.HealthChangedEventR evt)
+
+    private void OnHealthChanged(PlayerEvents.HealthChangedEvent evt)
     {
-        healthBar.value = evt.NewHealth;
+        healthBar.value = evt.NewHealth / 100;
         healthFill.color = healthGradient.Evaluate(healthBar.normalizedValue);
     }
-    
-    private void OnSpecialChanged(PlayerEvents.SpecialChangedEventR evt)
+
+    private void OnSpecialChanged(PlayerEvents.SpecialChangedEvent evt)
     {
-        specialBar.value = evt.NewSpecial;
+        specialBar.value = evt.NewSpecial / 100;
         specialFill.color = specialGradiant.Evaluate(specialBar.normalizedValue);
-        if (evt.NewSpecial == 100) specialActionButtonPopUp.gameObject.SetActive(true);
+        if (evt.NewSpecial == 100)
+            specialActionButtonPopUp.gameObject.SetActive(true);
     }
-    
-    private void OnSpeedChanged(PlayerEvents.SpeedChangedEventR evt)
+
+    private void OnSpeedChanged(PlayerEvents.SpeedChangedEvent evt)
     {
         speedCounter.text = evt.NewSpeed.ToString();
     }
-    
-    private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEventR evt)
+
+    private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEvent evt)
     {
         jumpDurationCounter.text = evt.NewJumpDuration.ToString();
     }
 
-    private void OnSpecialAction(PlayerEvents.SpecialActionEventR evt)
+    private void OnSpecialAction(PlayerEvents.SpecialActionEvent evt)
     {
         specialActionButtonPopUp.gameObject.SetActive(false);
     }
@@ -112,11 +112,6 @@ public class GameView : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(timeInSeconds / 60F);
         int seconds = Mathf.FloorToInt(timeInSeconds % 60F);
-        return $"{minutes:0}:{seconds:00}";
-    }
-
-    public void ToggleCountDown(bool setActive)
-    {
-        EventManager.Broadcast(new GameEvents.ToggleCountDownEventR(setActive));
+        return "{minutes:0}:{seconds:00}";
     }
 }

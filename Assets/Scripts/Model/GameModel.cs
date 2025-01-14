@@ -1,3 +1,5 @@
+using Events;
+
 public class GameModel
 {
     public enum GameState
@@ -7,14 +9,12 @@ public class GameModel
         Paused,
         GameOver
     }
-    
+
     private GameState _currentGameState;
-    private int CurrentLevel { get; set; } = 1; 
-    private const float secondsPerLevel = 5f;
-    private static float elapsedTime { get; set; }
-    public bool countDownActive;
-    private int initialCountDownTime = 5;
-    
+    private int currentLevel = 1; 
+    private const float SecondsPerLevel = 5f;
+    private static float elapsedTime;
+
     public GameState CurrentGameState
     {
         get => _currentGameState;
@@ -22,29 +22,26 @@ public class GameModel
         {
             if (_currentGameState == value) return;
             _currentGameState = value;
-            EventManager.Broadcast(new GameEvents.GameStateChangedEventR(_currentGameState));
+            EventManager.Broadcast(new GameEvents.GameStateChangedEvent(_currentGameState));
         }
     }
-    
-    public int GetCurrentLevel()
-    {
-        return CurrentLevel;
-    }
+
+    public int GetCurrentLevel() => currentLevel;
 
     private void IncreaseLevel()
     {
-        CurrentLevel++;
-        EventManager.Broadcast(new LevelEvents.StageChangedEventR(CurrentLevel));
+        currentLevel++;
+        EventManager.Broadcast(new LevelEvents.StageChangedEvent(currentLevel));
     }
-    
+
     public static float GetElapsedTime() => elapsedTime;
 
     public void UpdateElapsedTime(float deltaTime)
     {
         elapsedTime += deltaTime;
-        
-        if (elapsedTime >= CurrentLevel * secondsPerLevel) IncreaseLevel();
+        if (elapsedTime >= currentLevel * SecondsPerLevel)
+            IncreaseLevel();
     }
-    
+
     public void ResetElapsedTime() => elapsedTime = 0f;
 }

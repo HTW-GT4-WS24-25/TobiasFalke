@@ -4712,7 +4712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7005b97927774abeb851790de70c6489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelView: {fileID: 0}
+  levelView: {fileID: 0}
   spawnableObstacles:
   - {fileID: 8069308713666372123, guid: 0bebf728583f0954196ce77f11256017, type: 3}
   - {fileID: 8069308713666372123, guid: 55482b20f64f43a42b5866871bae65d7, type: 3}
@@ -5099,8 +5099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b80af406c0d416eb370de69d3fc8c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerShadowSprite: {fileID: 1996757954}
-  playerShadowAnimator: {fileID: 1996757953}
 --- !u!4 &6381919785034045551
 Transform:
   m_ObjectHideFlags: 0

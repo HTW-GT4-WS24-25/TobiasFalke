@@ -1,125 +1,118 @@
+using Model;
 using UnityEngine;
 
-public static class PlayerEvents
+namespace Events
 {
-    public class ObstacleCollisionEventR : GameEvent
+    public static class PlayerEvents
     {
-        public GameObject Obstacle { get; }
-
-        public ObstacleCollisionEventR(GameObject obstacle)
+        public class ObstacleCollisionEvent : GameEvent
         {
-            Obstacle = obstacle;
+            public GameObject Obstacle { get; }
+
+            public ObstacleCollisionEvent(GameObject obstacle)
+            {
+                Obstacle = obstacle;
+            }
         }
-    }
 
-    public class ObstacleCollisionExitEventR : GameEvent
-    {
-        public GameObject Obstacle { get; }
-
-        public ObstacleCollisionExitEventR(GameObject obstacle)
+        public class ObstacleCollisionExitEvent : GameEvent
         {
-            Obstacle = obstacle;
+            public GameObject Obstacle { get; }
+
+            public ObstacleCollisionExitEvent(GameObject obstacle)
+            {
+                Obstacle = obstacle;
+            }
         }
-    }
 
-    public class PickupCollisionEventR : GameEvent
-    {
-        public GameObject Pickup { get; }
-
-        public PickupCollisionEventR(GameObject pickup)
+        public class PickupCollisionEvent : GameEvent
         {
-            Pickup = pickup;
-        }
-    }
-    public class ScoreChangedEventR : GameEvent
-    {
-        public float NewScore { get; }
+            public PickupType PickupType { get; }
 
-        public ScoreChangedEventR(float newScore)
+            public PickupCollisionEvent(PickupType pickupType)
+            {
+                PickupType = pickupType;
+            }
+        }
+        public class ScoreChangedEvent : GameEvent
         {
-            NewScore = newScore;
+            public float NewScore { get; }
+
+            public ScoreChangedEvent(float newScore)
+            {
+                NewScore = newScore;
+            }
         }
-    }
 
-    public class HealthChangedEventR : GameEvent
-    {
-        public float NewHealth { get; private set; }
-
-        public HealthChangedEventR(float newHealth)
+        public class HealthChangedEvent : GameEvent
         {
-            NewHealth = newHealth;
+            public float NewHealth { get; private set; }
+
+            public HealthChangedEvent(float newHealth)
+            {
+                NewHealth = newHealth;
+            }
         }
-    }
 
-    public class SpecialChangedEventR : GameEvent
-    {
-        public float NewSpecial { get; private set; }
-
-        public SpecialChangedEventR(float newSpecial)
+        public class SpecialChangedEvent : GameEvent
         {
-            NewSpecial = newSpecial;
+            public float NewSpecial { get; private set; }
+
+            public SpecialChangedEvent(float newSpecial)
+            {
+                NewSpecial = newSpecial;
+            }
         }
-    }
 
-    public class SpeedChangedEventR : GameEvent
-    {
-        public float NewSpeed { get; private set; }
-
-        public SpeedChangedEventR(float newSpeed)
+        public class SpeedChangedEvent : GameEvent
         {
-            NewSpeed = newSpeed;
+            public float NewSpeed { get; private set; }
+
+            public SpeedChangedEvent(float newSpeed)
+            {
+                NewSpeed = newSpeed;
+            }
         }
-    }
 
-    public class JumpDurationChangedEventR : GameEvent
-    {
-        public float NewJumpDuration { get; private set; }
-
-        public JumpDurationChangedEventR(float newJumpDuration)
+        public class JumpDurationChangedEvent : GameEvent
         {
-            NewJumpDuration = newJumpDuration;
+            public float NewJumpDuration { get; private set; }
+
+            public JumpDurationChangedEvent(float newJumpDuration)
+            {
+                NewJumpDuration = newJumpDuration;
+            }
         }
-    }
 
-    public class JumpEventR : GameEvent
-    {
-        public float initialJumpHeight;
-        public float jumpDuration { get; }
-
-        public JumpEventR(float jumpHeight)
+        public class JumpEvent : GameEvent
         {
-            initialJumpHeight = jumpHeight;
+            public float initialJumpHeight;
+            public float jumpDuration { get; }
+
+            public JumpEvent(float jumpHeight)
+            {
+                initialJumpHeight = jumpHeight;
+            }
         }
-    }
     
-    public class TrickActionEventR : GameEvent
-    {
-        public int Points;
-        public string TrickName { get; }
-
-        public TrickActionEventR(string trickName)
+        public class TrickActionEvent : GameEvent
         {
-            TrickName = trickName;
+            public float TrickActionScore { get; }
+
+            public TrickActionEvent(float trickActionScore)
+            {
+                TrickActionScore = trickActionScore;
+            }
         }
 
-        public TrickActionEventR()
+        public class SpecialActionEvent : GameEvent
         {
-            throw new System.NotImplementedException();
-        }
-    }
+            public float SpecialActionDuration { get; }
 
-    public class SpecialActionEventR : GameEvent
-    {
-        public string SpecialAction { get; }
-
-        public SpecialActionEventR(string specialAction)
-        {
-            SpecialAction = specialAction;
-        }
-
-        public SpecialActionEventR()
-        {
-            throw new System.NotImplementedException();
+            public SpecialActionEvent(float specialActionDuration)
+            {
+                SpecialActionDuration = specialActionDuration;
+            }
         }
     }
 }

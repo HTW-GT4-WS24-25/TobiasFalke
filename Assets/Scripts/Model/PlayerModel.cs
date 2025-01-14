@@ -25,7 +25,6 @@ public class PlayerModel
     public void IncreaseScore(float points) => score += (int)(points * scoreMultiplier);
     public float GetHealth() => health;
     public void SetHealth(float newHealth) => health = Mathf.Clamp(newHealth, 0, 100);
-    public void IncreaseHealth(int amount) => SetHealth(health + amount);
     public float GetSpecial() => special;
     public void SetSpecial(float newSpecial) => special = newSpecial;
     
@@ -54,56 +53,6 @@ public class PlayerModel
     public float GetInvincibilityDuration() => invincibilityDuration;
     public void SetInvincibilityDuration(float newDuration) => invincibilityDuration = newDuration;
     
-    private void Start()
-    {
-        RegisterEvents();
-    }
+    
 
-    private void RegisterEvents()
-    {
-        EventManager.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManager.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManager.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManager.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManager.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-    }
-
-    private void OnDestroy()
-    {
-        UnregisterEvents();
-    }
-
-    private void UnregisterEvents()
-    {
-        EventManager.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManager.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManager.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManager.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManager.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-    }
-
-    private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEventR obj)
-    {
-        SetJumpDuration(jumpDuration + obj.NewJumpDuration);
-    }
-
-    private void OnSpeedChanged(PlayerEvents.SpeedChangedEventR obj)
-    {
-        SetSpeed(speed + obj.NewSpeed);
-    }
-
-    private void OnScoreChanged(PlayerEvents.ScoreChangedEventR obj)
-    {
-        SetScore(score + obj.NewScore);
-    }
-
-    private void OnSpecialChanged(PlayerEvents.SpecialChangedEventR obj)
-    {
-        SetSpecial(special + obj.NewSpecial);
-    }
-
-    private void OnHealthChanged(PlayerEvents.HealthChangedEventR obj)
-    {
-        SetHealth(health + obj.NewHealth);
-    }
 }

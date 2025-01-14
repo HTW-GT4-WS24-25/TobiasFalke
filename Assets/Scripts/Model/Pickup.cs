@@ -1,89 +1,72 @@
+using Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public enum ItemType
+namespace Model
 {
-    HealthBoost,
-    HealthBoom,
-    SpecialBoost,
-    SpecialBoom,
-    SpeedBoost,
-    SpeedBoom,
-    JumpBoost,
-    JumpBoom,
-    ScoreBoost,
-    ScoreBoom,
-    ScoreMultiplierBoost
-}
-
-public class Pickup : MonoBehaviour, IObject
-{
-    [SerializeField] private ItemType itemType;
-    private float fallSpeed;
-
-    private void OnEnable()
+    public enum PickupType
     {
-        EventManager.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
-        InitializeFallSpeed(LevelModel.GetStageSpeed());
+        HealthBoost,
+        HealthBoom,
+        SpecialBoost,
+        SpecialBoom,
+        SpeedBoost,
+        SpeedBoom,
+        JumpBoost,
+        JumpBoom,
+        ScoreBoost,
+        ScoreBoom,
+        ScoreMultiplierBoost
     }
 
-    private void OnDisable()
+    public class Pickup : MonoBehaviour, IObject
     {
-        EventManager.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
-    }
+        [FormerlySerializedAs("itemType")] [SerializeField]
+        private PickupType pickupType;
+        private float fallSpeed;
 
-    private void Update()
-    {
-        MoveDownwards();
-    }
-
-    public void InitializeFallSpeed(float initialSpeed)
-    {
-        fallSpeed = initialSpeed;
-    }
-
-    public void UpdateFallSpeed(float newSpeed)
-    {
-        fallSpeed = newSpeed;
-    }
-
-    public void MoveDownwards()
-    {
-        transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
-    }
-
-    private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEventR evt)
-    {
-        UpdateFallSpeed(evt.StageSpeed);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.gameObject.CompareTag("Player")) return;
-        var evt = new PlayerEvents.PickupCollisionEventR(gameObject);
-        EventManager.Broadcast(evt);
-        TriggerItemEffect();
-        Destroy(gameObject);
-    }
-
-    private void TriggerItemEffect()
-    {
-        switch (itemType)
+        private void OnEnable()
         {
-            case ItemType.HealthBoost:
-                EventManager.Broadcast(new PlayerEvents.HealthChangedEventR(50f));
-                break;
-            case ItemType.SpecialBoost:
-                EventManager.Broadcast(new PlayerEvents.SpecialChangedEventR(30f));
-                break;
-            case ItemType.ScoreBoost:
-                EventManager.Broadcast(new PlayerEvents.ScoreChangedEventR(100f));
-                break;
-            case ItemType.SpeedBoost:
-                EventManager.Broadcast(new PlayerEvents.SpeedChangedEventR(1f));
-                break;
-            case ItemType.JumpBoost:
-                EventManager.Broadcast(new PlayerEvents.JumpDurationChangedEventR(50f));
-                break;
+            EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+            InitializeFallSpeed(LevelModel.GetStageSpeed());
+        }
+
+        private void OnDisable()
+        {
+            EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+        }
+
+        private void Update()
+        {
+            MoveDownwards();
+        }
+
+        public void InitializeFallSpeed(float initialSpeed)
+        {
+            fallSpeed = initialSpeed;
+        }
+
+        public void UpdateFallSpeed(float newSpeed)
+        {
+            fallSpeed = newSpeed;
+        }
+
+        public void MoveDownwards()
+        {
+            transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
+        }
+
+        private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+        {
+            UpdateFallSpeed(evt.StageSpeed);
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+            var evt = new PlayerEvents.PickupCollisionEvent(pickupType);
+            EventManager.Broadcast(evt);
+            Destroy(gameObject);
         }
     }
 }
