@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameViewR : MonoBehaviour
+public class GameView : MonoBehaviour
 {
     public TextMeshProUGUI levelCounter;
     public TextMeshProUGUI timeCounter;
@@ -21,26 +21,26 @@ public class GameViewR : MonoBehaviour
     
     private void Awake()
     {
-        EventManagerR.AddListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
-        EventManagerR.AddListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
-        EventManagerR.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManagerR.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManagerR.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManagerR.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManagerR.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-        EventManagerR.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.AddListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
+        EventManager.AddListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
+        EventManager.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManager.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManager.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManager.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManager.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
+        EventManager.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
     }
 
     private void OnDestroy()
     {
-        EventManagerR.RemoveListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
-        EventManagerR.RemoveListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
-        EventManagerR.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManagerR.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManagerR.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.RemoveListener<GameEvents.GameStateChangedEventR>(OnGameStateChanged);
+        EventManager.RemoveListener<GameEvents.LevelChangedEventR>(OnLevelChanged);
+        EventManager.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManager.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManager.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManager.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManager.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
+        EventManager.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
     }
     
     private void Update()
@@ -52,14 +52,14 @@ public class GameViewR : MonoBehaviour
     {
         switch (evt.NewGameState)
         {
-            case GameModelR.GameState.Menu:
+            case GameModel.GameState.Menu:
                 // Handle other UI elements as needed
                 break;
-            case GameModelR.GameState.Running:
+            case GameModel.GameState.Running:
                 break;
-            case GameModelR.GameState.Paused:
+            case GameModel.GameState.Paused:
                 break;
-            case GameModelR.GameState.GameOver:
+            case GameModel.GameState.GameOver:
                 break;
         }
     }
@@ -104,7 +104,7 @@ public class GameViewR : MonoBehaviour
 
     private void UpdateTimeCounter()
     {
-        float elapsedTime = GameModelR.GetElapsedTime();
+        float elapsedTime = GameModel.GetElapsedTime();
         timeCounter.text = FormatTime(elapsedTime);
     }
 
@@ -117,6 +117,6 @@ public class GameViewR : MonoBehaviour
 
     public void ToggleCountDown(bool setActive)
     {
-        EventManagerR.Broadcast(new GameEvents.ToggleCountDownEventR(setActive));
+        EventManager.Broadcast(new GameEvents.ToggleCountDownEventR(setActive));
     }
 }

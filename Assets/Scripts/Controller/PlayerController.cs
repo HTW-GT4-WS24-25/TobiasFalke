@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerControllerR : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public PlayerView playerView;
     private PlayerModel playerModel;
@@ -29,20 +29,20 @@ public class PlayerControllerR : MonoBehaviour
 
     private void RegisterEvents()
     {
-        EventManagerR.AddListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
-        EventManagerR.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
-        EventManagerR.AddListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
-        EventManagerR.AddListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
-        EventManagerR.AddListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
+        EventManager.AddListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
+        EventManager.AddListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.AddListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
+        EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
+        EventManager.AddListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
     }
 
     private void BroadcastPlayerStatus()
     {
-        EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEventR(playerModel.GetScore()));
-        EventManagerR.Broadcast(new PlayerEvents.HealthChangedEventR(playerModel.GetHealth()));
-        EventManagerR.Broadcast(new PlayerEvents.SpecialChangedEventR(playerModel.GetSpecial()));
-        EventManagerR.Broadcast(new PlayerEvents.SpeedChangedEventR(playerModel.GetSpeed()));
-        EventManagerR.Broadcast(new PlayerEvents.JumpDurationChangedEventR(playerModel.GetJumpDuration()));
+        EventManager.Broadcast(new PlayerEvents.ScoreChangedEventR(playerModel.GetScore()));
+        EventManager.Broadcast(new PlayerEvents.HealthChangedEventR(playerModel.GetHealth()));
+        EventManager.Broadcast(new PlayerEvents.SpecialChangedEventR(playerModel.GetSpecial()));
+        EventManager.Broadcast(new PlayerEvents.SpeedChangedEventR(playerModel.GetSpeed()));
+        EventManager.Broadcast(new PlayerEvents.JumpDurationChangedEventR(playerModel.GetJumpDuration()));
     }
 
     private void OnDestroy()
@@ -52,11 +52,11 @@ public class PlayerControllerR : MonoBehaviour
 
     private void UnregisterEvents()
     {
-        EventManagerR.RemoveListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
-        EventManagerR.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
-        EventManagerR.RemoveListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
-        EventManagerR.RemoveListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
-        EventManagerR.RemoveListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
+        EventManager.RemoveListener<PlayerEvents.TrickActionEventR>(OnTrickAction);
+        EventManager.RemoveListener<PlayerEvents.SpecialActionEventR>(OnSpecialAction);
+        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEventR>(OnObstacleCollision);
+        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEventR>(OnObstacleExit);
+        EventManager.RemoveListener<PlayerEvents.PickupCollisionEventR>(OnPickupCollision);
     }
 
     private void Update()
@@ -86,13 +86,13 @@ public class PlayerControllerR : MonoBehaviour
     {
         if (!playerModel.GetIsJumping())
         {
-            AudioManagerR.Instance.StopBackgroundTrack();
-            AudioManagerR.Instance.PlaySound("jump");
+            AudioManager.Instance.StopBackgroundTrack();
+            AudioManager.Instance.PlaySound("jump");
             playerModel.SetIsJumping(true);
             jumpTime = 0;
             initialJumpY = transform.position.y;
             float shadowSpriteHeight = initialJumpY;
-            EventManagerR.Broadcast(new PlayerEvents.JumpEventR(shadowSpriteHeight));
+            EventManager.Broadcast(new PlayerEvents.JumpEventR(shadowSpriteHeight));
         }
     }
 
@@ -106,7 +106,7 @@ public class PlayerControllerR : MonoBehaviour
         // TODO: implement trigger via input manager
         if (Input.GetKeyDown("k"))
         {
-            EventManagerR.Broadcast(new PlayerEvents.TrickActionEventR());
+            EventManager.Broadcast(new PlayerEvents.TrickActionEventR());
         }
     }
     
@@ -126,7 +126,7 @@ public class PlayerControllerR : MonoBehaviour
 
     private void HandleLanding()
     {
-        AudioManagerR.Instance.PlaySound("land");
+        AudioManager.Instance.PlaySound("land");
         if (isAboveRail) StartGrinding();
         playerModel.SetIsJumping(false);
     }
@@ -135,7 +135,7 @@ public class PlayerControllerR : MonoBehaviour
     {
         Debug.Log("Grinding!");
         playerModel.SetIsGrinding(true);
-        AudioManagerR.Instance.PlaySound("grinding");
+        AudioManager.Instance.PlaySound("grinding");
     }
 
     private void HandleGrinding()
@@ -176,7 +176,10 @@ public class PlayerControllerR : MonoBehaviour
 
     private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEventR evt)
     {
+        if (playerModel.GetIsInvincible()) return;
         Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+        int score = obstacle.DetermineScore();
+        EventManager.Broadcast(new PlayerEvents.ScoreChangedEventR(score));
         if (obstacle.Type == ObstacleType.Rail)
         {
             isAboveRail = false;
@@ -187,14 +190,18 @@ public class PlayerControllerR : MonoBehaviour
     private void TriggerCollisionEffect(Obstacle obstacle)
     {
         if (playerModel.GetIsInvincible()) return;
-
+        Debug.Log("Collision");
         StartCoroutine(SetInvincibility());
-        AudioManagerR.Instance.PlaySound("crash");
+        AudioManager.Instance.PlaySound("crash");
         int damage = obstacle.DetermineDamageAmount();
-        EventManagerR.Broadcast(new PlayerEvents.HealthChangedEventR(damage));
+        Debug.Log("Took damage " + damage);
+        playerModel.SetHealth(playerModel.GetHealth() + damage);
+        EventManager.Broadcast(new PlayerEvents.HealthChangedEventR(damage));
+        Debug.Log("New health " + playerModel.GetHealth());
         if (playerModel.GetHealth() <= 0)
         {
-            // TODO:  EventManagerR.Broadcast(new GameEvents.TriggerGameOver());
+            Debug.Log("Death triggered");
+            EventManager.Broadcast(new GameEvents.GameStateChangedEventR(GameModel.GameState.GameOver));
         }
     }
 
@@ -208,15 +215,15 @@ public class PlayerControllerR : MonoBehaviour
     private void UpdateScore()
     {
         playerModel.SetScore(playerModel.GetScore() + Time.deltaTime);
-        EventManagerR.Broadcast(new PlayerEvents.ScoreChangedEventR(playerModel.GetScore() + Time.deltaTime));
+        EventManager.Broadcast(new PlayerEvents.ScoreChangedEventR(playerModel.GetScore() + Time.deltaTime));
     }
 
     private void OnSpecialAction(PlayerEvents.SpecialActionEventR obj)
     {
         // Trigger status changes of special action.
         // stats.TriggerSpecialAction(); // TODO: make special action stat raise temporary (6 seconds (?))
-        EventManagerR.Broadcast(new PlayerEvents.SpecialActionEventR());
-        AudioManagerR.Instance.PlaySound("specialAction");
+        EventManager.Broadcast(new PlayerEvents.SpecialActionEventR());
+        AudioManager.Instance.PlaySound("specialAction");
     }
 
     private void OnTrickAction(PlayerEvents.TrickActionEventR obj)
@@ -226,7 +233,7 @@ public class PlayerControllerR : MonoBehaviour
 
     private void OnPickupCollision(PlayerEvents.PickupCollisionEventR obj)
     {
-        AudioManagerR.Instance.PlaySound("item");
+        AudioManager.Instance.PlaySound("item");
         // TODO: implement item effect
         // TriggerItemEffect(stats,evt.ItemType);
         // if (itemEffects.TryGetValue(type, out IItemEffect effect)) {effect.ApplyEffect(playerStats); }

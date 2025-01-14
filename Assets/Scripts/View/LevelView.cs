@@ -18,14 +18,14 @@ public class LevelView : MonoBehaviour
     private void Start()
     {
         InitializeBackgrounds();
-        EventManagerR.AddListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
-        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
+        EventManager.AddListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
+        EventManager.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
     }
 
     private void OnDestroy()
     {
-        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
-        EventManagerR.RemoveListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
+        EventManager.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
+        EventManager.RemoveListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
     }
 
     private void Update()

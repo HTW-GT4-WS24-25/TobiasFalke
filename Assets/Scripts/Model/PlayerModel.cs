@@ -61,11 +61,11 @@ public class PlayerModel
 
     private void RegisterEvents()
     {
-        EventManagerR.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManagerR.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManagerR.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManagerR.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManagerR.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
+        EventManager.AddListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManager.AddListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManager.AddListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManager.AddListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManager.AddListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
     }
 
     private void OnDestroy()
@@ -75,11 +75,11 @@ public class PlayerModel
 
     private void UnregisterEvents()
     {
-        EventManagerR.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
-        EventManagerR.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
-        EventManagerR.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
-        EventManagerR.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
+        EventManager.RemoveListener<PlayerEvents.HealthChangedEventR>(OnHealthChanged);
+        EventManager.RemoveListener<PlayerEvents.SpecialChangedEventR>(OnSpecialChanged);
+        EventManager.RemoveListener<PlayerEvents.ScoreChangedEventR>(OnScoreChanged);
+        EventManager.RemoveListener<PlayerEvents.SpeedChangedEventR>(OnSpeedChanged);
+        EventManager.RemoveListener<PlayerEvents.JumpDurationChangedEventR>(OnJumpDurationChanged);
     }
 
     private void OnJumpDurationChanged(PlayerEvents.JumpDurationChangedEventR obj)

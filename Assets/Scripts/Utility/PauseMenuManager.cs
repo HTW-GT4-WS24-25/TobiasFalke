@@ -19,19 +19,19 @@ public class PauseMenuManager : MonoBehaviour
 
         quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
         continueButton?.RegisterCallback<ClickEvent>(OnClickContinueButton);
-        EventManagerR.AddListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
+        EventManager.AddListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
     }
 
     private void OnDisable()
     {
         continueButton?.UnregisterCallback<ClickEvent>(OnClickContinueButton);
         quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
-        EventManagerR.RemoveListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
+        EventManager.RemoveListener<GameEvents.TogglePauseMenuEventR>(OnTogglePauseMenu);
     }
 
     private void OnClickContinueButton(ClickEvent evt)
     {
-        GameControllerR.Instance.ResumeGame();
+        GameController.Instance.ResumeGame();
     }
 
     private void OnClickExitButton(ClickEvent evt)

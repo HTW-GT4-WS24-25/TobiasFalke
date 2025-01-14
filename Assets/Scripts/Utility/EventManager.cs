@@ -6,7 +6,7 @@ public class GameEvent
 {
 }
 
-public static class EventManagerR
+public static class EventManager
 {
     private static readonly Dictionary<Type, Action<GameEvent>> events = new Dictionary<Type, Action<GameEvent>>();
     private static readonly Dictionary<Delegate, Action<GameEvent>> eventLookup = new Dictionary<Delegate, Action<GameEvent>>();
@@ -59,7 +59,7 @@ public static class EventManagerR
                 action.Invoke(evt);
             }
             catch (Exception ex) {
-              Debug.Log("ERROR during event broadcast!");
+              Debug.Log(ex);
             }
         }
     }

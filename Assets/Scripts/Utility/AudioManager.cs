@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AudioManagerR : MonoBehaviour, IAudio
+public class AudioManager : MonoBehaviour, IAudio
 {
     public static IAudio Instance { get; private set; }
     [SerializeField] private AudioSource musicSource;

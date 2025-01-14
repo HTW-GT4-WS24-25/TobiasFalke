@@ -17,13 +17,13 @@ public class Obstacle : MonoBehaviour, IObject
 
     private void OnEnable()
     {
-        EventManagerR.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
+        EventManager.AddListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
         InitializeFallSpeed(LevelModel.GetStageSpeed());
     }
 
     private void OnDisable()
     {
-        EventManagerR.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
+        EventManager.RemoveListener<LevelEvents.StageSpeedChangedEventR>(OnLevelSpeedChanged);
     }
 
     private void Update()
@@ -58,17 +58,13 @@ public class Obstacle : MonoBehaviour, IObject
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        DetermineDamageAmount();
-        var evt = new PlayerEvents.ObstacleCollisionEventR(gameObject);
-        EventManagerR.Broadcast(evt);
+        EventManager.Broadcast(new PlayerEvents.ObstacleCollisionEventR(gameObject));
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        DetermineDamageAmount();
-        var evt = new PlayerEvents.ObstacleCollisionExitEventR(gameObject);
-        EventManagerR.Broadcast(evt);
+        EventManager.Broadcast(new PlayerEvents.ObstacleCollisionExitEventR(gameObject));
     }
 
     public int DetermineScore()

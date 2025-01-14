@@ -1,4 +1,4 @@
-public class GameModelR
+public class GameModel
 {
     public enum GameState
     {
@@ -22,7 +22,7 @@ public class GameModelR
         {
             if (_currentGameState == value) return;
             _currentGameState = value;
-            EventManagerR.Broadcast(new GameEvents.GameStateChangedEventR(_currentGameState));
+            EventManager.Broadcast(new GameEvents.GameStateChangedEventR(_currentGameState));
         }
     }
     
@@ -34,7 +34,7 @@ public class GameModelR
     private void IncreaseLevel()
     {
         CurrentLevel++;
-        EventManagerR.Broadcast(new LevelEvents.StageChangedEventR(CurrentLevel));
+        EventManager.Broadcast(new LevelEvents.StageChangedEventR(CurrentLevel));
     }
     
     public static float GetElapsedTime() => elapsedTime;

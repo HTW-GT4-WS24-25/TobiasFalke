@@ -23,24 +23,24 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
-        AudioManagerR.Instance.PlayTrack("mainMenuMusic");
+        AudioManager.Instance.PlayTrack("mainMenuMusic");
     }
 
     private void OnClickPlayButton(ClickEvent evt)
     {
-        AudioManagerR.Instance.PlaySound("clickPlay");
+        AudioManager.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
     }
     private void OnClickExitButton(ClickEvent evt)
     {
-        AudioManagerR.Instance.PlaySound("quitGame");
+        AudioManager.Instance.PlaySound("quitGame");
         //TODO Fix structure (currently also in GameManager)
         HideMenu();
         Application.Quit();
     }
     private void OnClickTutorialButton(ClickEvent evt)
     {
-        AudioManagerR.Instance.PlaySound("openSettings");
+        AudioManager.Instance.PlaySound("openSettings");
         // SceneLoader.Instance.LoadSettingsMenu();
     }
     

@@ -21,7 +21,7 @@ public class LevelController : MonoBehaviour
     {
         UpdateLevelView();
         BroadcastLevelSpeedChange();
-        EventManagerR.AddListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
+        EventManager.AddListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
     }
 
     void Update()
@@ -31,13 +31,13 @@ public class LevelController : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventManagerR.RemoveListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
+        EventManager.RemoveListener<LevelEvents.StageChangedEventR>(OnLevelChanged);
     }
 
     private void UpdateLevelView()
     {
-        EventManagerR.Broadcast(new LevelEvents.StageSpeedChangedEventR(LevelModel.GetStageSpeed()));
-        EventManagerR.Broadcast(new LevelEvents.StageChangedEventR(levelModel.GetCurrentStage()));
+        EventManager.Broadcast(new LevelEvents.StageSpeedChangedEventR(LevelModel.GetStageSpeed()));
+        EventManager.Broadcast(new LevelEvents.StageChangedEventR(levelModel.GetCurrentStage()));
     }
 
     void TriggerSpawnInterval()
@@ -86,7 +86,7 @@ public class LevelController : MonoBehaviour
     private void BroadcastLevelSpeedChange()
     {
         float newSpeed = LevelModel.GetStageSpeed();
-        EventManagerR.Broadcast(new LevelEvents.StageSpeedChangedEventR(newSpeed));
+        EventManager.Broadcast(new LevelEvents.StageSpeedChangedEventR(newSpeed));
     }
 
     private void OnLevelChanged(LevelEvents.StageChangedEventR evt)

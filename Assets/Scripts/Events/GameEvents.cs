@@ -2,9 +2,9 @@ public static class GameEvents
 {
     public class GameStateChangedEventR : GameEvent
     {
-        public GameModelR.GameState NewGameState { get; }
+        public GameModel.GameState NewGameState { get; }
 
-        public GameStateChangedEventR(GameModelR.GameState newGameState)
+        public GameStateChangedEventR(GameModel.GameState newGameState)
         {
             NewGameState = newGameState;
         }
