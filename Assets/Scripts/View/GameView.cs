@@ -36,22 +36,22 @@ namespace View
             timeCounter.text = FormatTime(evt.NewTime);
         }
 
-        private void OnScoreChanged(PlayerEvent.ScoreChanged evt)
+        private void OnScoreChanged(PlayerEvent.ScorePointsChanged evt)
         {
-            scoreCounter.text = ((int)evt.NewScore).ToString();
+            scoreCounter.text = ((int)evt.NewScorePoints).ToString();
         }
 
-        private void OnHealthChanged(PlayerEvent.HealthChanged evt)
+        private void OnHealthChanged(PlayerEvent.HealthPointsChanged evt)
         {
-            healthBar.value = evt.NewHealth / 100;
+            healthBar.value = evt.NewHealthPoints / 100;
             healthFill.color = healthGradient.Evaluate(healthBar.normalizedValue);
         }
 
-        private void OnSpecialChanged(PlayerEvent.SpecialChanged evt)
+        private void OnSpecialChanged(PlayerEvent.SpecialPointsChanged evt)
         {
-            specialBar.value = evt.NewSpecial / 100;
+            specialBar.value = evt.NewSpecialPoints / 100;
             specialFill.color = specialGradiant.Evaluate(specialBar.normalizedValue);
-            if (evt.NewSpecial == 100) specialActionButtonPopUp.gameObject.SetActive(true);
+            if (evt.NewSpecialPoints == 100) specialActionButtonPopUp.gameObject.SetActive(true);
         }
 
         private void OnSpeedChanged(PlayerEvent.SpeedChanged evt)
@@ -80,9 +80,9 @@ namespace View
         {
             EventManager.AddListener<LevelEvent.StageChanged>(OnLevelChanged);
             EventManager.AddListener<LevelEvent.TimeElapsed>(OnTimeElapsed);
-            EventManager.AddListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
-            EventManager.AddListener<PlayerEvent.HealthChanged>(OnHealthChanged);
-            EventManager.AddListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
+            EventManager.AddListener<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
+            EventManager.AddListener<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
+            EventManager.AddListener<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);
             EventManager.AddListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
             EventManager.AddListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
             EventManager.AddListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
@@ -96,9 +96,9 @@ namespace View
         private void UnsubscribeEvents()
         {
             EventManager.RemoveListener<LevelEvent.StageChanged>(OnLevelChanged);
-            EventManager.RemoveListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
-            EventManager.RemoveListener<PlayerEvent.HealthChanged>(OnHealthChanged);
-            EventManager.RemoveListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
+            EventManager.RemoveListener<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
+            EventManager.RemoveListener<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
+            EventManager.RemoveListener<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);
             EventManager.RemoveListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
             EventManager.RemoveListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
             EventManager.RemoveListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);

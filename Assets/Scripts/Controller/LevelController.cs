@@ -1,8 +1,8 @@
+using Config;
 using Events;
 using Interfaces;
 using Model;
 using UnityEngine;
-using Utility;
 using Random = UnityEngine.Random;
 
 namespace Controller
@@ -33,16 +33,6 @@ namespace Controller
         private void Start()
         {
             RegisterEvents();
-        }
-
-        private void OnStageChanged(LevelEvent.StageChanged evt)
-        {
-            float newStageSpeed = GameConfig.BaseStageSpeed + GameConfig.SpeedIncreasePerStage;
-            levelModel.StageSpeed = newStageSpeed;
-            float newObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval / levelModel.CurrentStage;
-            levelModel.ObstacleSpawnInterval = newObstacleSpawnInterval;
-            float newPickupSpawnInterval = GameConfig.BasePickupSpawnInterval / levelModel.CurrentStage;
-            levelModel.PickupSpawnInterval = newPickupSpawnInterval;
         }
         
         private void Update()
@@ -105,7 +95,21 @@ namespace Controller
             return hit != null;
         }
         
+        private void OnStageChanged(LevelEvent.StageChanged evt)
+        {
+            EnhanceLevelDifficulty();
+        }
 
+        private void EnhanceLevelDifficulty()
+        {
+            float newStageSpeed = GameConfig.BaseStageSpeed + GameConfig.SpeedIncreasePerStage;
+            levelModel.StageSpeed = newStageSpeed;
+            float newObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval / levelModel.CurrentStage;
+            levelModel.ObstacleSpawnInterval = newObstacleSpawnInterval;
+            float newPickupSpawnInterval = GameConfig.BasePickupSpawnInterval / levelModel.CurrentStage;
+            levelModel.PickupSpawnInterval = newPickupSpawnInterval;
+        }
+        
         private void RegisterEvents()
         {
             EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);

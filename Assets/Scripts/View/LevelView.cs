@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using Config;
 using Events;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Utility;
 
 namespace View
 {

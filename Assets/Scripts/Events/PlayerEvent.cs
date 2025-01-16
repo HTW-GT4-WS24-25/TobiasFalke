@@ -5,6 +5,129 @@ namespace Events
 {
     public static class PlayerEvent
     {
+        public class ScorePointsChanged : Event
+        {
+            public float NewScorePoints { get; }
+
+            public ScorePointsChanged(float newScorePoints)
+            {
+                NewScorePoints = newScorePoints;
+            }
+        }
+
+        public class HealthPointsChanged : Event
+        {
+            public float NewHealthPoints { get; private set; }
+
+            public HealthPointsChanged(float newHealthPoints)
+            {
+                NewHealthPoints = newHealthPoints;
+            }
+        }
+        
+        public class SpecialPointsChanged : Event
+        {
+            public float NewSpecialPoints { get; private set; }
+
+            public SpecialPointsChanged(float newSpecialPoints)
+            {
+                NewSpecialPoints = newSpecialPoints;
+            }
+        }
+        
+        public class ScoreMultiplierChanged : Event
+        {
+            public float NewScoreMultiplier { get; private set; }
+
+            public ScoreMultiplierChanged(float newScoreMultiplier)
+            {
+                NewScoreMultiplier = newScoreMultiplier;
+            }
+        }
+        
+        public class SpeedMultiplierChanged : Event
+        {
+            public float NewSpeedMultiplier { get; private set; }
+
+            public SpeedMultiplierChanged(float newSpeedMultiplier)
+            {
+                NewSpeedMultiplier = newSpeedMultiplier;
+            }
+        }
+        
+
+        public class SpeedChanged : Event
+        {
+            public float NewSpeed { get; private set; }
+
+            public SpeedChanged(float newSpeed)
+            {
+                NewSpeed = newSpeed;
+            }
+        }
+
+        public class JumpDurationChanged : Event
+        {
+            public float NewJumpDuration { get; private set; }
+
+            public JumpDurationChanged(float newJumpDuration)
+            {
+                NewJumpDuration = newJumpDuration;
+            }
+        }
+        
+        public class JumpActionTriggered : Event
+        {
+            public float JumpDuration { get; }
+            public float JumpHeight;
+
+            public JumpActionTriggered(float jumpDuration, float jumpHeight)
+            {
+                JumpDuration = jumpDuration;
+                JumpHeight = jumpHeight;
+            }
+        }
+        
+        public class GrindActionTriggered : Event
+        {
+            public float GrindScore { get; }
+
+            public GrindActionTriggered(float grindScore)
+            {
+                GrindScore = grindScore;
+            }
+        }
+    
+        public class TrickActionTriggered : Event
+        {
+            public float TrickActionScore { get; }
+
+            public TrickActionTriggered(float trickActionScore)
+            {
+                TrickActionScore = trickActionScore;
+            }
+        }
+
+        public class SpecialActionTriggered : Event
+        {
+            public float SpecialActionDuration { get; }
+
+            public SpecialActionTriggered(float specialActionDuration)
+            {
+                SpecialActionDuration = specialActionDuration;
+            }
+        }
+        
+        public class InvincibilityTriggered : Event
+        {
+            public float invincibilityDuration { get; }
+
+            public InvincibilityTriggered(float invincibilityDuration)
+            {
+                invincibilityDuration = invincibilityDuration;
+            }
+        }
+        
         public class ObstacleCollision : Event
         {
             public GameObject Obstacle { get; }
@@ -32,86 +155,6 @@ namespace Events
             public PickupCollision(PickupType pickupType)
             {
                 PickupType = pickupType;
-            }
-        }
-        public class ScoreChanged : Event
-        {
-            public float NewScore { get; }
-
-            public ScoreChanged(float newScore)
-            {
-                NewScore = newScore;
-            }
-        }
-
-        public class HealthChanged : Event
-        {
-            public float NewHealth { get; private set; }
-
-            public HealthChanged(float newHealth)
-            {
-                NewHealth = newHealth;
-            }
-        }
-
-        public class SpecialChanged : Event
-        {
-            public float NewSpecial { get; private set; }
-
-            public SpecialChanged(float newSpecial)
-            {
-                NewSpecial = newSpecial;
-            }
-        }
-
-        public class SpeedChanged : Event
-        {
-            public float NewSpeed { get; private set; }
-
-            public SpeedChanged(float newSpeed)
-            {
-                NewSpeed = newSpeed;
-            }
-        }
-
-        public class JumpDurationChanged : Event
-        {
-            public float NewJumpDuration { get; private set; }
-
-            public JumpDurationChanged(float newJumpDuration)
-            {
-                NewJumpDuration = newJumpDuration;
-            }
-        }
-
-        public class JumpTriggered : Event
-        {
-            public float initialJumpHeight;
-            public float jumpDuration { get; }
-
-            public JumpTriggered(float jumpHeight)
-            {
-                initialJumpHeight = jumpHeight;
-            }
-        }
-    
-        public class TrickActionTriggered : Event
-        {
-            public float TrickActionScore { get; }
-
-            public TrickActionTriggered(float trickActionScore)
-            {
-                TrickActionScore = trickActionScore;
-            }
-        }
-
-        public class SpecialActionTriggered : Event
-        {
-            public float SpecialActionDuration { get; }
-
-            public SpecialActionTriggered(float specialActionDuration)
-            {
-                SpecialActionDuration = specialActionDuration;
             }
         }
     }

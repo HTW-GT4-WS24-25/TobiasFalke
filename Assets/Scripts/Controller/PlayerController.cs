@@ -1,73 +1,133 @@
+using System;
 using System.Collections;
 using Events;
 using Model;
 using UnityEngine;
+using Config;
+
 
 namespace Controller
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour
     {
-        public PlayerView playerView;
-        private PlayerModel playerModel;
         private PlayerMovementController movementController;
+        private PlayerModel playerModel;
         private InputManager playerInput;
 
         private void Awake()
         {
-            playerModel = new PlayerModel();
             movementController = GetComponent<PlayerMovementController>();
-            movementController.Initialize(playerModel, playerView);
+            playerModel = new PlayerModel
+            {
+                HealthPoints = PlayerConfig.MaxHealthPoints,
+                SpecialPoints = PlayerConfig.MaxSpecialPoints,
+                Speed = PlayerConfig.BaseSpeed,
+                JumpHeight = PlayerConfig.JumpHeight,
+                JumpDuration = PlayerConfig.JumpDuration,
+                GrindActionScore = PlayerConfig.GrindActionScore,
+                TrickActionScore = PlayerConfig.TrickActionScore,
+                TrickActionDuration = PlayerConfig.TrickActionDuration,
+                SpecialActionDuration = PlayerConfig.SpecialActionDuration,
+                InvincibilityDuration = PlayerConfig.InvincibilityDuration
+            };
+            movementController.Initialize(playerModel);
             playerInput = InputManager.Instance;
         }
 
         private void Start()
         {
             RegisterEvents();
-            BroadcastPlayerStatus();
+        }
+        
+        private void RegisterEvents()
+        {
+            EventManager.AddListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
+            EventManager.AddListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.AddListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.AddListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
+            EventManager.AddListener<PlayerEvent.PickupCollision>(OnPickupCollision);
         }
         
         private void Update()
         {
-            movementController.HandleInput();
-        }
-
-        private void FixedUpdate()
-        {
-            movementController.UpdateMovement();
             UpdateScore();
         }
-
+        
         private void UpdateScore()
         {
-            playerModel.SetScore(playerModel.GetScore() + Time.deltaTime);
+            playerModel.ScorePoints += Time.deltaTime * playerModel.ScoreMultiplier;
         }
-
-        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered obj)
+        
+        private void OnTrickAction(PlayerEvent.TrickActionTriggered evt)
         {
-            // TODO: make action time based
-            EventManager.Broadcast(new PlayerEvent.HealthChanged(100));
-            EventManager.Broadcast(new PlayerEvent.SpecialChanged(0));
-            EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore() + 200));
-            EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration() + 1.0f));
-            EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed() + 1.0f));
-            StartCoroutine(SpecialActionDelay(playerModel.GetSpecialActionDuration()));
-            AudioManager.Instance.PlaySound("specialAction");
+            StartCoroutine(TrickActionActive(evt.TrickActionScore));
+        }
+        
+        private IEnumerator TrickActionActive(float duration){
+            yield return new WaitForSeconds(duration);
         }
 
-        private IEnumerator SpecialActionDelay(float duration){
+        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered evt)
+        {
+            // TODO: implement
+            StartCoroutine(SpecialActionActive(evt.SpecialActionDuration));
+        }
+
+        private IEnumerator SpecialActionActive(float duration){
             yield return new WaitForSeconds(duration);
         }
         
-        private void OnTrickAction(PlayerEvent.TrickActionTriggered obj)
+        private void OnObstacleCollision(PlayerEvent.ObstacleCollision evt)
         {
-            playerModel.IncreaseScore(obj.TrickActionScore);
+            Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+
+            if (playerModel.IsDoingJumpAction && obstacle.canJumpOver)
+            {
+                playerModel.ScorePoints += obstacle.DetermineScore();
+            }
+            if (obstacle.Type == ObstacleType.Rail)
+            {
+                playerModel.IsDoingGrindAction = true;
+            }
+            if (!obstacle.canJumpOver || !playerModel.IsDoingJumpAction)
+            {
+                TriggerCollision(obstacle);
+            }
         }
         
-
-        private void OnPickupCollision(PlayerEvent.PickupCollision obj)
+        private void TriggerCollision(Obstacle obstacle)
         {
-            PickupType pickupType = obj.PickupType;
+            if (playerModel.IsInvincible) return;
+            AudioManager.Instance.PlaySound("crash");
+            StartCoroutine(InvincibilityActive());
+            int collisionDamage = obstacle.DetermineDamageAmount();
+            playerModel.HealthPoints -= collisionDamage;
+        }
+
+        private IEnumerator InvincibilityActive()
+        {
+            playerModel.IsInvincible = true;
+            yield return new WaitForSeconds(playerModel.InvincibilityDuration);
+            playerModel.IsInvincible = false;
+        }
+
+        private void OnObstacleEvasion(PlayerEvent.ObstacleEvasion evt)
+        {
+            if (playerModel.IsInvincible) return;
+            Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+            int evasionScore = obstacle.DetermineScore();
+
+            playerModel.ScorePoints += evasionScore;
+            if (obstacle.Type == ObstacleType.Rail)
+            {
+                playerModel.IsAboveRail = false;
+            }
+        }
+        
+        private void OnPickupCollision(PlayerEvent.PickupCollision evt)
+        {
+            PickupType pickupType = evt.PickupType;
             TriggerItemEffect(pickupType);
         }
 
@@ -77,68 +137,38 @@ namespace Controller
             switch (pickupType)
             {
                 case PickupType.HealthBoost:
-                    EventManager.Broadcast(new PlayerEvent.HealthChanged(playerModel.GetHealth() + 50f));
+                    playerModel.HealthPoints += 50f;
+                    EventManager.Broadcast(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints + 50f));
                     break;
                 case PickupType.SpecialBoost:
-                    EventManager.Broadcast(new PlayerEvent.SpecialChanged(playerModel.GetSpecial() + 30f));
+                    playerModel.SpecialPoints += 25f;
                     break;
                 case PickupType.ScoreBoost:
-                    EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore() + 100f));
+                    playerModel.ScorePoints += Mathf.Max(100, playerModel.ScorePoints / 16) * playerModel.ScoreMultiplier;
                     break;
                 case PickupType.SpeedBoost:
-                    EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed() + 1f));
+                    playerModel.SpeedMultiplier += 0.25f;
                     break;
-                case PickupType.JumpBoost:
-                    EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration() + 1f));
+                case PickupType.HealthBoom:
+                    playerModel.HealthPoints = PlayerConfig.MaxHealthPoints;
                     break;
+                case PickupType.SpecialBoom:
+                    playerModel.SpecialPoints += 50f;
+                    break;
+                case PickupType.SpeedBoom:
+                    playerModel.SpeedMultiplier += 0.5f;
+                    break;
+                case PickupType.ScoreBoom:
+                    playerModel.ScorePoints += Mathf.Max(200, playerModel.ScorePoints / 8);
+                    break;
+                case PickupType.ScoreMultiplierBoost:
+                    playerModel.SpeedMultiplier += 0.25f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pickupType), pickupType, null);
             }
         }
-        private void OnJumpDurationChanged(PlayerEvent.JumpDurationChanged obj)
-        {
-            playerModel.SetJumpDuration(obj.NewJumpDuration);
-        }
-
-        private void OnSpeedChanged(PlayerEvent.SpeedChanged obj)
-        {
-            playerModel.SetSpeed(obj.NewSpeed);
-        }
-
-        private void OnScoreChanged(PlayerEvent.ScoreChanged obj)
-        {
-            playerModel.SetScore(obj.NewScore);
-        }
-
-        private void OnSpecialChanged(PlayerEvent.SpecialChanged obj)
-        {
-            playerModel.SetSpecial(obj.NewSpecial);
-        }
-
-        private void OnHealthChanged(PlayerEvent.HealthChanged obj)
-        {
-            playerModel.SetHealth(obj.NewHealth);
-        }
         
-        private void RegisterEvents()
-        {
-            EventManager.AddListener<PlayerEvent.HealthChanged>(OnHealthChanged);
-            EventManager.AddListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
-            EventManager.AddListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
-            EventManager.AddListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
-            EventManager.AddListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
-            EventManager.AddListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
-            EventManager.AddListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
-            EventManager.AddListener<PlayerEvent.PickupCollision>(OnPickupCollision);
-        }
-        
-        private void BroadcastPlayerStatus()
-        {
-            EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore()));
-            EventManager.Broadcast(new PlayerEvent.HealthChanged(playerModel.GetHealth()));
-            EventManager.Broadcast(new PlayerEvent.SpecialChanged(playerModel.GetSpecial()));
-            EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed()));
-            EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration()));
-        }
-
         private void OnDestroy()
         {
             UnsubscribeEvents();
@@ -148,13 +178,9 @@ namespace Controller
         {
             EventManager.RemoveListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
             EventManager.RemoveListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.RemoveListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.RemoveListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
             EventManager.RemoveListener<PlayerEvent.PickupCollision>(OnPickupCollision);
-            EventManager.RemoveListener<PlayerEvent.HealthChanged>(OnHealthChanged);
-            EventManager.RemoveListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
-            EventManager.RemoveListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
-            EventManager.RemoveListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
-            EventManager.RemoveListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
         }
-
     }
 }

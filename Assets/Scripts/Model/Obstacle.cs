@@ -1,7 +1,6 @@
 using UnityEngine;
 using Events;
 using Interfaces;
-using Utility;
 
 namespace Model
 {

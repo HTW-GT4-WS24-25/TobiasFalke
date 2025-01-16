@@ -34,6 +34,7 @@ namespace Controller
         {
             playerInput.OnEscapeButtonPressed += EscapeAction;
             EventManager.AddListener<GameModel.StateChanged>(OnGameStateChanged);
+            EventManager.AddListener<PlayerEvent.HealthPointsChanged>(OnHealthPointsChanged);
         }
         
         private void DetermineInitialGameState()
@@ -77,6 +78,12 @@ namespace Controller
                     throw new ArgumentOutOfRangeException();
             }
         }
+        
+        // TODO: does this fit better within player or game controller?
+        private void OnHealthPointsChanged(PlayerEvent.HealthPointsChanged obj)
+        {
+            gameModel.CurrentGameState = GameModel.GameState.Loose;
+        }
 
         private void EscapeAction()
         {
@@ -99,6 +106,7 @@ namespace Controller
         {
             playerInput.OnEscapeButtonPressed -= EscapeAction;
             EventManager.RemoveListener<GameModel.StateChanged>(OnGameStateChanged);
+            EventManager.RemoveListener<PlayerEvent.HealthPointsChanged>(OnHealthPointsChanged);
         }
     }
 }

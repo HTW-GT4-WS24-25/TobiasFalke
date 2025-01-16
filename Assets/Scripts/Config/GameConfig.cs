@@ -1,17 +1,16 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Utility
+namespace Config
 {
     public class GameConfig : MonoBehaviour
     {
-        public int startingStage = 1;
-        public float stageDuration = 20f;
-        public float speedIncreasePerStage = 2f;
-        public float baseStageSpeed = 5f;
-        public float baseStageWidth = 10f;
-        public float baseObstacleSpawnInterval = 0.5f;
-        public float basePickupSpawnInterval = 5f;
+        [SerializeField] private int startingStage = 1;
+        [SerializeField] private float stageDuration = 20f;
+        [SerializeField] private float speedIncreasePerStage = 2f;
+        [SerializeField] private float baseStageSpeed = 5f;
+        [SerializeField] private float baseStageWidth = 10f;
+        [SerializeField] private float baseObstacleSpawnInterval = 0.5f;
+        [SerializeField] private float basePickupSpawnInterval = 5f;
         
         public static int StartingStage;
         public static float StageDuration;
