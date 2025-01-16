@@ -1,3 +1,5 @@
+using Events;
+
 namespace Model
 {
     public class LevelModel
@@ -7,6 +9,7 @@ namespace Model
         private float pickUpSpawnInterval = 5.0f;
         private static float stageSpeed = 5.0f;
         private float stageWidth = 10.0f;
+        private static float elapsedTime;
 
         public int GetCurrentStage() => currentStage;
         public void SetCurrentStage(int newStage) => currentStage = newStage;
@@ -22,5 +25,15 @@ namespace Model
 
         public static float GetStageSpeed() => stageSpeed;
         public static void SetStageSpeed(float speed) => stageSpeed = speed;
+        
+        public float ElapsedTime
+        {
+            get => elapsedTime;
+            set
+            {
+                elapsedTime = value;
+                EventManager.Broadcast(new LevelEvents.TimeElapsed(value));
+            }
+        }
     }
 }

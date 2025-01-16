@@ -1,4 +1,5 @@
 using Events;
+using Model;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -29,7 +30,7 @@ public class GameOverMenuManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
-        EventManager.Broadcast(new GameEvents.GameStateChangedEvent(GameModel.GameState.Running));
+        EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Running));
     }
 
     private void OnDisable()

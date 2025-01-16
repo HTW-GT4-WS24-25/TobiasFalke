@@ -1,94 +1,104 @@
-using Events;
+using System;
 using UnityEngine;
+using Model;
+using Events;
 
-public class GameController : MonoBehaviour
+namespace Controller
 {
-    public static GameController Instance { get; private set; }
-    private GameModel gameModel;
-    private InputManager inputManager;
-
-    void Awake()
+    public class GameController : MonoBehaviour
     {
-        if (Instance == null)
+        // TODO: make dedicated persistent singleton class? (example in previous branches)
+        private static GameController Instance { get; set; }
+        private GameModel gameModel;
+        private InputManager playerInput;
+
+        private void Awake()
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            gameModel = new GameModel();
-            inputManager = InputManager.Instance;
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                gameModel = new GameModel();
+                playerInput = InputManager.Instance;
+            }
+            else Destroy(gameObject);
         }
-        else
+
+        private void Start()
         {
-            Destroy(gameObject);
+            RegisterEvents();
+            DetermineInitialGameState();
         }
-    }
-
-    void Start()
-    {
-        gameModel.CurrentGameState = GameModel.GameState.Running;
-        EventManager.AddListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
-    }
-
-    private void OnDestroy()
-    {
-        EventManager.RemoveListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
-    }
-
-    private void OnGameStateChanged(GameEvents.GameStateChangedEvent evt)
-    {
-        switch (evt.NewGameState)
+        
+        private void RegisterEvents()
         {
-            case GameModel.GameState.Running:
-                AudioManager.Instance.PlayTrack("mainSceneMusic");
-                break;
-            case GameModel.GameState.Paused:
-                break;
-            case GameModel.GameState.Menu:
-                break;
-            case GameModel.GameState.GameOver:
-                SceneLoader.Instance.LoadScene(SceneLoader.gameOver);
-                AudioManager.Instance.PlayTrack("gameOverMusic");
-                break;
+            playerInput.OnEscapeButtonPressed += EscapeAction;
+            EventManager.AddListener<GameModel.GameStateChanged>(OnGameStateChanged);
         }
-    }
-
-    void Update()
-    {
-        if (inputManager.GetPauseInput())
+        
+        private void DetermineInitialGameState()
         {
-            TogglePause();
+            if (CompareTag("MainMenu"))
+            {
+                gameModel.CurrentGameState = GameModel.GameState.Menu;
+            }
+            else if (CompareTag("Level"))
+            {
+                gameModel.CurrentGameState = GameModel.GameState.Running;
+            }
+            else if (CompareTag("GameOver"))
+            {
+                gameModel.CurrentGameState = GameModel.GameState.Loose;
+            }
         }
-        if (gameModel.CurrentGameState == GameModel.GameState.Running)
+        
+        private static void OnGameStateChanged(GameModel.GameStateChanged evt)
         {
-            gameModel.UpdateElapsedTime(Time.deltaTime);
+            switch (evt.NewGameState)
+            {
+                case GameModel.GameState.Menu:
+                    SceneLoader.Instance.LoadScene("MainMenu");
+                    break;
+                case GameModel.GameState.Running:
+                    Time.timeScale = 1f;
+                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(false));
+                    break;
+                case GameModel.GameState.Paused:
+                    Time.timeScale = 0f;
+                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(true));
+                    break;
+                case GameModel.GameState.Loose:
+                    SceneLoader.Instance.LoadScene("Game Over");
+                    break;
+                case GameModel.GameState.Quit:
+                    Application.Quit();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
-    }
 
-    public void StartGame()
-    {
-        Debug.Log("Game has been started.");
-        gameModel.CurrentGameState = GameModel.GameState.Running;
-        gameModel.ResetElapsedTime();
-    }
-
-    private void TogglePause()
-    {
-        if (gameModel.CurrentGameState == GameModel.GameState.Running)
-            PauseGame();
-        else if (gameModel.CurrentGameState == GameModel.GameState.Paused)
-            ResumeGame();
-    }
-
-    public void PauseGame()
-    {
-        gameModel.CurrentGameState = GameModel.GameState.Paused;
-        Time.timeScale = 0f;
-        EventManager.Broadcast(new GameEvents.TogglePauseMenuEvent(true));
-    }
-
-    public void ResumeGame()
-    {
-        gameModel.CurrentGameState = GameModel.GameState.Running;
-        Time.timeScale = 1f;
-        EventManager.Broadcast(new GameEvents.TogglePauseMenuEvent(false));
+        private void EscapeAction()
+        {
+            gameModel.CurrentGameState = gameModel.CurrentGameState switch
+            {
+                GameModel.GameState.Running => GameModel.GameState.Paused,
+                GameModel.GameState.Paused => GameModel.GameState.Running,
+                GameModel.GameState.Loose => GameModel.GameState.Menu,
+                GameModel.GameState.Menu => GameModel.GameState.Quit,
+                _ => gameModel.CurrentGameState
+            };
+        }
+        
+        private void OnDestroy()
+        {
+            UnsubscribeEvents();
+        }
+        
+        private void UnsubscribeEvents()
+        {
+            playerInput.OnEscapeButtonPressed -= EscapeAction;
+            EventManager.RemoveListener<GameModel.GameStateChanged>(OnGameStateChanged);
+        }
     }
 }

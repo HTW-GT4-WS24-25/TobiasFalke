@@ -1,14 +1,17 @@
 using Events;
 using Model;
 using UnityEngine;
-using View;
+using Random = UnityEngine.Random;
 
 namespace Controller
 {
     public class LevelController : MonoBehaviour
     {
-        public LevelView levelView;
+        // parameters adjustable in inspector for game balancing
+        [SerializeField] private float TimePerStage = 20f;
+        
         private LevelModel levelModel;
+        private int previousKnownStage = -1;
         public GameObject[] spawnableObstacles;
         public GameObject[] spawnablePickUps;
         private float timeSinceLastObstacleSpawn;
@@ -16,34 +19,41 @@ namespace Controller
         [SerializeField] private int maxSpawnAttempts = 10;
         [SerializeField] private float spawnCheckRadius = 1.0f;
 
-        void Awake()
+        private void Awake()
         {
             levelModel = new LevelModel();
         }
 
-        void Start()
+        private void Start()
         {
             BroadcastLevelUpdate();
-            EventManager.AddListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
+            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
+            AudioManager.Instance.PlayTrack("mainSceneMusic");
         }
 
-        void Update()
+        private void Update()
         {
+            levelModel.ElapsedTime += Time.deltaTime;
             TriggerSpawnIntervals();
         }
-
+        
         private void OnDestroy()
         {
-            EventManager.RemoveListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
+            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
         }
 
         private void BroadcastLevelUpdate()
         {
             EventManager.Broadcast(new LevelEvents.StageSpeedChangedEvent(LevelModel.GetStageSpeed()));
-            EventManager.Broadcast(new LevelEvents.StageChangedEvent(levelModel.GetCurrentStage()));
+
+            if (levelModel.GetCurrentStage() != previousKnownStage)
+            {
+                previousKnownStage = levelModel.GetCurrentStage();
+                EventManager.Broadcast(new LevelEvents.StageChanged(previousKnownStage));
+            }
         }
 
-        void TriggerSpawnIntervals()
+        private void TriggerSpawnIntervals()
         {
             AttemptSpawn(ref timeSinceLastObstacleSpawn, levelModel.GetObstacleSpawnInterval(), spawnableObstacles);
             AttemptSpawn(ref timeSinceLastPickUpSpawn, levelModel.GetPickUpSpawnInterval(), spawnablePickUps);
@@ -84,8 +94,10 @@ namespace Controller
             return hit != null;
         }
 
-        private void OnLevelChanged(LevelEvents.StageChangedEvent evt)
+        private void OnLevelChanged(LevelEvents.StageChanged evt)
         {
+            if (evt.NewStage == levelModel.GetCurrentStage()) return; // Prevents setting to the current stage
+
             levelModel.SetCurrentStage(evt.NewStage);
             BroadcastLevelUpdate();
         }

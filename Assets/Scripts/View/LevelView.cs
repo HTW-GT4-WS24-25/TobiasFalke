@@ -21,14 +21,14 @@ namespace View
         private void Start()
         {
             InitializeBackgrounds();
-            EventManager.AddListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
+            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
             EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
         }
 
         private void OnDestroy()
         {
             EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
-            EventManager.RemoveListener<LevelEvents.StageChangedEvent>(OnLevelChanged);
+            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
         }
 
         private void Update()
@@ -78,7 +78,7 @@ namespace View
             currentScrollSpeed = evt.StageSpeed;
         }
 
-        private void OnLevelChanged(LevelEvents.StageChangedEvent evt)
+        private void OnLevelChanged(LevelEvents.StageChanged evt)
         {
             UpdateLevelBackground(evt.NewStage);
         }

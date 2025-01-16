@@ -28,7 +28,7 @@ public class PlayerView : MonoBehaviour
     {
         EventManager.AddListener<PlayerEvents.JumpEvent>(OnJumpAction);
         EventManager.AddListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-        EventManager.AddListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManager.AddListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
         EventManager.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
         EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
         EventManager.AddListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
@@ -43,7 +43,7 @@ public class PlayerView : MonoBehaviour
     {
         EventManager.RemoveListener<PlayerEvents.JumpEvent>(OnJumpAction);
         EventManager.RemoveListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-        EventManager.RemoveListener<PlayerEvents.SpecialActionEvent>(OnSpecialAction);
+        EventManager.RemoveListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
         EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
         EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
         EventManager.RemoveListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
@@ -75,12 +75,13 @@ public class PlayerView : MonoBehaviour
 
     private void OnPickupCollision(PlayerEvents.PickupCollisionEvent obj)
     {
-        throw new NotImplementedException();
+        // TODO: make evasion sound
+        // TODO: make visual effect on player
     }
 
     private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent obj)
     {
-        //
+        // TODO: make evasion sound
     }
 
     private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent obj)
@@ -96,7 +97,7 @@ public class PlayerView : MonoBehaviour
     }
 
     
-    private void OnSpecialAction(PlayerEvents.SpecialActionEvent obj)
+    private void OnSpecialAction(PlayerEvents.SpecialActionTriggered obj)
     {
         StartCoroutine(FlashBlue(6.0f));
     }
