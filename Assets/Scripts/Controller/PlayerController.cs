@@ -43,14 +43,14 @@ namespace Controller
             playerModel.SetScore(playerModel.GetScore() + Time.deltaTime);
         }
 
-        private void OnSpecialAction(PlayerEvents.SpecialActionTriggered obj)
+        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered obj)
         {
             // TODO: make action time based
-            EventManager.Broadcast(new PlayerEvents.HealthChanged(100));
-            EventManager.Broadcast(new PlayerEvents.SpecialChanged(0));
-            EventManager.Broadcast(new PlayerEvents.ScoreChanged(playerModel.GetScore() + 200));
-            EventManager.Broadcast(new PlayerEvents.JumpDurationChanged(playerModel.GetJumpDuration() + 1.0f));
-            EventManager.Broadcast(new PlayerEvents.SpeedChanged(playerModel.GetSpeed() + 1.0f));
+            EventManager.Broadcast(new PlayerEvent.HealthChanged(100));
+            EventManager.Broadcast(new PlayerEvent.SpecialChanged(0));
+            EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore() + 200));
+            EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration() + 1.0f));
+            EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed() + 1.0f));
             StartCoroutine(SpecialActionDelay(playerModel.GetSpecialActionDuration()));
             AudioManager.Instance.PlaySound("specialAction");
         }
@@ -59,13 +59,13 @@ namespace Controller
             yield return new WaitForSeconds(duration);
         }
         
-        private void OnTrickAction(PlayerEvents.TrickActionEvent obj)
+        private void OnTrickAction(PlayerEvent.TrickActionTriggered obj)
         {
             playerModel.IncreaseScore(obj.TrickActionScore);
         }
         
 
-        private void OnPickupCollision(PlayerEvents.PickupCollisionEvent obj)
+        private void OnPickupCollision(PlayerEvent.PickupCollision obj)
         {
             PickupType pickupType = obj.PickupType;
             TriggerItemEffect(pickupType);
@@ -77,66 +77,66 @@ namespace Controller
             switch (pickupType)
             {
                 case PickupType.HealthBoost:
-                    EventManager.Broadcast(new PlayerEvents.HealthChanged(playerModel.GetHealth() + 50f));
+                    EventManager.Broadcast(new PlayerEvent.HealthChanged(playerModel.GetHealth() + 50f));
                     break;
                 case PickupType.SpecialBoost:
-                    EventManager.Broadcast(new PlayerEvents.SpecialChanged(playerModel.GetSpecial() + 30f));
+                    EventManager.Broadcast(new PlayerEvent.SpecialChanged(playerModel.GetSpecial() + 30f));
                     break;
                 case PickupType.ScoreBoost:
-                    EventManager.Broadcast(new PlayerEvents.ScoreChanged(playerModel.GetScore() + 100f));
+                    EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore() + 100f));
                     break;
                 case PickupType.SpeedBoost:
-                    EventManager.Broadcast(new PlayerEvents.SpeedChanged(playerModel.GetSpeed() + 1f));
+                    EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed() + 1f));
                     break;
                 case PickupType.JumpBoost:
-                    EventManager.Broadcast(new PlayerEvents.JumpDurationChanged(playerModel.GetJumpDuration() + 1f));
+                    EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration() + 1f));
                     break;
             }
         }
-        private void OnJumpDurationChanged(PlayerEvents.JumpDurationChanged obj)
+        private void OnJumpDurationChanged(PlayerEvent.JumpDurationChanged obj)
         {
             playerModel.SetJumpDuration(obj.NewJumpDuration);
         }
 
-        private void OnSpeedChanged(PlayerEvents.SpeedChanged obj)
+        private void OnSpeedChanged(PlayerEvent.SpeedChanged obj)
         {
             playerModel.SetSpeed(obj.NewSpeed);
         }
 
-        private void OnScoreChanged(PlayerEvents.ScoreChanged obj)
+        private void OnScoreChanged(PlayerEvent.ScoreChanged obj)
         {
             playerModel.SetScore(obj.NewScore);
         }
 
-        private void OnSpecialChanged(PlayerEvents.SpecialChanged obj)
+        private void OnSpecialChanged(PlayerEvent.SpecialChanged obj)
         {
             playerModel.SetSpecial(obj.NewSpecial);
         }
 
-        private void OnHealthChanged(PlayerEvents.HealthChanged obj)
+        private void OnHealthChanged(PlayerEvent.HealthChanged obj)
         {
             playerModel.SetHealth(obj.NewHealth);
         }
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<PlayerEvents.HealthChanged>(OnHealthChanged);
-            EventManager.AddListener<PlayerEvents.SpecialChanged>(OnSpecialChanged);
-            EventManager.AddListener<PlayerEvents.ScoreChanged>(OnScoreChanged);
-            EventManager.AddListener<PlayerEvents.SpeedChanged>(OnSpeedChanged);
-            EventManager.AddListener<PlayerEvents.JumpDurationChanged>(OnJumpDurationChanged);
-            EventManager.AddListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-            EventManager.AddListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
-            EventManager.AddListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
+            EventManager.AddListener<PlayerEvent.HealthChanged>(OnHealthChanged);
+            EventManager.AddListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
+            EventManager.AddListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
+            EventManager.AddListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
+            EventManager.AddListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
+            EventManager.AddListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
+            EventManager.AddListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.AddListener<PlayerEvent.PickupCollision>(OnPickupCollision);
         }
         
         private void BroadcastPlayerStatus()
         {
-            EventManager.Broadcast(new PlayerEvents.ScoreChanged(playerModel.GetScore()));
-            EventManager.Broadcast(new PlayerEvents.HealthChanged(playerModel.GetHealth()));
-            EventManager.Broadcast(new PlayerEvents.SpecialChanged(playerModel.GetSpecial()));
-            EventManager.Broadcast(new PlayerEvents.SpeedChanged(playerModel.GetSpeed()));
-            EventManager.Broadcast(new PlayerEvents.JumpDurationChanged(playerModel.GetJumpDuration()));
+            EventManager.Broadcast(new PlayerEvent.ScoreChanged(playerModel.GetScore()));
+            EventManager.Broadcast(new PlayerEvent.HealthChanged(playerModel.GetHealth()));
+            EventManager.Broadcast(new PlayerEvent.SpecialChanged(playerModel.GetSpecial()));
+            EventManager.Broadcast(new PlayerEvent.SpeedChanged(playerModel.GetSpeed()));
+            EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(playerModel.GetJumpDuration()));
         }
 
         private void OnDestroy()
@@ -146,14 +146,14 @@ namespace Controller
         
         private void UnsubscribeEvents()
         {
-            EventManager.RemoveListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-            EventManager.RemoveListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
-            EventManager.RemoveListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
-            EventManager.RemoveListener<PlayerEvents.HealthChanged>(OnHealthChanged);
-            EventManager.RemoveListener<PlayerEvents.SpecialChanged>(OnSpecialChanged);
-            EventManager.RemoveListener<PlayerEvents.ScoreChanged>(OnScoreChanged);
-            EventManager.RemoveListener<PlayerEvents.SpeedChanged>(OnSpeedChanged);
-            EventManager.RemoveListener<PlayerEvents.JumpDurationChanged>(OnJumpDurationChanged);
+            EventManager.RemoveListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
+            EventManager.RemoveListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.RemoveListener<PlayerEvent.PickupCollision>(OnPickupCollision);
+            EventManager.RemoveListener<PlayerEvent.HealthChanged>(OnHealthChanged);
+            EventManager.RemoveListener<PlayerEvent.SpecialChanged>(OnSpecialChanged);
+            EventManager.RemoveListener<PlayerEvent.ScoreChanged>(OnScoreChanged);
+            EventManager.RemoveListener<PlayerEvent.SpeedChanged>(OnSpeedChanged);
+            EventManager.RemoveListener<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
         }
 
     }

@@ -33,7 +33,7 @@ namespace Controller
         private void RegisterEvents()
         {
             playerInput.OnEscapeButtonPressed += EscapeAction;
-            EventManager.AddListener<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.AddListener<GameModel.StateChanged>(OnGameStateChanged);
         }
         
         private void DetermineInitialGameState()
@@ -52,7 +52,7 @@ namespace Controller
             }
         }
         
-        private static void OnGameStateChanged(GameModel.GameStateChanged evt)
+        private static void OnGameStateChanged(GameModel.StateChanged evt)
         {
             switch (evt.NewGameState)
             {
@@ -61,11 +61,11 @@ namespace Controller
                     break;
                 case GameModel.GameState.Running:
                     Time.timeScale = 1f;
-                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(false));
+                    EventManager.Broadcast(new LevelEvent.TogglePauseMenu(false));
                     break;
                 case GameModel.GameState.Paused:
                     Time.timeScale = 0f;
-                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(true));
+                    EventManager.Broadcast(new LevelEvent.TogglePauseMenu(true));
                     break;
                 case GameModel.GameState.Loose:
                     SceneLoader.Instance.LoadScene("Game Over");
@@ -98,7 +98,7 @@ namespace Controller
         private void UnsubscribeEvents()
         {
             playerInput.OnEscapeButtonPressed -= EscapeAction;
-            EventManager.RemoveListener<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.RemoveListener<GameModel.StateChanged>(OnGameStateChanged);
         }
     }
 }

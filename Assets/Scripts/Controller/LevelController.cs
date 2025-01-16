@@ -1,62 +1,72 @@
 using Events;
+using Interfaces;
 using Model;
 using UnityEngine;
+using Utility;
 using Random = UnityEngine.Random;
 
 namespace Controller
 {
     public class LevelController : MonoBehaviour
     {
-        // parameters adjustable in inspector for game balancing
-        [SerializeField] private float TimePerStage = 20f;
+        [SerializeField] private GameObject[] spawnableObstacles;
+        [SerializeField] private GameObject[] spawnablePickUps;
         
         private LevelModel levelModel;
-        private int previousKnownStage = -1;
-        public GameObject[] spawnableObstacles;
-        public GameObject[] spawnablePickUps;
+        
         private float timeSinceLastObstacleSpawn;
         private float timeSinceLastPickUpSpawn;
-        [SerializeField] private int maxSpawnAttempts = 10;
-        [SerializeField] private float spawnCheckRadius = 1.0f;
-
+  
         private void Awake()
         {
-            levelModel = new LevelModel();
+            levelModel = new LevelModel
+            {
+                CurrentStage = GameConfig.StartingStage,
+                StageSpeed = GameConfig.BaseStageSpeed,
+                StageDuration = GameConfig.StageDuration,
+                StageWidth = GameConfig.BaseStageWidth,
+                ObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval,
+                PickupSpawnInterval = GameConfig.BasePickupSpawnInterval
+            };
         }
 
         private void Start()
         {
-            BroadcastLevelUpdate();
-            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
-            AudioManager.Instance.PlayTrack("mainSceneMusic");
+            RegisterEvents();
         }
 
-        private void Update()
+        private void OnStageChanged(LevelEvent.StageChanged evt)
         {
-            levelModel.ElapsedTime += Time.deltaTime;
-            TriggerSpawnIntervals();
+            float newStageSpeed = GameConfig.BaseStageSpeed + GameConfig.SpeedIncreasePerStage;
+            levelModel.StageSpeed = newStageSpeed;
+            float newObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval / levelModel.CurrentStage;
+            levelModel.ObstacleSpawnInterval = newObstacleSpawnInterval;
+            float newPickupSpawnInterval = GameConfig.BasePickupSpawnInterval / levelModel.CurrentStage;
+            levelModel.PickupSpawnInterval = newPickupSpawnInterval;
         }
         
-        private void OnDestroy()
+        private void Update()
         {
-            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
+            CountPlayTime();
+            TriggerTimedEvents();
         }
 
-        private void BroadcastLevelUpdate()
+        private void CountPlayTime()
         {
-            EventManager.Broadcast(new LevelEvents.StageSpeedChangedEvent(LevelModel.GetStageSpeed()));
-
-            if (levelModel.GetCurrentStage() != previousKnownStage)
-            {
-                previousKnownStage = levelModel.GetCurrentStage();
-                EventManager.Broadcast(new LevelEvents.StageChanged(previousKnownStage));
-            }
+            levelModel.ElapsedTime += Time.deltaTime;
+        }
+        
+        private void TriggerTimedEvents()
+        {
+            AttemptStageUpdate();
+            AttemptSpawn(ref timeSinceLastObstacleSpawn, levelModel.ObstacleSpawnInterval, spawnableObstacles);
+            AttemptSpawn(ref timeSinceLastPickUpSpawn, levelModel.PickupSpawnInterval, spawnablePickUps);
         }
 
-        private void TriggerSpawnIntervals()
+        private void AttemptStageUpdate()
         {
-            AttemptSpawn(ref timeSinceLastObstacleSpawn, levelModel.GetObstacleSpawnInterval(), spawnableObstacles);
-            AttemptSpawn(ref timeSinceLastPickUpSpawn, levelModel.GetPickUpSpawnInterval(), spawnablePickUps);
+            float nextStageThreshold = levelModel.StageDuration * levelModel.CurrentStage;
+            if (levelModel.ElapsedTime >= nextStageThreshold) levelModel.CurrentStage++;
         }
 
         private void AttemptSpawn(ref float timeSinceLastSpawn, float interval, GameObject[] spawnables)
@@ -73,18 +83,19 @@ namespace Controller
         {
             if (spawnables.Length == 0) return;
 
+            const int maxSpawnAttempts = 5;
+            GameObject objectToSpawn = spawnables[Random.Range(0, spawnables.Length)];
+
             for (int attempt = 0; attempt < maxSpawnAttempts; attempt++)
             {
-                float spawnXPosition = Random.Range(-levelModel.GetStageWidth(), levelModel.GetStageWidth());
+                float spawnXPosition = Random.Range(-levelModel.StageWidth, levelModel.StageWidth);
                 Vector3 spawnPosition = new Vector3(spawnXPosition, 10f, 0f);
 
-                if (!PositionOccupied(spawnPosition, spawnCheckRadius))
-                {
-                    GameObject objectToSpawn = spawnables[Random.Range(0, spawnables.Length)];
-                    GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
-                    spawnedObject.layer = LayerMask.NameToLayer(layer);
-                    break; // Exit after successful spawn
-                }
+                if (PositionOccupied(spawnPosition, 1f)) continue;
+                GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+                // TODO: find a better way to achieve objects initializing at correct stage speed
+                spawnedObject.GetComponent<FallingObject>().fallSpeed = levelModel.StageSpeed;
+                break;
             }
         }
 
@@ -93,13 +104,21 @@ namespace Controller
             Collider2D hit = Physics2D.OverlapCircle(position, radius);
             return hit != null;
         }
+        
 
-        private void OnLevelChanged(LevelEvents.StageChanged evt)
+        private void RegisterEvents()
         {
-            if (evt.NewStage == levelModel.GetCurrentStage()) return; // Prevents setting to the current stage
+            EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);
+        }
+        
+        private void OnDestroy()
+        {
+            UnsubscribeEvents();
+        }
 
-            levelModel.SetCurrentStage(evt.NewStage);
-            BroadcastLevelUpdate();
+        private void UnsubscribeEvents()
+        {
+            EventManager.RemoveListener<LevelEvent.StageChanged>(OnStageChanged);
         }
     }
 }

@@ -3,38 +3,38 @@ using UnityEngine;
 
 namespace Events
 {
-    public static class PlayerEvents
+    public static class PlayerEvent
     {
-        public class ObstacleCollisionEvent : GameEvent
+        public class ObstacleCollision : Event
         {
             public GameObject Obstacle { get; }
 
-            public ObstacleCollisionEvent(GameObject obstacle)
+            public ObstacleCollision(GameObject obstacle)
             {
                 Obstacle = obstacle;
             }
         }
 
-        public class ObstacleCollisionExitEvent : GameEvent
+        public class ObstacleEvasion : Event
         {
             public GameObject Obstacle { get; }
 
-            public ObstacleCollisionExitEvent(GameObject obstacle)
+            public ObstacleEvasion(GameObject obstacle)
             {
                 Obstacle = obstacle;
             }
         }
 
-        public class PickupCollisionEvent : GameEvent
+        public class PickupCollision : Event
         {
             public PickupType PickupType { get; }
 
-            public PickupCollisionEvent(PickupType pickupType)
+            public PickupCollision(PickupType pickupType)
             {
                 PickupType = pickupType;
             }
         }
-        public class ScoreChanged : GameEvent
+        public class ScoreChanged : Event
         {
             public float NewScore { get; }
 
@@ -44,7 +44,7 @@ namespace Events
             }
         }
 
-        public class HealthChanged : GameEvent
+        public class HealthChanged : Event
         {
             public float NewHealth { get; private set; }
 
@@ -54,7 +54,7 @@ namespace Events
             }
         }
 
-        public class SpecialChanged : GameEvent
+        public class SpecialChanged : Event
         {
             public float NewSpecial { get; private set; }
 
@@ -64,7 +64,7 @@ namespace Events
             }
         }
 
-        public class SpeedChanged : GameEvent
+        public class SpeedChanged : Event
         {
             public float NewSpeed { get; private set; }
 
@@ -74,7 +74,7 @@ namespace Events
             }
         }
 
-        public class JumpDurationChanged : GameEvent
+        public class JumpDurationChanged : Event
         {
             public float NewJumpDuration { get; private set; }
 
@@ -84,28 +84,28 @@ namespace Events
             }
         }
 
-        public class JumpEvent : GameEvent
+        public class JumpTriggered : Event
         {
             public float initialJumpHeight;
             public float jumpDuration { get; }
 
-            public JumpEvent(float jumpHeight)
+            public JumpTriggered(float jumpHeight)
             {
                 initialJumpHeight = jumpHeight;
             }
         }
     
-        public class TrickActionEvent : GameEvent
+        public class TrickActionTriggered : Event
         {
             public float TrickActionScore { get; }
 
-            public TrickActionEvent(float trickActionScore)
+            public TrickActionTriggered(float trickActionScore)
             {
                 TrickActionScore = trickActionScore;
             }
         }
 
-        public class SpecialActionTriggered : GameEvent
+        public class SpecialActionTriggered : Event
         {
             public float SpecialActionDuration { get; }
 

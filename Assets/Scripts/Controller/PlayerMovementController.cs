@@ -26,14 +26,14 @@ namespace Controller
 
         private void RegisterMovementEvents()
         {
-            EventManager.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-            EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+            EventManager.AddListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.AddListener<PlayerEvent.ObstacleEvasion>(OnObstacleExit);
         }
 
         private void UnregisterMovementEvents()
         {
-            EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-            EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+            EventManager.RemoveListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.RemoveListener<PlayerEvent.ObstacleEvasion>(OnObstacleExit);
         }
 
         private void OnDestroy()
@@ -50,7 +50,7 @@ namespace Controller
 
             if (Input.GetKeyDown("f"))
             {
-                EventManager.Broadcast(new PlayerEvents.TrickActionEvent(1f));
+                EventManager.Broadcast(new PlayerEvent.TrickActionTriggered(1f));
             }
         }
 
@@ -120,15 +120,15 @@ namespace Controller
                 jumpTime = 0;
                 initialJumpY = transform.position.y;
                 float shadowSpriteHeight = initialJumpY;
-                EventManager.Broadcast(new PlayerEvents.JumpEvent(shadowSpriteHeight));
+                EventManager.Broadcast(new PlayerEvent.JumpTriggered(shadowSpriteHeight));
             }
         }
 
-        private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent evt)
+        private void OnObstacleCollision(PlayerEvent.ObstacleCollision evt)
         {
             Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
 
-            if (playerModel.GetIsJumping() && obstacle.IsJumpable)
+            if (playerModel.GetIsJumping() && obstacle.canJumpOver)
             {
                 playerModel.IncreaseScore(obstacle.DetermineScore());
             }
@@ -138,18 +138,18 @@ namespace Controller
                 isAboveRail = true;
             }
 
-            if (!obstacle.IsJumpable || !playerModel.GetIsJumping())
+            if (!obstacle.canJumpOver || !playerModel.GetIsJumping())
             {
                 TriggerCollision(obstacle);
             }
         }
 
-        private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent evt)
+        private void OnObstacleExit(PlayerEvent.ObstacleEvasion evt)
         {
             if (playerModel.GetIsInvincible()) return;
             Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
             int score = obstacle.DetermineScore();
-            EventManager.Broadcast(new PlayerEvents.ScoreChanged(score));
+            EventManager.Broadcast(new PlayerEvent.ScoreChanged(score));
             if (obstacle.Type == ObstacleType.Rail)
             {
                 isAboveRail = false;
@@ -162,10 +162,10 @@ namespace Controller
             AudioManager.Instance.PlaySound("crash");
             StartCoroutine(SetInvincibility());
             int damage = obstacle.DetermineDamageAmount();
-            EventManager.Broadcast(new PlayerEvents.HealthChanged(playerModel.GetHealth() + damage));
+            EventManager.Broadcast(new PlayerEvent.HealthChanged(playerModel.GetHealth() + damage));
             if (playerModel.GetHealth() <= 0)
             {
-                EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Loose));
+                EventManager.Broadcast(new GameModel.StateChanged(GameModel.GameState.Loose));
             }
         }
 

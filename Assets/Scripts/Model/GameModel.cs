@@ -20,15 +20,15 @@ namespace Model
             {
                 if (currentGameState == value) return;
                 currentGameState = value;
-                EventManager.Broadcast(new GameStateChanged(currentGameState));
+                EventManager.Broadcast(new StateChanged(currentGameState));
             }
         }
         
-        public class GameStateChanged : GameEvent
+        public class StateChanged : Event
         {
             public GameState NewGameState { get; }
 
-            public GameStateChanged(GameState newGameState)
+            public StateChanged(GameState newGameState)
             {
                 NewGameState = newGameState;
             }
