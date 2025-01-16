@@ -34,51 +34,51 @@ namespace Events
                 PickupType = pickupType;
             }
         }
-        public class ScoreChangedEvent : GameEvent
+        public class ScoreChanged : GameEvent
         {
             public float NewScore { get; }
 
-            public ScoreChangedEvent(float newScore)
+            public ScoreChanged(float newScore)
             {
                 NewScore = newScore;
             }
         }
 
-        public class HealthChangedEvent : GameEvent
+        public class HealthChanged : GameEvent
         {
             public float NewHealth { get; private set; }
 
-            public HealthChangedEvent(float newHealth)
+            public HealthChanged(float newHealth)
             {
                 NewHealth = newHealth;
             }
         }
 
-        public class SpecialChangedEvent : GameEvent
+        public class SpecialChanged : GameEvent
         {
             public float NewSpecial { get; private set; }
 
-            public SpecialChangedEvent(float newSpecial)
+            public SpecialChanged(float newSpecial)
             {
                 NewSpecial = newSpecial;
             }
         }
 
-        public class SpeedChangedEvent : GameEvent
+        public class SpeedChanged : GameEvent
         {
             public float NewSpeed { get; private set; }
 
-            public SpeedChangedEvent(float newSpeed)
+            public SpeedChanged(float newSpeed)
             {
                 NewSpeed = newSpeed;
             }
         }
 
-        public class JumpDurationChangedEvent : GameEvent
+        public class JumpDurationChanged : GameEvent
         {
             public float NewJumpDuration { get; private set; }
 
-            public JumpDurationChangedEvent(float newJumpDuration)
+            public JumpDurationChanged(float newJumpDuration)
             {
                 NewJumpDuration = newJumpDuration;
             }
@@ -105,11 +105,11 @@ namespace Events
             }
         }
 
-        public class SpecialActionEvent : GameEvent
+        public class SpecialActionTriggered : GameEvent
         {
             public float SpecialActionDuration { get; }
 
-            public SpecialActionEvent(float specialActionDuration)
+            public SpecialActionTriggered(float specialActionDuration)
             {
                 SpecialActionDuration = specialActionDuration;
             }

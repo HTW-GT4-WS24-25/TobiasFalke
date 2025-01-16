@@ -5,18 +5,16 @@ public class PlayerModel
     private float score;
     private float health = 100;
     private float special;
-    // movement
     private Vector2 velocity;
     private float speed = 5f;
     private float jumpHeight = 2f;
     private float jumpDuration = 1f;
-    // multipliers
     private float scoreMultiplier = 1f;
     private float speedMultiplier = 1f;
     private float jumpDurationMultiplier = 1f;
-    // states
     private bool isJumping;
     private bool isGrinding;
+    private float specialActionDuration = 6f;
     private bool isInvincible;
     private float invincibilityDuration = 1f;
     
@@ -52,7 +50,7 @@ public class PlayerModel
     public void SetIsInvincible(bool invincible) => isInvincible = invincible;
     public float GetInvincibilityDuration() => invincibilityDuration;
     public void SetInvincibilityDuration(float newDuration) => invincibilityDuration = newDuration;
+    public float GetSpecialActionDuration() => specialActionDuration;
+    public void SetSpecialActionDuration(float newDuration) => specialActionDuration = newDuration;
     
-    
-
 }
