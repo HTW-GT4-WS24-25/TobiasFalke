@@ -1,5 +1,5 @@
 using System.Collections;
-using Events;
+using Config;
 using Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,171 +9,118 @@ namespace Controller
     public class PlayerMovementController : MonoBehaviour
     {
         private PlayerModel playerModel;
-        private PlayerView playerView;
         private Rigidbody2D rb2d;
         private Vector2 movementInput;
-        private float jumpTime;
-        private float initialJumpY;
-        private bool isAboveRail;
+        private float timeSinceJump;
+        private float origJumpPos;
 
-        public void Initialize(PlayerModel model, PlayerView view)
+        public void Initialize(PlayerModel model)
         {
             playerModel = model;
-            playerView = view;
             rb2d = GetComponent<Rigidbody2D>();
-            RegisterMovementEvents();
         }
-
-        private void RegisterMovementEvents()
+        
+        private void FixedUpdate()
         {
-            EventManager.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-            EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+            UpdateMovement();
         }
 
-        private void UnregisterMovementEvents()
+        private void UpdateMovement()
         {
-            EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-            EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
+            ProcessMovement();
+            ProcessJumpMovement();
+            ProcessGrindMovement();
+            ProcessTrickAction();
         }
-
-        private void OnDestroy()
-        {
-            UnregisterMovementEvents();
-        }
-
-        public void HandleInput()
-        {
-            float moveSpeed = playerModel.GetSpeed();
-            playerModel.SetVelocity(new Vector2(movementInput.x * moveSpeed, movementInput.y * moveSpeed / 2));
-            playerView.SetRunning(movementInput.x != 0);
-            playerView.UpdateDirection(movementInput.x);
-
-            if (Input.GetKeyDown("f"))
-            {
-                EventManager.Broadcast(new PlayerEvents.TrickActionEvent(1f));
-            }
-        }
-
-        public void UpdateMovement()
-        {
-            HandleMovement();
-            HandleJump();
-            HandleGrinding();
-        }
-
-        private void HandleMovement()
-        {
-            rb2d.linearVelocity = playerModel.GetVelocity();
-        }
-
-        private void HandleJump()
-        {
-            if (!playerModel.GetIsJumping()) return;
-
-            jumpTime += Time.fixedDeltaTime;
-            var progress = jumpTime / playerModel.GetJumpDuration();
-            var verticalOffset = playerModel.GetJumpHeight() * Mathf.Sin(Mathf.PI * progress);
-            transform.position = new Vector3(transform.position.x, initialJumpY + verticalOffset, transform.position.z);
-            if (progress >= 1) HandleLanding();
-        }
-
-        private void HandleLanding()
-        {
-            AudioManager.Instance.PlaySound("land");
-            if (isAboveRail) StartGrinding();
-            playerModel.SetIsJumping(false);
-        }
-
-        private void StartGrinding()
-        {
-            Debug.Log("Grinding!");
-            playerModel.SetIsGrinding(true);
-            AudioManager.Instance.PlaySound("grinding");
-        }
-
-        private void HandleGrinding()
-        {
-            if (!playerModel.GetIsGrinding()) return;
-            if (playerModel.GetIsJumping() || !isAboveRail)
-            {
-                FinishGrinding();
-            }
-        }
-
-        private void FinishGrinding()
-        {
-            playerModel.SetIsGrinding(false);
-        }
-
+        
         private void OnMove(InputValue inputValue)
         {
-            if (!playerModel.GetIsGrinding()) movementInput = inputValue.Get<Vector2>();
+            if (!playerModel.IsDoingGrindAction) movementInput = inputValue.Get<Vector2>();
+        }
+        
+        private void ProcessMovement()
+        {
+            ClampMovementInputWithinBounds();
+            Vector2 movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
+            rb2d.MovePosition(rb2d.position + movement);
         }
 
-        private void OnJump()
+        private void ClampMovementInputWithinBounds()
         {
-            if (!playerModel.GetIsJumping())
+            float halfWidth = GameConfig.BaseStageWidth / 2;
+            float halfHeight = GameConfig.BaseStageHeight / 2;
+            float playerX = transform.position.x;
+            float playerY = transform.position.y;
+            const float buffer = 0.5f;
+            
+            if (playerX <= -halfWidth + buffer) movementInput.x = Mathf.Max(0, movementInput.x);
+            else if (playerX >= halfWidth - buffer) movementInput.x = Mathf.Min(0, movementInput.x);
+            if (playerY <= -halfHeight + buffer) movementInput.y = Mathf.Max(0, movementInput.y);
+            else if (playerY >= halfHeight - buffer) movementInput.y = Mathf.Min(0, movementInput.y);
+        }
+        private void OnJumpAction()
+        {
+            if (playerModel.IsDoingJumpAction) return;
+            playerModel.IsDoingJumpAction = true;
+            AudioManager.Instance.StopBackgroundTrack();
+            AudioManager.Instance.PlaySound("jump");
+            timeSinceJump = 0;
+            origJumpPos = transform.position.y;
+        }
+        
+        private void ProcessJumpMovement()
+        {
+            if (!playerModel.IsDoingJumpAction) return;
+            timeSinceJump += Time.fixedDeltaTime;
+            var progress = timeSinceJump / playerModel.JumpDuration;
+            var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
+            transform.position = new Vector3(transform.position.x, origJumpPos + verticalOffset, transform.position.z);
+            if (!(progress >= 1)) return;
+            ProcessLanding();
+        }
+
+        private void ProcessLanding()
+        {
+            playerModel.IsDoingJumpAction = false;
+            playerModel.IsDoingTrickAction = false;
+            transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
+            if (playerModel.IsAboveRail)
             {
-                AudioManager.Instance.StopBackgroundTrack();
-                AudioManager.Instance.PlaySound("jump");
-                playerModel.SetIsJumping(true);
-                jumpTime = 0;
-                initialJumpY = transform.position.y;
-                float shadowSpriteHeight = initialJumpY;
-                EventManager.Broadcast(new PlayerEvents.JumpEvent(shadowSpriteHeight));
+                Debug.Log("Grinding now!");
+                playerModel.IsDoingGrindAction = true;
+                AudioManager.Instance.PlaySound("grind");
+            }
+            else
+            {
+                AudioManager.Instance.PlaySound("land");
             }
         }
 
-        private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent evt)
+        private void ProcessGrindMovement()
         {
-            Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
-
-            if (playerModel.GetIsJumping() && obstacle.IsJumpable)
-            {
-                playerModel.IncreaseScore(obstacle.DetermineScore());
-            }
-
-            if (obstacle.Type == ObstacleType.Rail)
-            {
-                isAboveRail = true;
-            }
-
-            if (!obstacle.IsJumpable || !playerModel.GetIsJumping())
-            {
-                TriggerCollision(obstacle);
-            }
+            if (!playerModel.IsDoingGrindAction) return;
+            // TODO: implement grind logic
+            if (playerModel.IsDoingJumpAction || !playerModel.IsAboveRail) playerModel.IsDoingGrindAction = false;
         }
-
-        private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent evt)
+        
+        private void OnTrickAction()
         {
-            if (playerModel.GetIsInvincible()) return;
-            Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
-            int score = obstacle.DetermineScore();
-            EventManager.Broadcast(new PlayerEvents.ScoreChanged(score));
-            if (obstacle.Type == ObstacleType.Rail)
-            {
-                isAboveRail = false;
-            }
+            if (playerModel.IsDoingTrickAction) return;
+            AudioManager.Instance.StopBackgroundTrack();
+            playerModel.ScorePoints += playerModel.TrickActionScore;
+            playerModel.IsDoingTrickAction = true;
+            StartCoroutine(TrickActionActive(playerModel.TrickActionDuration));
         }
-
-        private void TriggerCollision(Obstacle obstacle)
-        {
-            if (playerModel.GetIsInvincible()) return;
-            AudioManager.Instance.PlaySound("crash");
-            StartCoroutine(SetInvincibility());
-            int damage = obstacle.DetermineDamageAmount();
-            EventManager.Broadcast(new PlayerEvents.HealthChanged(playerModel.GetHealth() + damage));
-            if (playerModel.GetHealth() <= 0)
-            {
-                EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Loose));
-            }
+        
+        private IEnumerator TrickActionActive(float duration){
+            yield return new WaitForSeconds(duration);
+            playerModel.IsDoingTrickAction = false;
         }
-
-        private IEnumerator SetInvincibility()
+        
+        private void ProcessTrickAction()
         {
-            playerModel.SetIsInvincible(true);
-            yield return new WaitForSeconds(playerModel.GetInvincibilityDuration());
-            playerModel.SetIsInvincible(false);
+            if (!playerModel.IsDoingTrickAction || !playerModel.IsDoingJumpAction) return;
+            // TODO: implement trick action logic
         }
     }
 }

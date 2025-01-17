@@ -1,41 +1,33 @@
 using System.Collections.Generic;
+using Config;
 using Events;
+using Model;
 using UnityEngine;
 
 namespace View
 {
     public class LevelView : MonoBehaviour
     {
-        public List<Sprite> levelBackgrounds;
+        public List<Sprite> stageBackgrounds;
+        private SpriteRenderer backgroundRenderer;
         private List<SpriteRenderer> activeBackgrounds;
+        private float backgroundScrollSpeed;
         private Vector3 startPosition;
-        private SpriteRenderer originalBackground;
-        private float backgroundHeight = 10f;
-        private float currentScrollSpeed = 2f;
-
+        private const float backgroundHeight = 10f;
+        
         private void Awake()
         {
-            originalBackground = GetComponent<SpriteRenderer>();
+            backgroundRenderer = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
         {
+            backgroundScrollSpeed = GameConfig.BaseStageSpeed;
             InitializeBackgrounds();
-            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
-            EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+            EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.AddListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
         }
-
-        private void OnDestroy()
-        {
-            EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
-            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
-        }
-
-        private void Update()
-        {
-            ScrollBackgrounds();
-        }
-
+        
         private void InitializeBackgrounds()
         {
             startPosition = transform.position;
@@ -45,25 +37,29 @@ namespace View
             {
                 GameObject backgroundObj = new GameObject("Background" + i);
                 SpriteRenderer spriteRenderer = backgroundObj.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = originalBackground.sprite;
-                spriteRenderer.sortingLayerID = originalBackground.sortingLayerID;
-                spriteRenderer.sortingOrder = originalBackground.sortingOrder;
+                spriteRenderer.sprite = backgroundRenderer.sprite;
+                spriteRenderer.sortingLayerID = backgroundRenderer.sortingLayerID;
+                spriteRenderer.sortingOrder = backgroundRenderer.sortingOrder;
                 backgroundObj.transform.SetParent(transform);
-                ScaleBackgroundToCamera(spriteRenderer);
-
+                spriteRenderer.transform.localScale = ScaleBackground(spriteRenderer);
                 float yPos = startPosition.y + i * backgroundHeight;
                 backgroundObj.transform.position = new Vector3(startPosition.x, yPos, startPosition.z);
-
                 activeBackgrounds.Add(spriteRenderer);
             }
         }
-
+        
+        private void Update()
+        {
+            ScrollBackgrounds();
+        }
+        
+        // TODO: refactor to only work with one sprite instead of 2
         private void ScrollBackgrounds()
         {
             foreach (var bg in activeBackgrounds)
             {
                 Vector3 pos = bg.transform.position;
-                pos.y -= currentScrollSpeed * Time.deltaTime;
+                pos.y -= backgroundScrollSpeed * Time.deltaTime;
                 bg.transform.position = pos;
 
                 if (bg.transform.position.y < startPosition.y - backgroundHeight)
@@ -72,40 +68,34 @@ namespace View
                 }
             }
         }
-
-        private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+        
+        private void OnStageSpeedChanged(LevelEvent.StageSpeedChanged evt)
         {
-            currentScrollSpeed = evt.StageSpeed;
+            backgroundScrollSpeed = evt.StageSpeed;
         }
 
-        private void OnLevelChanged(LevelEvents.StageChanged evt)
+        private void OnStageChanged(LevelEvent.StageChanged evt)
         {
-            UpdateLevelBackground(evt.NewStage);
+            int stageId = evt.NewStage % stageBackgrounds.Count;
+            foreach (var background in activeBackgrounds) background.sprite = stageBackgrounds[stageId];
         }
 
-        private void UpdateLevelBackground(int stage)
+        private static Vector2 ScaleBackground(SpriteRenderer spriteRenderer)
         {
-            int levelId = stage % levelBackgrounds.Count;
-            foreach (var bg in activeBackgrounds)
-            {
-                bg.sprite = levelBackgrounds[levelId];
-            }
+            float stageWidth = GameConfig.BaseStageWidth;
+            float stageHeight =GameConfig.BaseStageHeight;
+            float spriteWidth = spriteRenderer.bounds.size.x;
+            float spriteHeight = spriteRenderer.bounds.size.y;
+            Vector3 newScale = spriteRenderer.transform.localScale;
+            newScale.x *= (stageWidth / spriteWidth);
+            newScale.y *= (stageHeight / spriteHeight);
+            return newScale;
         }
-
-        private void ScaleBackgroundToCamera(SpriteRenderer spriteRenderer)
+        
+        private void OnDestroy()
         {
-            Camera cam = Camera.main;
-            if (cam != null)
-            {
-                float cameraHeight = cam.orthographicSize * 2;
-                float cameraWidth = cameraHeight * cam.aspect;
-                float spriteHeight = spriteRenderer.bounds.size.y;
-                float spriteWidth = spriteRenderer.bounds.size.x;
-                Vector3 newScale = spriteRenderer.transform.localScale;
-                newScale.x *= (cameraWidth / spriteWidth);
-                newScale.y *= (cameraHeight / spriteHeight);
-                spriteRenderer.transform.localScale = newScale;
-            }
+            EventManager.RemoveListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.RemoveListener<LevelEvent.StageChanged>(OnStageChanged);
         }
     }
 }

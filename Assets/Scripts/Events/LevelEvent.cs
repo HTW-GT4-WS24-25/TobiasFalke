@@ -1,8 +1,8 @@
 namespace Events
 {
-    public static class LevelEvents
+    public static class LevelEvent
     {
-        public class StageChanged : GameEvent
+        public class StageChanged : Event
         {
             public int NewStage { get; }
 
@@ -11,18 +11,28 @@ namespace Events
                 NewStage = newStage;
             }
         }
+        
+        public class StageWidthChanged : Event
+        {
+            public float StageWidth { get; private set; }
 
-        public class StageSpeedChangedEvent : GameEvent
+            public StageWidthChanged(float stageWidth)
+            {
+                StageWidth = stageWidth;
+            }
+        }
+
+        public class StageSpeedChanged : Event
         {
             public float StageSpeed { get; private set; }
 
-            public StageSpeedChangedEvent(float stageSpeed)
+            public StageSpeedChanged(float stageSpeed)
             {
                 StageSpeed = stageSpeed;
             }
         }
         
-        public class TimeElapsed : GameEvent
+        public class TimeElapsed : Event
         {
             public float NewTime { get; private set; }
 
@@ -32,7 +42,7 @@ namespace Events
             }
         }
         
-        public class ToggleCountDown : GameEvent
+        public class ToggleCountDown : Event
         {
             public bool SetActive { get; }
 
@@ -42,7 +52,7 @@ namespace Events
             }
         }
 
-        public class TogglePauseMenu : GameEvent
+        public class TogglePauseMenu : Event
         {
             public bool IsPaused { get; }
 

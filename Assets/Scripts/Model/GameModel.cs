@@ -24,7 +24,7 @@ namespace Model
             }
         }
         
-        public class GameStateChanged : GameEvent
+        public class GameStateChanged : Event
         {
             public GameState NewGameState { get; }
 

@@ -2,23 +2,23 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameEvent
+public class Event
 {
 }
 
 public static class EventManager
 {
-    private static readonly Dictionary<Type, Action<GameEvent>> events = new Dictionary<Type, Action<GameEvent>>();
-    private static readonly Dictionary<Delegate, Action<GameEvent>> eventLookup = new Dictionary<Delegate, Action<GameEvent>>();
+    private static readonly Dictionary<Type, Action<Event>> events = new Dictionary<Type, Action<Event>>();
+    private static readonly Dictionary<Delegate, Action<Event>> eventLookup = new Dictionary<Delegate, Action<Event>>();
 
-    public static void AddListener<T>(Action<T> listener) where T : GameEvent
+    public static void AddListener<T>(Action<T> listener) where T : Event
     {
         if (!eventLookup.ContainsKey(listener))
         {
-            Action<GameEvent> newAction = (e) => listener((T)e);
+            Action<Event> newAction = (e) => listener((T)e);
             eventLookup[listener] = newAction;
 
-            if (events.TryGetValue(typeof(T), out Action<GameEvent> internalAction))
+            if (events.TryGetValue(typeof(T), out Action<Event> internalAction))
             {
                 events[typeof(T)] = internalAction += newAction;
             }
@@ -29,7 +29,7 @@ public static class EventManager
         }
     }
 
-    public static void RemoveListener<T>(Action<T> listener) where T : GameEvent
+    public static void RemoveListener<T>(Action<T> listener) where T : Event
     {
         if (eventLookup.TryGetValue(listener, out var action))
         {
@@ -50,7 +50,7 @@ public static class EventManager
         }
     }
 
-    public static void Broadcast(GameEvent evt)
+    public static void Broadcast(Event evt)
     {
         if (events.TryGetValue(evt.GetType(), out var action))
         {
