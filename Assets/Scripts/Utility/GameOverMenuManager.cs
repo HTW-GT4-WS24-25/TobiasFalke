@@ -24,13 +24,14 @@ public class GameOverMenuManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.mainMenu);
+        EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Menu));
     }
 
     private void OnClickTryAgainButton(ClickEvent evt)
     {
         AudioManager.Instance.PlaySound("clickPlay");
         SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
-        EventManager.Broadcast(new GameModel.StateChanged(GameModel.GameState.Running));
+        EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Running));
     }
 
     private void OnDisable()

@@ -7,7 +7,7 @@ namespace View
 {
     public class GameView : MonoBehaviour
     {
-        public TextMeshProUGUI levelCounter;
+        public TextMeshProUGUI stageCounter;
         public TextMeshProUGUI timeCounter;
         public TextMeshProUGUI scoreCounter;
         // TODO: refactor status bars
@@ -26,9 +26,9 @@ namespace View
             RegisterEvents();
         }
         
-        private void OnLevelChanged(LevelEvent.StageChanged evt)
+        private void OnStageChanged(LevelEvent.StageChanged evt)
         {
-            levelCounter.text = evt.NewStage.ToString();
+            stageCounter.text = evt.NewStage.ToString();
         }
         
         private void OnTimeElapsed(LevelEvent.TimeElapsed evt)
@@ -56,12 +56,12 @@ namespace View
 
         private void OnSpeedChanged(PlayerEvent.SpeedChanged evt)
         {
-            speedCounter.text = evt.NewSpeed.ToString();
+            speedCounter.text = evt.NewSpeed + " km/h";
         }
 
         private void OnJumpDurationChanged(PlayerEvent.JumpDurationChanged evt)
         {
-            jumpDurationCounter.text = evt.NewJumpDuration.ToString();
+            jumpDurationCounter.text = evt.NewJumpDuration + " sec";
         }
 
         private void OnSpecialAction(PlayerEvent.SpecialActionTriggered evt)
@@ -78,7 +78,7 @@ namespace View
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<LevelEvent.StageChanged>(OnLevelChanged);
+            EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);
             EventManager.AddListener<LevelEvent.TimeElapsed>(OnTimeElapsed);
             EventManager.AddListener<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
             EventManager.AddListener<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
@@ -95,7 +95,7 @@ namespace View
 
         private void UnsubscribeEvents()
         {
-            EventManager.RemoveListener<LevelEvent.StageChanged>(OnLevelChanged);
+            EventManager.RemoveListener<LevelEvent.StageChanged>(OnStageChanged);
             EventManager.RemoveListener<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
             EventManager.RemoveListener<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
             EventManager.RemoveListener<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);

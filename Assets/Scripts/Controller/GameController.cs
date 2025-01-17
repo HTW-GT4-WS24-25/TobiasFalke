@@ -10,7 +10,6 @@ namespace Controller
         // TODO: make dedicated persistent singleton class? (example in previous branches)
         private static GameController Instance { get; set; }
         private GameModel gameModel;
-        private InputManager playerInput;
 
         private void Awake()
         {
@@ -19,7 +18,6 @@ namespace Controller
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
                 gameModel = new GameModel();
-                playerInput = InputManager.Instance;
             }
             else Destroy(gameObject);
         }
@@ -32,9 +30,8 @@ namespace Controller
         
         private void RegisterEvents()
         {
-            playerInput.OnEscapeButtonPressed += EscapeAction;
-            EventManager.AddListener<GameModel.StateChanged>(OnGameStateChanged);
-            EventManager.AddListener<PlayerEvent.HealthPointsChanged>(OnHealthPointsChanged);
+            EventManager.AddListener<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.AddListener<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
         
         private void DetermineInitialGameState()
@@ -53,16 +50,18 @@ namespace Controller
             }
         }
         
-        private static void OnGameStateChanged(GameModel.StateChanged evt)
+        private static void OnGameStateChanged(GameModel.GameStateChanged evt)
         {
             switch (evt.NewGameState)
             {
                 case GameModel.GameState.Menu:
                     SceneLoader.Instance.LoadScene("MainMenu");
+                    AudioManager.Instance.PlayTrack("MainMenuMusic");
                     break;
                 case GameModel.GameState.Running:
                     Time.timeScale = 1f;
                     EventManager.Broadcast(new LevelEvent.TogglePauseMenu(false));
+                    AudioManager.Instance.PlayTrack("MainSceneMusic");
                     break;
                 case GameModel.GameState.Paused:
                     Time.timeScale = 0f;
@@ -70,6 +69,7 @@ namespace Controller
                     break;
                 case GameModel.GameState.Loose:
                     SceneLoader.Instance.LoadScene("Game Over");
+                    AudioManager.Instance.PlayTrack("GameOverMusic");
                     break;
                 case GameModel.GameState.Quit:
                     Application.Quit();
@@ -79,13 +79,13 @@ namespace Controller
             }
         }
         
-        // TODO: does this fit better within player or game controller?
-        private void OnHealthPointsChanged(PlayerEvent.HealthPointsChanged obj)
+        private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
         {
             gameModel.CurrentGameState = GameModel.GameState.Loose;
+            SceneLoader.Instance.LoadScene("Game Over");
         }
 
-        private void EscapeAction()
+        private void OnCancel()
         {
             gameModel.CurrentGameState = gameModel.CurrentGameState switch
             {
@@ -104,9 +104,8 @@ namespace Controller
         
         private void UnsubscribeEvents()
         {
-            playerInput.OnEscapeButtonPressed -= EscapeAction;
-            EventManager.RemoveListener<GameModel.StateChanged>(OnGameStateChanged);
-            EventManager.RemoveListener<PlayerEvent.HealthPointsChanged>(OnHealthPointsChanged);
+            EventManager.RemoveListener<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.RemoveListener<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     }
 }

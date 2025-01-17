@@ -157,5 +157,15 @@ namespace Events
                 PickupType = pickupType;
             }
         }
+        
+        public class GameOverTriggered : Event
+        {
+            public float ScoreOnLoose { get; }
+
+            public GameOverTriggered(float scoreOnLoose)
+            {
+                ScoreOnLoose = scoreOnLoose;
+            }
+        }
     }
 }

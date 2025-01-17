@@ -16,8 +16,9 @@ namespace Model
     public class Obstacle : FallingObject
     {
         [SerializeField] internal ObstacleType Type;
+        
         public bool canJumpOver => Type != ObstacleType.Wall;
-
+        
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
@@ -34,10 +35,10 @@ namespace Model
         {
             return Type switch
             {
-                ObstacleType.BigObstacle => 50,
-                ObstacleType.SmallObstacle => 10,
-                ObstacleType.Hole => 60,
-                _ => 10
+                ObstacleType.BigObstacle => 200,
+                ObstacleType.SmallObstacle => 100,
+                ObstacleType.Hole => 100,
+                _ => 100
             };
         }
 
@@ -45,12 +46,12 @@ namespace Model
         {
             return Type switch
             {
-                ObstacleType.Wall => -50,
-                ObstacleType.BigObstacle => -20,
-                ObstacleType.SmallObstacle => -10,
-                ObstacleType.Hole => -100,
-                ObstacleType.Rail => -30,
-                _ => -20
+                ObstacleType.Wall => 50,
+                ObstacleType.BigObstacle => 50,
+                ObstacleType.SmallObstacle => 25,
+                ObstacleType.Hole => 25,
+                ObstacleType.Rail => 25,
+                _ => -25
             };
         }
     }

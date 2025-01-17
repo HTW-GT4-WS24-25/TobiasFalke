@@ -9,6 +9,7 @@ namespace Config
         [SerializeField] private float speedIncreasePerStage = 2f;
         [SerializeField] private float baseStageSpeed = 5f;
         [SerializeField] private float baseStageWidth = 10f;
+        [SerializeField] private float baseStageHeight = 5f;
         [SerializeField] private float baseObstacleSpawnInterval = 0.5f;
         [SerializeField] private float basePickupSpawnInterval = 5f;
         
@@ -17,6 +18,7 @@ namespace Config
         public static float SpeedIncreasePerStage;
         public static float BaseStageSpeed;
         public static float BaseStageWidth;
+        public static float BaseStageHeight;
         public static float BaseObstacleSpawnInterval;
         public static float BasePickupSpawnInterval;
         
@@ -27,6 +29,7 @@ namespace Config
             SpeedIncreasePerStage = speedIncreasePerStage;
             BaseStageSpeed = baseStageSpeed;
             BaseStageWidth = baseStageWidth;
+            BaseStageHeight = baseStageHeight;
             BaseObstacleSpawnInterval = baseObstacleSpawnInterval;
             BasePickupSpawnInterval = basePickupSpawnInterval;
         }

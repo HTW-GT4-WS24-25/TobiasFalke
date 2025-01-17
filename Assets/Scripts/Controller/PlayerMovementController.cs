@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using Events;
+using Config;
 using Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,9 +11,8 @@ namespace Controller
         private PlayerModel playerModel;
         private Rigidbody2D rb2d;
         private Vector2 movementInput;
-        private float jumpTime;
-        private float initialJumpY;
-        private bool isAboveRail;
+        private float timeSinceJump;
+        private float origJumpPos;
 
         public void Initialize(PlayerModel model)
         {
@@ -22,87 +20,107 @@ namespace Controller
             rb2d = GetComponent<Rigidbody2D>();
         }
         
-        private void Update()
-        {
-            HandleInput();
-        }
-
         private void FixedUpdate()
         {
             UpdateMovement();
         }
 
-        private void HandleInput()
-        {
-            // if (Input.GetKeyDown("f")) EventManager.Broadcast(new PlayerEvent.TrickActionTriggered(1f));
-        }
-
         private void UpdateMovement()
         {
             ProcessMovement();
-            ProcessJump();
-            HandleGrinding();
+            ProcessJumpMovement();
+            ProcessGrindMovement();
+            ProcessTrickAction();
         }
         
-        private void ProcessMovement()
-        {
-            float moveSpeed = playerModel.Speed * playerModel.SpeedMultiplier;
-            playerModel.CurrentVelocity = new Vector2(movementInput.x * moveSpeed, movementInput.y * moveSpeed / 2);
-            rb2d.linearVelocity = playerModel.CurrentVelocity;
-        }
-
-        private void ProcessJump()
-        {
-            if (!playerModel.IsDoingJumpAction) return;
-
-            jumpTime += Time.fixedDeltaTime;
-            var progress = jumpTime / playerModel.JumpDuration;
-            var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
-            transform.position = new Vector3(transform.position.x, initialJumpY + verticalOffset, transform.position.z);
-            if (progress >= 1) ProcessLanding();
-        }
-
-        private void ProcessLanding()
-        {
-            AudioManager.Instance.PlaySound("land");
-            if (isAboveRail) StartGrinding();
-            playerModel.IsDoingJumpAction = false;
-        }
-
-        private void StartGrinding()
-        {
-            playerModel.IsDoingGrindAction = true;
-            AudioManager.Instance.PlaySound("grinding");
-        }
-
-        private void HandleGrinding()
-        {
-            if (!playerModel.IsDoingGrindAction) return;
-            if (playerModel.IsDoingJumpAction || !isAboveRail) FinishGrinding();
-        }
-
-        private void FinishGrinding()
-        {
-            playerModel.IsDoingGrindAction = false;
-        }
-
         private void OnMove(InputValue inputValue)
         {
             if (!playerModel.IsDoingGrindAction) movementInput = inputValue.Get<Vector2>();
         }
-
-        private void OnJump()
+        
+        private void ProcessMovement()
         {
-            if (!playerModel.IsDoingJumpAction)
+            ClampMovementInputWithinBounds();
+            Vector2 movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
+            rb2d.MovePosition(rb2d.position + movement);
+        }
+
+        private void ClampMovementInputWithinBounds()
+        {
+            float halfWidth = GameConfig.BaseStageWidth / 2;
+            float halfHeight = GameConfig.BaseStageHeight / 2;
+            float playerX = transform.position.x;
+            float playerY = transform.position.y;
+            const float buffer = 0.5f;
+            
+            if (playerX <= -halfWidth + buffer) movementInput.x = Mathf.Max(0, movementInput.x);
+            else if (playerX >= halfWidth - buffer) movementInput.x = Mathf.Min(0, movementInput.x);
+            if (playerY <= -halfHeight + buffer) movementInput.y = Mathf.Max(0, movementInput.y);
+            else if (playerY >= halfHeight - buffer) movementInput.y = Mathf.Min(0, movementInput.y);
+        }
+        private void OnJumpAction()
+        {
+            if (playerModel.IsDoingJumpAction) return;
+            playerModel.IsDoingJumpAction = true;
+            AudioManager.Instance.StopBackgroundTrack();
+            AudioManager.Instance.PlaySound("jump");
+            timeSinceJump = 0;
+            origJumpPos = transform.position.y;
+        }
+        
+        private void ProcessJumpMovement()
+        {
+            if (!playerModel.IsDoingJumpAction) return;
+            timeSinceJump += Time.fixedDeltaTime;
+            var progress = timeSinceJump / playerModel.JumpDuration;
+            var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
+            transform.position = new Vector3(transform.position.x, origJumpPos + verticalOffset, transform.position.z);
+            if (!(progress >= 1)) return;
+            ProcessLanding();
+        }
+
+        private void ProcessLanding()
+        {
+            playerModel.IsDoingJumpAction = false;
+            playerModel.IsDoingTrickAction = false;
+            transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
+            if (playerModel.IsAboveRail)
             {
-                AudioManager.Instance.StopBackgroundTrack();
-                AudioManager.Instance.PlaySound("jump");
-                playerModel.IsDoingJumpAction = true;
-                jumpTime = 0;
-                initialJumpY = transform.position.y;
-                float shadowSpriteHeight = initialJumpY;
-                //EventManager.Broadcast(new PlayerEvent.JumpActionTriggered(shadowSpriteHeight));
+                Debug.Log("Grinding now!");
+                playerModel.IsDoingGrindAction = true;
+                AudioManager.Instance.PlaySound("grind");
             }
+            else
+            {
+                AudioManager.Instance.PlaySound("land");
+            }
+        }
+
+        private void ProcessGrindMovement()
+        {
+            if (!playerModel.IsDoingGrindAction) return;
+            // TODO: implement grind logic
+            if (playerModel.IsDoingJumpAction || !playerModel.IsAboveRail) playerModel.IsDoingGrindAction = false;
+        }
+        
+        private void OnTrickAction()
+        {
+            if (playerModel.IsDoingTrickAction) return;
+            AudioManager.Instance.StopBackgroundTrack();
+            playerModel.ScorePoints += playerModel.TrickActionScore;
+            playerModel.IsDoingTrickAction = true;
+            StartCoroutine(TrickActionActive(playerModel.TrickActionDuration));
+        }
+        
+        private IEnumerator TrickActionActive(float duration){
+            yield return new WaitForSeconds(duration);
+            playerModel.IsDoingTrickAction = false;
+        }
+        
+        private void ProcessTrickAction()
+        {
+            if (!playerModel.IsDoingTrickAction || !playerModel.IsDoingJumpAction) return;
+            // TODO: implement trick action logic
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Controller
                 StageSpeed = GameConfig.BaseStageSpeed,
                 StageDuration = GameConfig.StageDuration,
                 StageWidth = GameConfig.BaseStageWidth,
+                StageHeight = GameConfig.BaseStageHeight,
                 ObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval,
                 PickupSpawnInterval = GameConfig.BasePickupSpawnInterval
             };
@@ -78,8 +79,8 @@ namespace Controller
 
             for (int attempt = 0; attempt < maxSpawnAttempts; attempt++)
             {
-                float spawnXPosition = Random.Range(-levelModel.StageWidth, levelModel.StageWidth);
-                Vector3 spawnPosition = new Vector3(spawnXPosition, 10f, 0f);
+                float spawnXPosition = Random.Range(-levelModel.StageWidth/2, levelModel.StageWidth/2);
+                Vector3 spawnPosition = new Vector3(spawnXPosition, levelModel.StageHeight, 0f);
 
                 if (PositionOccupied(spawnPosition, 1f)) continue;
                 GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);

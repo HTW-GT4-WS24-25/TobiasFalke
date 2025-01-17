@@ -34,7 +34,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private void OnClickContinueButton(ClickEvent evt)
     {
-        EventManager.Broadcast(new GameModel.StateChanged(GameModel.GameState.Running));
+        EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Running));
     }
 
     private void OnClickExitButton(ClickEvent evt)

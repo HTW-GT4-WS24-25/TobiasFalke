@@ -1,58 +1,93 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Model;
 
-public class MainMenuManager : MonoBehaviour
+namespace Utility
 {
-    private UIDocument _uiDocument;
-    private Button _playButton;
-    private Button _tutorialButton;
-    private Button _quitButton;
+    public class MainMenuManager : MonoBehaviour
+    {
+        private UIDocument menuDocument;
+        public UIDocument tutorialDocument;
 
-    private void Awake()
-    {
-        _uiDocument = GetComponent<UIDocument>();
-        _playButton = _uiDocument.rootVisualElement.Q("PlayButton") as Button;
-        _tutorialButton = _uiDocument.rootVisualElement.Q("TutorialButton") as Button;
-        _quitButton = _uiDocument.rootVisualElement.Q("QuitButton") as Button;
+        private Button playButton;
+        private Button tutorialButton;
+        private Button quitButton;
+        private Button returnButton;
 
-        _playButton?.RegisterCallback<ClickEvent>(OnClickPlayButton);
-        _tutorialButton?.RegisterCallback<ClickEvent>(OnClickTutorialButton);
-        _quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
-    }
+        private void Awake()
+        {
+            menuDocument = GetComponent<UIDocument>();
+            playButton = menuDocument.rootVisualElement.Q<Button>("PlayButton");
+            tutorialButton = menuDocument.rootVisualElement.Q<Button>("TutorialButton");
+            quitButton = menuDocument.rootVisualElement.Q<Button>("QuitButton");
+            returnButton = tutorialDocument.rootVisualElement.Q<Button>("ReturnButton");
+            RegisterButtonCallbacks();
+        }
 
-    private void Start()
-    {
-        AudioManager.Instance.PlayTrack("mainMenuMusic");
-    }
+        private void Start()
+        {
+        }
 
-    private void OnClickPlayButton(ClickEvent evt)
-    {
-        AudioManager.Instance.PlaySound("clickPlay");
-        SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
-    }
-    private void OnClickExitButton(ClickEvent evt)
-    {
-        AudioManager.Instance.PlaySound("quitGame");
-        //TODO Fix structure (currently also in GameManager)
-        HideMenu();
-        Application.Quit();
-    }
-    private void OnClickTutorialButton(ClickEvent evt)
-    {
-        AudioManager.Instance.PlaySound("openSettings");
-        // SceneLoader.Instance.LoadSettingsMenu();
-    }
-    
-    private void OnDisable()
-    {
-        _playButton.UnregisterCallback<ClickEvent>(OnClickPlayButton);
-        _tutorialButton.UnregisterCallback<ClickEvent>(OnClickTutorialButton);
-        _quitButton.UnregisterCallback<ClickEvent>(OnClickExitButton);
-    }
+        private void RegisterButtonCallbacks()
+        {
+            playButton?.RegisterCallback<ClickEvent>(OnClickPlayButton);
+            tutorialButton?.RegisterCallback<ClickEvent>(OnClickTutorialButton);
+            quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
+            returnButton?.RegisterCallback<ClickEvent>(OnClickReturnButton);
+        }
 
-    private void HideMenu()
-    {
-        gameObject.SetActive(false);
+        private void OnClickPlayButton(ClickEvent evt)
+        {
+            AudioManager.Instance.PlaySound("clickPlay");
+            SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
+            EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Running));
+        }
+
+        private void OnClickExitButton(ClickEvent evt)
+        {
+            AudioManager.Instance.PlaySound("quitGame");
+            HideMenu();
+            Application.Quit();
+        }
+
+        private void OnClickTutorialButton(ClickEvent evt)
+        {
+            AudioManager.Instance.PlaySound("openTutorial");
+            ShowTutorial();
+        }
+
+        private void OnClickReturnButton(ClickEvent evt)
+        {
+            AudioManager.Instance.PlaySound("closeTutorial");
+            HideTutorial();
+        }
+
+        private void ShowTutorial()
+        {
+            tutorialDocument.sortingOrder = 1;
+        }
+
+        private void HideTutorial()
+        {
+            tutorialDocument.sortingOrder = -1;
+        }
+
+        private void OnDestroy()
+        {
+            UnregisterButtonCallbacks();
+        }
+
+        private void UnregisterButtonCallbacks()
+        {
+            playButton?.UnregisterCallback<ClickEvent>(OnClickPlayButton);
+            tutorialButton?.UnregisterCallback<ClickEvent>(OnClickTutorialButton);
+            quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
+            returnButton?.UnregisterCallback<ClickEvent>(OnClickReturnButton);
+        }
+
+        private void HideMenu()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

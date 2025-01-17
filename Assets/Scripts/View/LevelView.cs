@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Config;
 using Events;
+using Model;
 using UnityEngine;
 
 namespace View
@@ -40,7 +41,7 @@ namespace View
                 spriteRenderer.sortingLayerID = backgroundRenderer.sortingLayerID;
                 spriteRenderer.sortingOrder = backgroundRenderer.sortingOrder;
                 backgroundObj.transform.SetParent(transform);
-                spriteRenderer.transform.localScale = ScaleBackgroundToCamera(spriteRenderer);
+                spriteRenderer.transform.localScale = ScaleBackground(spriteRenderer);
                 float yPos = startPosition.y + i * backgroundHeight;
                 backgroundObj.transform.position = new Vector3(startPosition.x, yPos, startPosition.z);
                 activeBackgrounds.Add(spriteRenderer);
@@ -79,16 +80,15 @@ namespace View
             foreach (var background in activeBackgrounds) background.sprite = stageBackgrounds[stageId];
         }
 
-        private static Vector2 ScaleBackgroundToCamera(SpriteRenderer spriteRenderer)
+        private static Vector2 ScaleBackground(SpriteRenderer spriteRenderer)
         {
-            Camera cam = Camera.main;
-            float cameraHeight = cam.orthographicSize * 2;
-            float cameraWidth = cameraHeight * cam.aspect;
-            float spriteHeight = spriteRenderer.bounds.size.y;
+            float stageWidth = GameConfig.BaseStageWidth;
+            float stageHeight =GameConfig.BaseStageHeight;
             float spriteWidth = spriteRenderer.bounds.size.x;
+            float spriteHeight = spriteRenderer.bounds.size.y;
             Vector3 newScale = spriteRenderer.transform.localScale;
-            newScale.x *= (cameraWidth / spriteWidth);
-            newScale.y *= (cameraHeight / spriteHeight);
+            newScale.x *= (stageWidth / spriteWidth);
+            newScale.y *= (stageHeight / spriteHeight);
             return newScale;
         }
         

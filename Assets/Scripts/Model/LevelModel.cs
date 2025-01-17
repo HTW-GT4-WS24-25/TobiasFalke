@@ -7,6 +7,7 @@ namespace Model
         private int currentStage;
         private static float stageSpeed;
         private float stageWidth;
+        private float stageHeight;
         private float obstacleSpawnInterval;
         private float pickupSpawnInterval;
         private static float elapsedTime;
@@ -33,6 +34,8 @@ namespace Model
             }
         }
         public float StageWidth { get; set; }
+        
+        public float StageHeight { get; set; }
         public float ObstacleSpawnInterval { get; set; }
         public float PickupSpawnInterval { get; set; }
         

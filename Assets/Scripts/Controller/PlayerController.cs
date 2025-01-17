@@ -5,7 +5,6 @@ using Model;
 using UnityEngine;
 using Config;
 
-
 namespace Controller
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -13,16 +12,22 @@ namespace Controller
     {
         private PlayerMovementController movementController;
         private PlayerModel playerModel;
-        private InputManager playerInput;
 
         private void Awake()
         {
             movementController = GetComponent<PlayerMovementController>();
+        }
+
+        private void Start()
+        {
             playerModel = new PlayerModel
             {
                 HealthPoints = PlayerConfig.MaxHealthPoints,
-                SpecialPoints = PlayerConfig.MaxSpecialPoints,
+                MaxHealthPoints = PlayerConfig.MaxHealthPoints,
+                SpecialPoints = 0,
+                MaxSpecialPoints = PlayerConfig.MaxSpecialPoints,
                 Speed = PlayerConfig.BaseSpeed,
+                MaxSpeedMultiplier = PlayerConfig.MaxSpeedMultiplier,
                 JumpHeight = PlayerConfig.JumpHeight,
                 JumpDuration = PlayerConfig.JumpDuration,
                 GrindActionScore = PlayerConfig.GrindActionScore,
@@ -32,18 +37,11 @@ namespace Controller
                 InvincibilityDuration = PlayerConfig.InvincibilityDuration
             };
             movementController.Initialize(playerModel);
-            playerInput = InputManager.Instance;
-        }
-
-        private void Start()
-        {
             RegisterEvents();
         }
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
-            EventManager.AddListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.AddListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
             EventManager.AddListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
             EventManager.AddListener<PlayerEvent.PickupCollision>(OnPickupCollision);
@@ -56,22 +54,13 @@ namespace Controller
         
         private void UpdateScore()
         {
-            playerModel.ScorePoints += Time.deltaTime * playerModel.ScoreMultiplier;
-        }
-        
-        private void OnTrickAction(PlayerEvent.TrickActionTriggered evt)
-        {
-            StartCoroutine(TrickActionActive(evt.TrickActionScore));
-        }
-        
-        private IEnumerator TrickActionActive(float duration){
-            yield return new WaitForSeconds(duration);
+            playerModel.ScorePoints += Time.deltaTime * 10 * playerModel.ScoreMultiplier;
         }
 
-        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered evt)
+        private void OnSpecialAction()
         {
-            // TODO: implement
-            StartCoroutine(SpecialActionActive(evt.SpecialActionDuration));
+            playerModel.IsDoingSpecialAction = true;
+            StartCoroutine(SpecialActionActive(playerModel.SpecialActionDuration));
         }
 
         private IEnumerator SpecialActionActive(float duration){
@@ -82,47 +71,35 @@ namespace Controller
         {
             Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
 
-            if (playerModel.IsDoingJumpAction && obstacle.canJumpOver)
-            {
-                playerModel.ScorePoints += obstacle.DetermineScore();
-            }
-            if (obstacle.Type == ObstacleType.Rail)
-            {
-                playerModel.IsDoingGrindAction = true;
-            }
-            if (!obstacle.canJumpOver || !playerModel.IsDoingJumpAction)
-            {
-                TriggerCollision(obstacle);
-            }
+            if (playerModel.IsDoingJumpAction && obstacle.canJumpOver) playerModel.ScorePoints += obstacle.DetermineScore();
+            if (obstacle.Type == ObstacleType.Rail) playerModel.IsAboveRail = true;
+            if (!obstacle.canJumpOver || !playerModel.IsDoingJumpAction) TriggerCollision(obstacle);
         }
         
         private void TriggerCollision(Obstacle obstacle)
         {
             if (playerModel.IsInvincible) return;
             AudioManager.Instance.PlaySound("crash");
-            StartCoroutine(InvincibilityActive());
             int collisionDamage = obstacle.DetermineDamageAmount();
             playerModel.HealthPoints -= collisionDamage;
+            playerModel.IsInvincible = true;
+            StartCoroutine(InvincibilityActive());
+            if (playerModel.HealthPoints <= 0) EventManager.Broadcast(new PlayerEvent.GameOverTriggered(playerModel.ScorePoints));
         }
 
         private IEnumerator InvincibilityActive()
         {
-            playerModel.IsInvincible = true;
             yield return new WaitForSeconds(playerModel.InvincibilityDuration);
             playerModel.IsInvincible = false;
         }
 
         private void OnObstacleEvasion(PlayerEvent.ObstacleEvasion evt)
         {
-            if (playerModel.IsInvincible) return;
             Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
+            if (obstacle.Type == ObstacleType.Rail) playerModel.IsAboveRail = false;
+            if (playerModel.IsInvincible) return;
             int evasionScore = obstacle.DetermineScore();
-
             playerModel.ScorePoints += evasionScore;
-            if (obstacle.Type == ObstacleType.Rail)
-            {
-                playerModel.IsAboveRail = false;
-            }
         }
         
         private void OnPickupCollision(PlayerEvent.PickupCollision evt)
@@ -175,9 +152,7 @@ namespace Controller
         }
         
         private void UnsubscribeEvents()
-        {
-            EventManager.RemoveListener<PlayerEvent.TrickActionTriggered>(OnTrickAction);
-            EventManager.RemoveListener<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+        { ;
             EventManager.RemoveListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
             EventManager.RemoveListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
             EventManager.RemoveListener<PlayerEvent.PickupCollision>(OnPickupCollision);

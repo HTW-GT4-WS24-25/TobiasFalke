@@ -1,170 +1,176 @@
 using Events;
 using UnityEngine;
 
-public class PlayerModel
+namespace Model
 {
-    // values modified by items
-    private float scorePoints;
-    private float healthPoints;
-    private float specialPoints;
-    private float scoreMultiplier;
-    private float speedMultiplier;
-    
-    // movement values
-    private Vector2 currentVelocity;
-    private float speed;
-    private float jumpDuration;
-    
-    private float grindActionScore;
-    private float trickActionScore;
-    private float trickActionDuration;
-    private float specialActionDuration;
-    private float invincibilityDuration;
-    
-    // player states
-    private bool isAboveRail;
-    private bool isDoingJumpAction;
-    private bool isDoingGrindAction;
-    private bool isDoingTrickAction;
-    private bool isDoingSpecialAction;
-    private bool isInvincible;
-
-    // TODO: put into player config
-
-    public float JumpHeight { get; set; }
-
-    public float GrindActionScore { get; set; }
-
-    public float TrickActionScore { get; set; }
-    
-    public float TrickActionDuration { get; set; }
-    
-    public float SpecialActionDuration { get; set; }
-    
-    public float InvincibilityDuration { get; set; }
-
-    
-    public float ScorePoints
+    public class PlayerModel
     {
-        get => scorePoints;
-        set
+        // values modified by items
+        private float scorePoints;
+        private float healthPoints;
+        private float specialPoints;
+        private float scoreMultiplier = 1f;
+        private float speedMultiplier = 1f;
+    
+        // movement values
+        private Vector2 currentVelocity;
+        private float speed;
+        private float jumpDuration;
+    
+        private float grindActionScore;
+        private float trickActionScore;
+        private float trickActionDuration;
+        private float specialActionDuration;
+        private float invincibilityDuration;
+    
+        // player states
+        private bool isAboveRail;
+        private bool isDoingJumpAction;
+        private bool isDoingGrindAction;
+        private bool isDoingTrickAction;
+        private bool isDoingSpecialAction;
+        private bool isInvincible;
+        
+        public float MaxHealthPoints { get; set; }
+
+        public float MaxSpecialPoints { get; set; }
+
+        public float MaxSpeedMultiplier { get; set; }
+        public float JumpHeight { get; set; }
+
+        public float GrindActionScore { get; set; }
+
+        public float TrickActionScore { get; set; }
+    
+        public float TrickActionDuration { get; set; }
+    
+        public float SpecialActionDuration { get; set; }
+    
+        public float InvincibilityDuration { get; set; }
+
+    
+        public float ScorePoints
         {
-            scorePoints = value;
-            EventManager.Broadcast(new PlayerEvent.ScorePointsChanged(scorePoints));
+            get => scorePoints;
+            set
+            {
+                scorePoints = value;
+                EventManager.Broadcast(new PlayerEvent.ScorePointsChanged(scorePoints));
+            }
         }
-    }
     
-    public float HealthPoints
-    {
-        get => healthPoints;
-        set
+        public float HealthPoints
         {
-            healthPoints = value;
-            EventManager.Broadcast(new PlayerEvent.HealthPointsChanged(healthPoints));
+            get => healthPoints;
+            set
+            {
+                healthPoints = value > healthPoints ? Mathf.Max(value, MaxHealthPoints) : value;
+                EventManager.Broadcast(new PlayerEvent.HealthPointsChanged(healthPoints));
+            }
         }
-    }
     
-    public float SpecialPoints
-    {
-        get => specialPoints;
-        set
+        public float SpecialPoints
         {
-            specialPoints = value;
-            EventManager.Broadcast(new PlayerEvent.SpecialPointsChanged(specialPoints));
+            get => specialPoints;
+            set
+            {
+                specialPoints = value > specialPoints ? Mathf.Max(value, MaxSpecialPoints) : value;
+                EventManager.Broadcast(new PlayerEvent.SpecialPointsChanged(specialPoints));
+            }
         }
-    }
 
-    public float ScoreMultiplier
-    {
-        get => scoreMultiplier;
-        set
+        public float ScoreMultiplier
         {
-            scoreMultiplier = value;
-            EventManager.Broadcast(new PlayerEvent.ScoreMultiplierChanged(scoreMultiplier));
+            get => scoreMultiplier;
+            set
+            {
+                scoreMultiplier = value;
+                EventManager.Broadcast(new PlayerEvent.ScoreMultiplierChanged(scoreMultiplier));
+            }
         }
-    }
 
-    public float SpeedMultiplier
-    {
-        get => speedMultiplier;
-        set
+        public float SpeedMultiplier
         {
-            speedMultiplier = value;
-            EventManager.Broadcast(new PlayerEvent.SpeedMultiplierChanged(speedMultiplier));
+            get => speedMultiplier;
+            set
+            {
+                speedMultiplier = value > speedMultiplier ? Mathf.Max(value, MaxSpeedMultiplier) : value;
+                EventManager.Broadcast(new PlayerEvent.SpeedMultiplierChanged(speedMultiplier));
+            }
         }
-    }
     
-    public Vector2 CurrentVelocity { get; set; }
+        public Vector2 CurrentVelocity { get; set; }
 
-    public float Speed
-    {
-        get => speed;
-        set
+        public float Speed
         {
-            speed = value;
-            EventManager.Broadcast(new PlayerEvent.SpeedChanged(speed));
+            get => speed;
+            set
+            {
+                speed = value;
+                EventManager.Broadcast(new PlayerEvent.SpeedChanged(speed));
+            }
         }
-    }
 
-    public float JumpDuration
-    {
-        get => jumpDuration;
-        set
+        public float JumpDuration
         {
-            jumpDuration = value;
-            EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(jumpDuration));
+            get => jumpDuration;
+            set
+            {
+                jumpDuration = value;
+                EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(jumpDuration));
+            }
         }
-    }
     
-    public bool IsAboveRail { get; set; }
+        public bool IsAboveRail { get; set; }
     
-    public bool IsDoingJumpAction
-    {
-        get => isDoingJumpAction;
-        set
+        public bool IsDoingJumpAction
         {
-            isDoingJumpAction = value;
-            EventManager.Broadcast(new PlayerEvent.JumpActionTriggered(jumpDuration, JumpHeight));
+            get => isDoingJumpAction;
+            set
+            {
+                isDoingJumpAction = value;
+                EventManager.Broadcast(new PlayerEvent.JumpActionTriggered(jumpDuration, JumpHeight));
+            }
         }
-    }
 
-    public bool IsDoingGrindAction
-    {
-        get => isDoingGrindAction;
-        set
+        public bool IsDoingGrindAction
         {
-            isDoingGrindAction = value;
-            EventManager.Broadcast(new PlayerEvent.GrindActionTriggered(grindActionScore));
+            get => isDoingGrindAction;
+            set
+            {
+                isDoingGrindAction = value;
+                EventManager.Broadcast(new PlayerEvent.GrindActionTriggered(grindActionScore));
+            }
         }
-    }
 
-    public bool IsDoingTrickAction
-    {
-        get => isDoingTrickAction;
-        set
+        public bool IsDoingTrickAction
         {
-            isDoingTrickAction = value;
-            EventManager.Broadcast(new PlayerEvent.TrickActionTriggered(trickActionDuration));
+            get => isDoingTrickAction;
+            set
+            {
+                isDoingTrickAction = value;
+                EventManager.Broadcast(new PlayerEvent.TrickActionTriggered(trickActionDuration));
+            }
         }
-    }
 
-    public bool IsDoingSpecialAction
-    {
-        get => isDoingSpecialAction;
-        set
+        public bool IsDoingSpecialAction
         {
-            isDoingSpecialAction = value;
-            EventManager.Broadcast(new PlayerEvent.SpecialActionTriggered(specialActionDuration));
+            get => isDoingSpecialAction;
+            set
+            {
+                isDoingSpecialAction = value;
+                EventManager.Broadcast(new PlayerEvent.SpecialActionTriggered(specialActionDuration));
+            }
         }
-    }
 
-    public bool IsInvincible
-    {
-        get => isInvincible;
-        set
+        public bool IsInvincible
         {
-            isInvincible = value;
-            EventManager.Broadcast(new PlayerEvent.InvincibilityTriggered(invincibilityDuration));
+            get => isInvincible;
+            set
+            {
+                isInvincible = value;
+                EventManager.Broadcast(new PlayerEvent.InvincibilityTriggered(invincibilityDuration));
+            }
         }
     }
 }
