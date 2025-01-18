@@ -1,7 +1,8 @@
 using Events;
 using UnityEngine;
+using Utility;
 
-namespace Interfaces
+namespace Model
 {
     public abstract class FallingObject : MonoBehaviour
     {
@@ -9,28 +10,28 @@ namespace Interfaces
 
         protected virtual void Start()
         {
-            EventManager.AddListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.Add<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
         }
 
         protected virtual void FixedUpdate()
         {
             HandleMovement();
         }
-        
-        protected void HandleMovement()
+
+        private void HandleMovement()
         {
             transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
             if (transform.position.y <= -10) Destroy(gameObject);
         }
-        
-        protected virtual void OnStageSpeedChanged(LevelEvent.StageSpeedChanged evt)
+
+        private void OnStageSpeedChanged(LevelEvent.StageSpeedChanged evt)
         {
             fallSpeed = evt.StageSpeed;
         }
         
         protected virtual void OnDestroy()
         {
-            EventManager.RemoveListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.Remove<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
         }
     }
 }

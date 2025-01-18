@@ -1,29 +1,29 @@
 using Events;
 using UnityEngine;
+using Utility;
+using static Utility.GameConstants;
 
 namespace Model
 {
     public class PlayerModel
     {
-        // values modified by items
+        // MODIFIABLE BY PICKUPS
         private float scorePoints;
-        private float healthPoints;
-        private float specialPoints;
         private float scoreMultiplier = 1f;
-        private float speedMultiplier = 1f;
-    
-        // movement values
-        private Vector2 currentVelocity;
+        private int healthPoints;
+        private int specialPoints;
         private float speed;
+        private float speedMultiplier = 1f;
         private float jumpDuration;
     
+        // CONSTANT VALUES
         private float grindActionScore;
         private float trickActionScore;
         private float trickActionDuration;
         private float specialActionDuration;
         private float invincibilityDuration;
     
-        // player states
+        // PLAYER STATES
         private bool isAboveRail;
         private bool isDoingJumpAction;
         private bool isDoingGrindAction;
@@ -31,9 +31,9 @@ namespace Model
         private bool isDoingSpecialAction;
         private bool isInvincible;
         
-        public float MaxHealthPoints { get; set; }
+        public int MaxHealthPoints { get; set; }
 
-        public float MaxSpecialPoints { get; set; }
+        public int MaxSpecialPoints { get; set; }
 
         public float MaxSpeedMultiplier { get; set; }
         public float JumpHeight { get; set; }
@@ -55,27 +55,27 @@ namespace Model
             set
             {
                 scorePoints = value;
-                EventManager.Broadcast(new PlayerEvent.ScorePointsChanged(scorePoints));
+                EventManager.Trigger(new PlayerEvent.ScorePointsChanged(scorePoints));
             }
         }
     
-        public float HealthPoints
+        public int HealthPoints
         {
             get => healthPoints;
             set
             {
-                healthPoints = value > healthPoints ? Mathf.Max(value, MaxHealthPoints) : value;
-                EventManager.Broadcast(new PlayerEvent.HealthPointsChanged(healthPoints));
+                healthPoints = value > healthPoints ? Mathf.Min(value, MaxHealthPoints) : value;
+                EventManager.Trigger(new PlayerEvent.HealthPointsChanged(healthPoints));
             }
         }
     
-        public float SpecialPoints
+        public int SpecialPoints
         {
             get => specialPoints;
             set
             {
-                specialPoints = value > specialPoints ? Mathf.Max(value, MaxSpecialPoints) : value;
-                EventManager.Broadcast(new PlayerEvent.SpecialPointsChanged(specialPoints));
+                specialPoints = value > specialPoints ? Mathf.Min(value, MaxSpecialPoints) : value;
+                EventManager.Trigger(new PlayerEvent.SpecialPointsChanged(specialPoints));
             }
         }
 
@@ -85,7 +85,7 @@ namespace Model
             set
             {
                 scoreMultiplier = value;
-                EventManager.Broadcast(new PlayerEvent.ScoreMultiplierChanged(scoreMultiplier));
+                EventManager.Trigger(new PlayerEvent.ScoreMultiplierChanged(scoreMultiplier));
             }
         }
 
@@ -94,20 +94,18 @@ namespace Model
             get => speedMultiplier;
             set
             {
-                speedMultiplier = value > speedMultiplier ? Mathf.Max(value, MaxSpeedMultiplier) : value;
-                EventManager.Broadcast(new PlayerEvent.SpeedMultiplierChanged(speedMultiplier));
+                speedMultiplier = value > speedMultiplier ? Mathf.Min(value, MaxSpeedMultiplier) : value;
+                EventManager.Trigger(new PlayerEvent.SpeedMultiplierChanged(speedMultiplier));
             }
         }
-    
-        public Vector2 CurrentVelocity { get; set; }
-
+        
         public float Speed
         {
             get => speed;
             set
             {
                 speed = value;
-                EventManager.Broadcast(new PlayerEvent.SpeedChanged(speed));
+                EventManager.Trigger(new PlayerEvent.SpeedChanged(speed));
             }
         }
 
@@ -117,7 +115,7 @@ namespace Model
             set
             {
                 jumpDuration = value;
-                EventManager.Broadcast(new PlayerEvent.JumpDurationChanged(jumpDuration));
+                EventManager.Trigger(new PlayerEvent.JumpDurationChanged(jumpDuration));
             }
         }
     
@@ -129,7 +127,7 @@ namespace Model
             set
             {
                 isDoingJumpAction = value;
-                EventManager.Broadcast(new PlayerEvent.JumpActionTriggered(jumpDuration, JumpHeight));
+                EventManager.Trigger(new PlayerEvent.JumpActionTriggered(jumpDuration, JumpHeight));
             }
         }
 
@@ -139,7 +137,8 @@ namespace Model
             set
             {
                 isDoingGrindAction = value;
-                EventManager.Broadcast(new PlayerEvent.GrindActionTriggered(grindActionScore));
+                if (isDoingGrindAction) AudioManager.Instance.StopBackgroundTrack();
+                EventManager.Trigger(new PlayerEvent.GrindActionTriggered(grindActionScore));
             }
         }
 
@@ -149,7 +148,7 @@ namespace Model
             set
             {
                 isDoingTrickAction = value;
-                EventManager.Broadcast(new PlayerEvent.TrickActionTriggered(trickActionDuration));
+                EventManager.Trigger(new PlayerEvent.TrickActionTriggered(trickActionDuration));
             }
         }
 
@@ -159,7 +158,7 @@ namespace Model
             set
             {
                 isDoingSpecialAction = value;
-                EventManager.Broadcast(new PlayerEvent.SpecialActionTriggered(specialActionDuration));
+                EventManager.Trigger(new PlayerEvent.SpecialActionTriggered(specialActionDuration));
             }
         }
 
@@ -169,7 +168,7 @@ namespace Model
             set
             {
                 isInvincible = value;
-                EventManager.Broadcast(new PlayerEvent.InvincibilityTriggered(invincibilityDuration));
+                EventManager.Trigger(new PlayerEvent.InvincibilityTriggered(invincibilityDuration));
             }
         }
     }

@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using Model;
 using Events;
+using Utility;
+using static Utility.GameConstants;
 
 namespace Controller
 {
@@ -25,29 +27,21 @@ namespace Controller
         private void Start()
         {
             RegisterEvents();
-            DetermineInitialGameState();
+            DetermineInitialGameState(); // only for play testing (when game starts outside main menu)
         }
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<GameModel.GameStateChanged>(OnGameStateChanged);
-            EventManager.AddListener<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+            EventManager.Add<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
         
         private void DetermineInitialGameState()
-        {
-            if (CompareTag("MainMenu"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Menu;
-            }
-            else if (CompareTag("Level"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Running;
-            }
-            else if (CompareTag("GameOver"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Loose;
-            }
+        {   
+            // TODO: replace with something better (e.g. comparing current scene name)
+            if (CompareTag("Level")) gameModel.CurrentGameState = GameModel.GameState.Running;
+            else if (CompareTag("GameOver")) gameModel.CurrentGameState = GameModel.GameState.Loose;
+            else gameModel.CurrentGameState = GameModel.GameState.Menu;
         }
         
         private static void OnGameStateChanged(GameModel.GameStateChanged evt)
@@ -55,21 +49,21 @@ namespace Controller
             switch (evt.NewGameState)
             {
                 case GameModel.GameState.Menu:
-                    SceneLoader.Instance.LoadScene("MainMenu");
-                    AudioManager.Instance.PlayTrack("MainMenuMusic");
+                    SceneLoader.Instance.LoadScene(Scenes.MainMenu);
+                    AudioManager.Instance.PlayTrack(Audio.MainMenuBGM);
                     break;
                 case GameModel.GameState.Running:
+                    AudioManager.Instance.PlayTrack(Audio.LevelBGM);
                     Time.timeScale = 1f;
-                    EventManager.Broadcast(new LevelEvent.TogglePauseMenu(false));
-                    AudioManager.Instance.PlayTrack("MainSceneMusic");
+                    EventManager.Trigger(new LevelEvent.TogglePauseMenu(false));
                     break;
                 case GameModel.GameState.Paused:
                     Time.timeScale = 0f;
-                    EventManager.Broadcast(new LevelEvent.TogglePauseMenu(true));
+                    EventManager.Trigger(new LevelEvent.TogglePauseMenu(true));
                     break;
                 case GameModel.GameState.Loose:
-                    SceneLoader.Instance.LoadScene("Game Over");
-                    AudioManager.Instance.PlayTrack("GameOverMusic");
+                    SceneLoader.Instance.LoadScene(Scenes.GameOver);
+                    AudioManager.Instance.PlayTrack(Audio.GameOverBGM);
                     break;
                 case GameModel.GameState.Quit:
                     Application.Quit();
@@ -82,7 +76,6 @@ namespace Controller
         private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
         {
             gameModel.CurrentGameState = GameModel.GameState.Loose;
-            SceneLoader.Instance.LoadScene("Game Over");
         }
 
         private void OnCancel()
@@ -104,8 +97,8 @@ namespace Controller
         
         private void UnsubscribeEvents()
         {
-            EventManager.RemoveListener<GameModel.GameStateChanged>(OnGameStateChanged);
-            EventManager.RemoveListener<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+            EventManager.Remove<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     }
 }

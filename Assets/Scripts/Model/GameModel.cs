@@ -1,3 +1,5 @@
+using Utility;
+
 namespace Model
 {
     public class GameModel
@@ -20,7 +22,7 @@ namespace Model
             {
                 if (currentGameState == value) return;
                 currentGameState = value;
-                EventManager.Broadcast(new GameStateChanged(currentGameState));
+                EventManager.Trigger(new GameStateChanged(currentGameState));
             }
         }
         

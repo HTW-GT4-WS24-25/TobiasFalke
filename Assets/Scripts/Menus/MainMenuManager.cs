@@ -1,8 +1,10 @@
+using Model;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Model;
+using Utility;
+using static Utility.GameConstants;
 
-namespace Utility
+namespace Menus
 {
     public class MainMenuManager : MonoBehaviour
     {
@@ -24,10 +26,6 @@ namespace Utility
             RegisterButtonCallbacks();
         }
 
-        private void Start()
-        {
-        }
-
         private void RegisterButtonCallbacks()
         {
             playButton?.RegisterCallback<ClickEvent>(OnClickPlayButton);
@@ -36,29 +34,29 @@ namespace Utility
             returnButton?.RegisterCallback<ClickEvent>(OnClickReturnButton);
         }
 
-        private void OnClickPlayButton(ClickEvent evt)
+        private static void OnClickPlayButton(ClickEvent evt)
         {
-            AudioManager.Instance.PlaySound("clickPlay");
-            SceneLoader.Instance.LoadScene(SceneLoader.gameLevel);
-            EventManager.Broadcast(new GameModel.GameStateChanged(GameModel.GameState.Running));
+            AudioManager.Instance.PlaySound(Audio.MenuClickSFX);
+            EventManager.Trigger(new GameModel.GameStateChanged(GameModel.GameState.Running));
+            SceneLoader.Instance.LoadScene(Scenes.Level);
         }
 
         private void OnClickExitButton(ClickEvent evt)
         {
-            AudioManager.Instance.PlaySound("quitGame");
+            AudioManager.Instance.PlaySound(Audio.MenuClickSFX);
             HideMenu();
             Application.Quit();
         }
 
         private void OnClickTutorialButton(ClickEvent evt)
         {
-            AudioManager.Instance.PlaySound("openTutorial");
+            AudioManager.Instance.PlaySound(Audio.MenuClickSFX);
             ShowTutorial();
         }
 
         private void OnClickReturnButton(ClickEvent evt)
         {
-            AudioManager.Instance.PlaySound("closeTutorial");
+            AudioManager.Instance.PlaySound(Audio.MenuClickSFX);
             HideTutorial();
         }
 

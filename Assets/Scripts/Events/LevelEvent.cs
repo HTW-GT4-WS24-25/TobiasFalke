@@ -1,3 +1,5 @@
+using Utility;
+
 namespace Events
 {
     public static class LevelEvent
@@ -9,16 +11,6 @@ namespace Events
             public StageChanged(int newStage)
             {
                 NewStage = newStage;
-            }
-        }
-        
-        public class StageWidthChanged : Event
-        {
-            public float StageWidth { get; private set; }
-
-            public StageWidthChanged(float stageWidth)
-            {
-                StageWidth = stageWidth;
             }
         }
 

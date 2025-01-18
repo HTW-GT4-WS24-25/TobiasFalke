@@ -1,5 +1,6 @@
 using Model;
 using UnityEngine;
+using Event = Utility.Event;
 
 namespace Events
 {

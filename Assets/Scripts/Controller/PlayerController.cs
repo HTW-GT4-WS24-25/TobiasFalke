@@ -3,7 +3,8 @@ using System.Collections;
 using Events;
 using Model;
 using UnityEngine;
-using Config;
+using Utility;
+using static Utility.GameConstants;
 
 namespace Controller
 {
@@ -22,19 +23,19 @@ namespace Controller
         {
             playerModel = new PlayerModel
             {
-                HealthPoints = PlayerConfig.MaxHealthPoints,
-                MaxHealthPoints = PlayerConfig.MaxHealthPoints,
+                HealthPoints = GameConfig.MaxHealthPoints,
+                MaxHealthPoints = GameConfig.MaxHealthPoints,
                 SpecialPoints = 0,
-                MaxSpecialPoints = PlayerConfig.MaxSpecialPoints,
-                Speed = PlayerConfig.BaseSpeed,
-                MaxSpeedMultiplier = PlayerConfig.MaxSpeedMultiplier,
-                JumpHeight = PlayerConfig.JumpHeight,
-                JumpDuration = PlayerConfig.JumpDuration,
-                GrindActionScore = PlayerConfig.GrindActionScore,
-                TrickActionScore = PlayerConfig.TrickActionScore,
-                TrickActionDuration = PlayerConfig.TrickActionDuration,
-                SpecialActionDuration = PlayerConfig.SpecialActionDuration,
-                InvincibilityDuration = PlayerConfig.InvincibilityDuration
+                MaxSpecialPoints = GameConfig.MaxSpecialPoints,
+                Speed = GameConfig.BaseSpeed,
+                MaxSpeedMultiplier = GameConfig.MaxSpeedMultiplier,
+                JumpHeight = GameConfig.JumpHeight,
+                JumpDuration = GameConfig.JumpDuration,
+                GrindActionScore = GameConfig.GrindActionScore,
+                TrickActionScore = GameConfig.TrickActionScore,
+                TrickActionDuration = GameConfig.TrickActionDuration,
+                SpecialActionDuration = GameConfig.SpecialActionDuration,
+                InvincibilityDuration = GameConfig.InvincibilityDuration
             };
             movementController.Initialize(playerModel);
             RegisterEvents();
@@ -42,9 +43,9 @@ namespace Controller
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
-            EventManager.AddListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
-            EventManager.AddListener<PlayerEvent.PickupCollision>(OnPickupCollision);
+            EventManager.Add<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.Add<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
+            EventManager.Add<PlayerEvent.PickupCollision>(OnPickupCollision);
         }
         
         private void Update()
@@ -59,18 +60,18 @@ namespace Controller
 
         private void OnSpecialAction()
         {
-            playerModel.IsDoingSpecialAction = true;
-            StartCoroutine(SpecialActionActive(playerModel.SpecialActionDuration));
-        }
-
-        private IEnumerator SpecialActionActive(float duration){
-            yield return new WaitForSeconds(duration);
+            if (playerModel.SpecialPoints >= playerModel.MaxSpecialPoints)
+            {
+                AudioManager.Instance.PlaySound(Audio.SpecialActionSFX);
+                playerModel.IsDoingSpecialAction = true;
+                playerModel.IsInvincible = true;
+                StartCoroutine(InvincibilityActive(playerModel.SpecialActionDuration));
+            }
         }
         
         private void OnObstacleCollision(PlayerEvent.ObstacleCollision evt)
         {
             Obstacle obstacle = evt.Obstacle.GetComponent<Obstacle>();
-
             if (playerModel.IsDoingJumpAction && obstacle.canJumpOver) playerModel.ScorePoints += obstacle.DetermineScore();
             if (obstacle.Type == ObstacleType.Rail) playerModel.IsAboveRail = true;
             if (!obstacle.canJumpOver || !playerModel.IsDoingJumpAction) TriggerCollision(obstacle);
@@ -79,17 +80,21 @@ namespace Controller
         private void TriggerCollision(Obstacle obstacle)
         {
             if (playerModel.IsInvincible) return;
-            AudioManager.Instance.PlaySound("crash");
+            AudioManager.Instance.PlaySound(Audio.WallCollisionSFX);
             int collisionDamage = obstacle.DetermineDamageAmount();
             playerModel.HealthPoints -= collisionDamage;
             playerModel.IsInvincible = true;
-            StartCoroutine(InvincibilityActive());
-            if (playerModel.HealthPoints <= 0) EventManager.Broadcast(new PlayerEvent.GameOverTriggered(playerModel.ScorePoints));
+            StartCoroutine(InvincibilityActive(playerModel.InvincibilityDuration));
+            if (playerModel.HealthPoints <= 0)
+            {
+                AudioManager.Instance.PlaySound(Audio.GameOverSFX);
+                EventManager.Trigger(new PlayerEvent.GameOverTriggered(playerModel.ScorePoints));
+            }
         }
 
-        private IEnumerator InvincibilityActive()
+        private IEnumerator InvincibilityActive(float duration)
         {
-            yield return new WaitForSeconds(playerModel.InvincibilityDuration);
+            yield return new WaitForSeconds(duration);
             playerModel.IsInvincible = false;
         }
 
@@ -110,15 +115,15 @@ namespace Controller
 
         private void TriggerItemEffect(PickupType pickupType)
         {
-            AudioManager.Instance.PlaySound("item");
+            AudioManager.Instance.PlaySound(Audio.PickupCollision1SFX);
             switch (pickupType)
             {
                 case PickupType.HealthBoost:
-                    playerModel.HealthPoints += 50f;
-                    EventManager.Broadcast(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints + 50f));
+                    playerModel.HealthPoints += 50;
+                    EventManager.Trigger(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints + 50f));
                     break;
                 case PickupType.SpecialBoost:
-                    playerModel.SpecialPoints += 25f;
+                    playerModel.SpecialPoints += 25;
                     break;
                 case PickupType.ScoreBoost:
                     playerModel.ScorePoints += Mathf.Max(100, playerModel.ScorePoints / 16) * playerModel.ScoreMultiplier;
@@ -127,10 +132,10 @@ namespace Controller
                     playerModel.SpeedMultiplier += 0.25f;
                     break;
                 case PickupType.HealthBoom:
-                    playerModel.HealthPoints = PlayerConfig.MaxHealthPoints;
+                    playerModel.HealthPoints = GameConfig.MaxHealthPoints;
                     break;
                 case PickupType.SpecialBoom:
-                    playerModel.SpecialPoints += 50f;
+                    playerModel.SpecialPoints += 50;
                     break;
                 case PickupType.SpeedBoom:
                     playerModel.SpeedMultiplier += 0.5f;
@@ -152,10 +157,10 @@ namespace Controller
         }
         
         private void UnsubscribeEvents()
-        { ;
-            EventManager.RemoveListener<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
-            EventManager.RemoveListener<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
-            EventManager.RemoveListener<PlayerEvent.PickupCollision>(OnPickupCollision);
+        {
+            EventManager.Remove<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.Remove<PlayerEvent.ObstacleEvasion>(OnObstacleEvasion);
+            EventManager.Remove<PlayerEvent.PickupCollision>(OnPickupCollision);
         }
     }
 }

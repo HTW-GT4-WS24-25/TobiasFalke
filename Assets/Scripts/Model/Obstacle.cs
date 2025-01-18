@@ -1,6 +1,6 @@
 using UnityEngine;
 using Events;
-using Interfaces;
+using Utility;
 
 namespace Model
 {
@@ -22,13 +22,13 @@ namespace Model
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            EventManager.Broadcast(new PlayerEvent.ObstacleCollision(gameObject));
+            EventManager.Trigger(new PlayerEvent.ObstacleCollision(gameObject));
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            EventManager.Broadcast(new PlayerEvent.ObstacleEvasion(gameObject));
+            EventManager.Trigger(new PlayerEvent.ObstacleEvasion(gameObject));
         }
 
         public int DetermineScore()

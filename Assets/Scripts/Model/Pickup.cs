@@ -1,6 +1,6 @@
 using UnityEngine;
 using Events;
-using Interfaces;
+using Utility;
 
 namespace Model
 {
@@ -26,7 +26,7 @@ namespace Model
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            EventManager.Broadcast(new PlayerEvent.PickupCollision(pickupType));
+            EventManager.Trigger(new PlayerEvent.PickupCollision(pickupType));
             Destroy(gameObject);
         }
     }

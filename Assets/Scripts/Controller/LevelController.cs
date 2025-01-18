@@ -1,20 +1,18 @@
-using Config;
 using Events;
 using Interfaces;
 using Model;
 using UnityEngine;
+using Utility;
 using Random = UnityEngine.Random;
 
 namespace Controller
 {
     public class LevelController : MonoBehaviour
     {
-        [SerializeField] private GameObject[] spawnableObstacles;
-        [SerializeField] private GameObject[] spawnablePickUps;
-        
         private LevelModel levelModel;
-        
+        [SerializeField] private GameObject[] spawnableObstacles;
         private float timeSinceLastObstacleSpawn;
+        [SerializeField] private GameObject[] spawnablePickUps;
         private float timeSinceLastPickUpSpawn;
   
         private void Awake()
@@ -44,7 +42,7 @@ namespace Controller
 
         private void CountPlayTime()
         {
-            levelModel.ElapsedTime += Time.deltaTime;
+            LevelModel.ElapsedTime += Time.deltaTime;
         }
         
         private void TriggerTimedEvents()
@@ -57,23 +55,20 @@ namespace Controller
         private void AttemptStageUpdate()
         {
             float nextStageThreshold = levelModel.StageDuration * levelModel.CurrentStage;
-            if (levelModel.ElapsedTime >= nextStageThreshold) levelModel.CurrentStage++;
+            if (LevelModel.ElapsedTime >= nextStageThreshold) levelModel.CurrentStage++;
         }
 
         private void AttemptSpawn(ref float timeSinceLastSpawn, float interval, GameObject[] spawnables)
         {
             timeSinceLastSpawn += Time.deltaTime;
-            if (timeSinceLastSpawn >= interval)
-            {
-                TrySpawnObject(spawnables, "World");
-                timeSinceLastSpawn = 0f;
-            }
+            if (!(timeSinceLastSpawn >= interval)) return;
+            TrySpawnObject(spawnables);
+            timeSinceLastSpawn = 0f;
         }
 
-        private void TrySpawnObject(GameObject[] spawnables, string layer)
+        private void TrySpawnObject(GameObject[] spawnables)
         {
             if (spawnables.Length == 0) return;
-
             const int maxSpawnAttempts = 5;
             GameObject objectToSpawn = spawnables[Random.Range(0, spawnables.Length)];
 
@@ -90,10 +85,10 @@ namespace Controller
             }
         }
 
-        private bool PositionOccupied(Vector3 position, float radius)
+        private static bool PositionOccupied(Vector3 position, float radius)
         {
             Collider2D hit = Physics2D.OverlapCircle(position, radius);
-            return hit != null;
+            return hit;
         }
         
         private void OnStageChanged(LevelEvent.StageChanged evt)
@@ -113,7 +108,7 @@ namespace Controller
         
         private void RegisterEvents()
         {
-            EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
         }
         
         private void OnDestroy()
@@ -123,7 +118,7 @@ namespace Controller
 
         private void UnsubscribeEvents()
         {
-            EventManager.RemoveListener<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Remove<LevelEvent.StageChanged>(OnStageChanged);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Events;
+using Utility;
 
 namespace Model
 {
@@ -18,7 +19,7 @@ namespace Model
             set
             {
                 currentStage = value;
-                EventManager.Broadcast(new LevelEvent.StageChanged(currentStage));
+                EventManager.Trigger(new LevelEvent.StageChanged(currentStage));
             }
         }
         
@@ -30,24 +31,22 @@ namespace Model
             set
             {
                 stageSpeed = value;
-                EventManager.Broadcast(new LevelEvent.StageSpeedChanged(stageSpeed));
+                EventManager.Trigger(new LevelEvent.StageSpeedChanged(stageSpeed));
             }
         }
         public float StageWidth { get; set; }
-        
         public float StageHeight { get; set; }
         public float ObstacleSpawnInterval { get; set; }
         public float PickupSpawnInterval { get; set; }
         
-        public float ElapsedTime
+        public static float ElapsedTime
         {
             get => elapsedTime;
             set
             {
                 elapsedTime = value;
-                EventManager.Broadcast(new LevelEvent.TimeElapsed(value));
+                EventManager.Trigger(new LevelEvent.TimeElapsed(value));
             }
         }
-        
     }
 }

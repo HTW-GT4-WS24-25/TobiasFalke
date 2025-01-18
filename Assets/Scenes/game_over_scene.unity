@@ -211,8 +211,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 688760367}
   - {fileID: 1199734209}
+  - {fileID: 688760367}
   - {fileID: 204401183}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -634,8 +634,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1683069501}
   - {fileID: 410912963}
+  - {fileID: 1683069501}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1683069499
@@ -647,10 +647,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1683069501}
-  - component: {fileID: 1683069500}
   - component: {fileID: 1683069502}
+  - component: {fileID: 1683069500}
   m_Layer: 5
-  m_Name: UI GameOver
+  m_Name: GameOver UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,8 +1,9 @@
 using System.Collections;
-using Config;
 using Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utility;
+using static Utility.GameConstants;
 
 namespace Controller
 {
@@ -27,25 +28,24 @@ namespace Controller
 
         private void UpdateMovement()
         {
-            ProcessMovement();
-            ProcessJumpMovement();
-            ProcessGrindMovement();
-            ProcessTrickAction();
+            if (!playerModel.IsDoingGrindAction) ProcessMovement();
+            if (playerModel.IsDoingJumpAction) ProcessJumpMovement();
+            if (playerModel.IsDoingGrindAction) ProcessGrindMovement();
         }
         
         private void OnMove(InputValue inputValue)
         {
-            if (!playerModel.IsDoingGrindAction) movementInput = inputValue.Get<Vector2>();
+            movementInput = inputValue.Get<Vector2>();
         }
         
         private void ProcessMovement()
         {
-            ClampMovementInputWithinBounds();
+            ClampMovementInputWithinLevelBounds();
             Vector2 movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
             rb2d.MovePosition(rb2d.position + movement);
         }
 
-        private void ClampMovementInputWithinBounds()
+        private void ClampMovementInputWithinLevelBounds()
         {
             float halfWidth = GameConfig.BaseStageWidth / 2;
             float halfHeight = GameConfig.BaseStageHeight / 2;
@@ -60,17 +60,15 @@ namespace Controller
         }
         private void OnJumpAction()
         {
-            if (playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingJumpAction = true;
             AudioManager.Instance.StopBackgroundTrack();
-            AudioManager.Instance.PlaySound("jump");
+            AudioManager.Instance.PlaySound(Audio.JumpActionSFX);
             timeSinceJump = 0;
             origJumpPos = transform.position.y;
         }
         
         private void ProcessJumpMovement()
         {
-            if (!playerModel.IsDoingJumpAction) return;
             timeSinceJump += Time.fixedDeltaTime;
             var progress = timeSinceJump / playerModel.JumpDuration;
             var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
@@ -81,46 +79,43 @@ namespace Controller
 
         private void ProcessLanding()
         {
+            transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
             playerModel.IsDoingJumpAction = false;
             playerModel.IsDoingTrickAction = false;
-            transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
             if (playerModel.IsAboveRail)
             {
-                Debug.Log("Grinding now!");
                 playerModel.IsDoingGrindAction = true;
-                AudioManager.Instance.PlaySound("grind");
+                AudioManager.Instance.PlaySound(Audio.RailLandingSFX);
+                AudioManager.Instance.PlayBackgroundTrack(Audio.GrindBGS);
             }
             else
             {
-                AudioManager.Instance.PlaySound("land");
+                AudioManager.Instance.PlaySound(Audio.GroundLandingSFX);
+                AudioManager.Instance.PlaySound(Audio.DriveBGS);
             }
         }
 
         private void ProcessGrindMovement()
         {
-            if (!playerModel.IsDoingGrindAction) return;
             // TODO: implement grind logic
-            if (playerModel.IsDoingJumpAction || !playerModel.IsAboveRail) playerModel.IsDoingGrindAction = false;
+            if (!playerModel.IsDoingJumpAction && playerModel.IsAboveRail) return;
+            playerModel.IsDoingGrindAction = false;
+            AudioManager.Instance.PlaySound(Audio.EndGrindSFX);
         }
         
         private void OnTrickAction()
         {
-            if (playerModel.IsDoingTrickAction) return;
-            AudioManager.Instance.StopBackgroundTrack();
-            playerModel.ScorePoints += playerModel.TrickActionScore;
+            if (!playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingTrickAction = true;
+            AudioManager.Instance.PlaySound(Audio.TrickActionSFX);
+            playerModel.ScorePoints += playerModel.TrickActionScore;
             StartCoroutine(TrickActionActive(playerModel.TrickActionDuration));
         }
         
-        private IEnumerator TrickActionActive(float duration){
+        private IEnumerator TrickActionActive(float duration)
+        {
             yield return new WaitForSeconds(duration);
             playerModel.IsDoingTrickAction = false;
-        }
-        
-        private void ProcessTrickAction()
-        {
-            if (!playerModel.IsDoingTrickAction || !playerModel.IsDoingJumpAction) return;
-            // TODO: implement trick action logic
         }
     }
 }

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Config;
 using Events;
-using Model;
 using UnityEngine;
+using Utility;
 
 namespace View
 {
@@ -24,8 +23,8 @@ namespace View
         {
             backgroundScrollSpeed = GameConfig.BaseStageSpeed;
             InitializeBackgrounds();
-            EventManager.AddListener<LevelEvent.StageChanged>(OnStageChanged);
-            EventManager.AddListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Add<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
         }
         
         private void InitializeBackgrounds()
@@ -83,7 +82,7 @@ namespace View
         private static Vector2 ScaleBackground(SpriteRenderer spriteRenderer)
         {
             float stageWidth = GameConfig.BaseStageWidth;
-            float stageHeight =GameConfig.BaseStageHeight;
+            float stageHeight = GameConfig.BaseStageHeight;
             float spriteWidth = spriteRenderer.bounds.size.x;
             float spriteHeight = spriteRenderer.bounds.size.y;
             Vector3 newScale = spriteRenderer.transform.localScale;
@@ -94,8 +93,8 @@ namespace View
         
         private void OnDestroy()
         {
-            EventManager.RemoveListener<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
-            EventManager.RemoveListener<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Remove<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.Remove<LevelEvent.StageChanged>(OnStageChanged);
         }
     }
 }
