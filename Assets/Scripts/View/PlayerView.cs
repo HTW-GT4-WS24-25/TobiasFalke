@@ -43,6 +43,7 @@ namespace View
     
         private void OnTrickActionTriggered(PlayerEvent.TrickActionTriggered evt)
         {
+            Debug.Log("Flip animation triggered");
             playerAnimator.SetTrigger(Animations.trickAction);
             playerShadowAnimator.SetTrigger(Animations.trickAction);
         }

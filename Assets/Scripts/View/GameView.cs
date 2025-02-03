@@ -70,7 +70,7 @@ namespace View
 
         private void OnSpeedMultiplierChanged(PlayerEvent.SpeedMultiplierChanged evt)
         {
-            speedCounter.text = evt.NewSpeedMultiplier + "x";
+            speedCounter.text = evt.NewSpeedMultiplier.ToString();
         }
 
         private void OnJumpDurationChanged(PlayerEvent.JumpDurationChanged evt)

@@ -61,6 +61,7 @@ namespace Controller
         private void OnJumpAction()
         {
             playerModel.IsDoingJumpAction = true;
+            playerModel.IsInvincible = true;
             AudioManager.Instance.StopBackgroundTrack();
             AudioManager.Instance.PlaySound(Audio.JumpActionSFX);
             timeSinceJump = 0;
@@ -82,6 +83,7 @@ namespace Controller
             transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
             playerModel.IsDoingJumpAction = false;
             playerModel.IsDoingTrickAction = false;
+            playerModel.IsInvincible = false;
             if (playerModel.IsAboveRail)
             {
                 playerModel.IsDoingGrindAction = true;
@@ -105,6 +107,7 @@ namespace Controller
         
         private void OnTrickAction()
         {
+            Debug.Log("flip triggered!");
             if (!playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingTrickAction = true;
             AudioManager.Instance.PlaySound(Audio.TrickActionSFX);

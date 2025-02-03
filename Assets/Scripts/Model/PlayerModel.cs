@@ -15,6 +15,10 @@ namespace Model
         private float speed;
         private float speedMultiplier = 1f;
         private float jumpDuration;
+        private int maxHealthPoints = 100;
+        private int maxSpecialPoints = 100;
+        private float maxSpeedMultiplier;
+        private float jumpHeight;
     
         // CONSTANT VALUES
         private float grindActionScore;
@@ -64,7 +68,7 @@ namespace Model
             get => healthPoints;
             set
             {
-                healthPoints = value > healthPoints ? Mathf.Min(value, MaxHealthPoints) : value;
+                healthPoints = value > healthPoints ? Mathf.Min(value, maxHealthPoints) : value;
                 EventManager.Trigger(new PlayerEvent.HealthPointsChanged(healthPoints));
             }
         }
@@ -74,7 +78,7 @@ namespace Model
             get => specialPoints;
             set
             {
-                specialPoints = value > specialPoints ? Mathf.Min(value, MaxSpecialPoints) : value;
+                specialPoints = value > specialPoints ? Mathf.Min(value, maxSpecialPoints) : value;
                 EventManager.Trigger(new PlayerEvent.SpecialPointsChanged(specialPoints));
             }
         }
@@ -148,7 +152,7 @@ namespace Model
             set
             {
                 isDoingTrickAction = value;
-                EventManager.Trigger(new PlayerEvent.TrickActionTriggered(trickActionDuration));
+                if (isDoingTrickAction) EventManager.Trigger(new PlayerEvent.TrickActionTriggered(trickActionDuration));
             }
         }
 
