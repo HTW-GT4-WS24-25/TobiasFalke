@@ -14,11 +14,18 @@ namespace Controller
         private float timeSinceLastObstacleSpawn;
         [SerializeField] private GameObject[] spawnablePickUps;
         private float timeSinceLastPickUpSpawn;
-  
-        private void Awake()
+        
+        private void Start()
+        {
+            InitializeLevel();
+            RegisterEvents();
+        }
+
+        private void InitializeLevel()
         {
             levelModel = new LevelModel
             {
+                ElapsedTime = 0f,
                 CurrentStage = GameConfig.Instance.StartingStage,
                 StageSpeed = GameConfig.Instance.BaseStageSpeed,
                 StageDuration = GameConfig.Instance.StageDuration,
@@ -26,12 +33,7 @@ namespace Controller
                 StageHeight = GameConfig.Instance.BaseStageHeight,
                 ObstacleSpawnInterval = GameConfig.Instance.BaseObstacleSpawnInterval,
                 PickupSpawnInterval = GameConfig.Instance.BasePickupSpawnInterval
-            };
-        }
-
-        private void Start()
-        {
-            RegisterEvents();
+            }; 
         }
         
         private void Update()
@@ -42,7 +44,7 @@ namespace Controller
 
         private void CountPlayTime()
         {
-            LevelModel.ElapsedTime += Time.deltaTime;
+            levelModel.ElapsedTime += Time.deltaTime;
         }
         
         private void TriggerTimedEvents()
@@ -55,7 +57,7 @@ namespace Controller
         private void AttemptStageUpdate()
         {
             float nextStageThreshold = levelModel.StageDuration * levelModel.CurrentStage;
-            if (LevelModel.ElapsedTime >= nextStageThreshold) levelModel.CurrentStage++;
+            if (levelModel.ElapsedTime >= nextStageThreshold) levelModel.CurrentStage++;
         }
 
         private void AttemptSpawn(ref float timeSinceLastSpawn, float interval, GameObject[] spawnables)
@@ -106,9 +108,15 @@ namespace Controller
             levelModel.PickupSpawnInterval = newPickupSpawnInterval;
         }
         
+        private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
+        {
+            // Destroy(gameObject);
+        }
+        
         private void RegisterEvents()
         {
             EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
         
         private void OnDestroy()
@@ -119,6 +127,7 @@ namespace Controller
         private void UnsubscribeEvents()
         {
             EventManager.Remove<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     }
 }

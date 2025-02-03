@@ -27,7 +27,7 @@ namespace Controller
         private void Start()
         {
             RegisterEvents();
-            DetermineInitialGameState(); // only for play testing (when game starts outside main menu)
+            gameModel.CurrentGameState = GameModel.GameState.Menu;
         }
         
         private void RegisterEvents()
@@ -36,16 +36,9 @@ namespace Controller
             EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
         
-        private void DetermineInitialGameState()
-        {   
-            // TODO: replace with something better (e.g. comparing current scene name)
-            if (CompareTag("Level")) gameModel.CurrentGameState = GameModel.GameState.Running;
-            else if (CompareTag("GameOver")) gameModel.CurrentGameState = GameModel.GameState.Loose;
-            else gameModel.CurrentGameState = GameModel.GameState.Menu;
-        }
-        
         private static void OnGameStateChanged(GameModel.GameStateChanged evt)
         {
+            Debug.Log("New game state " + evt.NewGameState);
             switch (evt.NewGameState)
             {
                 case GameModel.GameState.Menu:
@@ -76,6 +69,8 @@ namespace Controller
         private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
         {
             gameModel.CurrentGameState = GameModel.GameState.Loose;
+            SceneLoader.Instance.LoadScene(Scenes.GameOver);
+            Debug.Log("Game Over triggered in game controller");
         }
 
         private void OnCancel()
@@ -94,7 +89,7 @@ namespace Controller
         {
             UnsubscribeEvents();
         }
-        
+
         private void UnsubscribeEvents()
         {
             EventManager.Remove<GameModel.GameStateChanged>(OnGameStateChanged);

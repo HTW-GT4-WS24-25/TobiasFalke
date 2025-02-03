@@ -20,7 +20,6 @@ namespace Model
             get => currentGameState;
             set
             {
-                if (currentGameState == value) return;
                 currentGameState = value;
                 EventManager.Trigger(new GameStateChanged(currentGameState));
             }

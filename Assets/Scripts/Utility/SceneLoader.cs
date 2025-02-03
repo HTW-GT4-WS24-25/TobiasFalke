@@ -20,7 +20,10 @@ namespace Utility
         public void LoadScene(string sceneName)
         {
             AudioManager.Instance.StopTrack();
-            if (SceneManager.GetActiveScene().name != sceneName) SceneManager.LoadScene(sceneName);
+            if (SceneManager.GetActiveScene().name != sceneName)
+            {
+                SceneManager.LoadScene(sceneName);
+            }
         }
     }
 }

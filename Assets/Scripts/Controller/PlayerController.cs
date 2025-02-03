@@ -5,7 +5,6 @@ using Model;
 using UnityEngine;
 using Utility;
 using static Utility.GameConstants;
-using Event = UnityEngine.Event;
 
 namespace Controller
 {
@@ -17,7 +16,20 @@ namespace Controller
 
         private void Awake()
         {
+           
+        }
+
+        private void Start()
+        {
             movementController = GetComponent<PlayerMovementController>();
+            InitializePlayer();
+            EventManager.Trigger(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints));
+            movementController.Initialize(playerModel);
+            RegisterEvents();
+        }
+
+        private void InitializePlayer()
+        {
             playerModel = new PlayerModel
             {
                 MaxHealthPoints = GameConfig.Instance.MaxHealthPoints,
@@ -34,13 +46,6 @@ namespace Controller
                 SpecialActionDuration = GameConfig.Instance.SpecialActionDuration,
                 InvincibilityDuration = GameConfig.Instance.InvincibilityDuration
             };
-        }
-
-        private void Start()
-        {
-            EventManager.Trigger(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints));
-            movementController.Initialize(playerModel);
-            RegisterEvents();
         }
         
         private void RegisterEvents()
@@ -91,6 +96,7 @@ namespace Controller
             if (playerModel.HealthPoints <= 0)
             {
                 AudioManager.Instance.PlaySound(Audio.GameOverSFX);
+                // Destroy(gameObject);
                 EventManager.Trigger(new PlayerEvent.GameOverTriggered(playerModel.ScorePoints));
             }
         }

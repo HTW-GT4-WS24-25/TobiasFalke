@@ -39,7 +39,7 @@ namespace Model
         public float ObstacleSpawnInterval { get; set; }
         public float PickupSpawnInterval { get; set; }
         
-        public static float ElapsedTime
+        public float ElapsedTime
         {
             get => elapsedTime;
             set
