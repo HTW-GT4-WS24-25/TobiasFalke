@@ -104,10 +104,10 @@ namespace Controller
 
         private void ProcessGrindMovement()
         {
+            playerModel.ScorePoints += playerModel.GrindActionScore;
             var rotation = transform.rotation;
             rotation.z = -75;
             transform.rotation = rotation;
-            // TODO: implement grind logic
             if (!playerModel.IsDoingJumpAction && playerModel.IsAboveRail) return;
             playerModel.IsDoingGrindAction = false;
             rotation.z = 0;
