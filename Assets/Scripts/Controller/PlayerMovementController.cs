@@ -14,13 +14,15 @@ namespace Controller
         private Vector2 movementInput;
         private float timeSinceJump;
         private float origJumpPos;
+        
+        private float shakeIntensity = 0.01f;
 
         public void Initialize(PlayerModel model)
         {
             playerModel = model;
             rb2d = GetComponent<Rigidbody2D>();
         }
-        
+
         private void FixedUpdate()
         {
             UpdateMovement();
@@ -32,17 +34,18 @@ namespace Controller
             if (playerModel.IsDoingJumpAction) ProcessJumpMovement();
             if (playerModel.IsDoingGrindAction) ProcessGrindMovement();
         }
-        
+
         private void OnMove(InputValue inputValue)
         {
             movementInput = inputValue.Get<Vector2>();
         }
-        
+
         private void ProcessMovement()
         {
             ClampMovementInputWithinLevelBounds();
             Vector2 movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
-            rb2d.MovePosition(rb2d.position + movement);
+            Vector2 shakeOffset = GetShakeOffset();
+            rb2d.MovePosition(rb2d.position + movement + shakeOffset);
         }
 
         private void ClampMovementInputWithinLevelBounds()
@@ -58,7 +61,8 @@ namespace Controller
             if (playerY <= -halfHeight + buffer) movementInput.y = Mathf.Max(0, movementInput.y);
             else if (playerY >= halfHeight - buffer) movementInput.y = Mathf.Min(0, movementInput.y);
         }
-        private void OnJumpAction()
+
+         private void OnJumpAction()
         {
             if (playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingJumpAction = true;
@@ -66,6 +70,8 @@ namespace Controller
             AudioManager.Instance.PlaySound(Audio.JumpActionSFX);
             timeSinceJump = 0;
             origJumpPos = transform.position.y;
+
+            transform.rotation = Quaternion.Euler(0, 0, 75);
         }
 
         private void ProcessJumpMovement()
@@ -75,8 +81,10 @@ namespace Controller
             var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
             var currentVerticalPosition = origJumpPos + verticalOffset;
             var movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
-            transform.position = new Vector3(transform.position.x + movement.x, 
-                currentVerticalPosition + movement.y, 
+            Vector2 shakeOffset = GetShakeOffset();
+            
+            transform.position = new Vector3(transform.position.x + movement.x + shakeOffset.x, 
+                currentVerticalPosition + movement.y + shakeOffset.y, 
                 transform.position.z);
 
             if (!(progress >= 1)) return;
@@ -89,6 +97,9 @@ namespace Controller
             playerModel.IsDoingJumpAction = false;
             playerModel.IsDoingTrickAction = false;
             playerModel.IsInvincible = false;
+
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+
             if (playerModel.IsAboveRail)
             {
                 playerModel.IsDoingGrindAction = true;
@@ -105,16 +116,23 @@ namespace Controller
         private void ProcessGrindMovement()
         {
             playerModel.ScorePoints += playerModel.GrindActionScore;
-            var rotation = transform.rotation;
-            rotation.z = -75;
-            transform.rotation = rotation;
+            transform.rotation = Quaternion.Euler(0, 0, -50);
+
+
+            Vector2 shakeOffset = GetShakeOffset();
+            transform.position = new Vector3(transform.position.x + shakeOffset.x, transform.position.y + shakeOffset.y, transform.position.z);
+
             if (!playerModel.IsDoingJumpAction && playerModel.IsAboveRail) return;
             playerModel.IsDoingGrindAction = false;
-            rotation.z = 0;
-            transform.rotation = rotation;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             AudioManager.Instance.PlaySound(Audio.EndGrindSFX);
         }
-        
+
+        private Vector2 GetShakeOffset()
+        {
+            return new Vector2(Random.Range(-shakeIntensity, shakeIntensity), Random.Range(-shakeIntensity, shakeIntensity));
+        }
+
         private void OnTrickAction()
         {
             if (!playerModel.IsDoingJumpAction) return;

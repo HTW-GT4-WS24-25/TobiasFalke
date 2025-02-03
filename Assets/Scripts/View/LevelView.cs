@@ -12,7 +12,6 @@ namespace View
         private List<SpriteRenderer> activeBackgrounds;
         private float backgroundScrollSpeed;
         private Vector3 startPosition;
-        private const float backgroundHeight = 10f;
         
         private void Awake()
         {
@@ -41,10 +40,12 @@ namespace View
                 spriteRenderer.sortingOrder = backgroundRenderer.sortingOrder;
                 backgroundObj.transform.SetParent(transform);
                 spriteRenderer.transform.localScale = ScaleBackground(spriteRenderer);
-                float yPos = startPosition.y + i * backgroundHeight;
+                float yPos = startPosition.y + i * GameConfig.Instance.BaseStageHeight;
                 backgroundObj.transform.position = new Vector3(startPosition.x, yPos, startPosition.z);
                 activeBackgrounds.Add(spriteRenderer);
             }
+
+            backgroundRenderer.sprite = null;
         }
         
         private void Update()
@@ -52,7 +53,6 @@ namespace View
             ScrollBackgrounds();
         }
         
-        // TODO: refactor to only work with one sprite instead of 2
         private void ScrollBackgrounds()
         {
             foreach (var bg in activeBackgrounds)
@@ -61,9 +61,9 @@ namespace View
                 pos.y -= backgroundScrollSpeed * Time.deltaTime;
                 bg.transform.position = pos;
 
-                if (bg.transform.position.y < startPosition.y - backgroundHeight)
+                if (bg.transform.position.y < startPosition.y - GameConfig.Instance.BaseStageHeight)
                 {
-                    bg.transform.position += new Vector3(0, 2 * backgroundHeight, 0);
+                    bg.transform.position += new Vector3(0, 2 * GameConfig.Instance.BaseStageHeight, 0);
                 }
             }
         }
@@ -79,17 +79,19 @@ namespace View
             foreach (var background in activeBackgrounds) background.sprite = stageBackgrounds[stageId];
         }
 
-        private static Vector2 ScaleBackground(SpriteRenderer spriteRenderer)
+        private Vector3 ScaleBackground(SpriteRenderer spriteRenderer)
         {
             float stageWidth = GameConfig.Instance.BaseStageWidth;
             float stageHeight = GameConfig.Instance.BaseStageHeight;
-            float spriteWidth = spriteRenderer.bounds.size.x;
-            float spriteHeight = spriteRenderer.bounds.size.y;
-            Vector3 newScale = spriteRenderer.transform.localScale;
-            newScale.x *= (stageWidth / spriteWidth);
-            newScale.y *= (stageHeight / spriteHeight);
-            return newScale;
+            float spriteWidth = spriteRenderer.sprite.bounds.size.x;
+            float spriteHeight = spriteRenderer.sprite.bounds.size.y;
+
+            float scaleX = stageWidth / spriteWidth;
+            float scaleY = stageHeight / spriteHeight;
+
+            return new Vector3(scaleX, scaleY, 1f);
         }
+
         
         private void OnDestroy()
         {
