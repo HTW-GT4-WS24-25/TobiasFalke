@@ -21,7 +21,7 @@ namespace View
 
         private void Start()
         {
-            backgroundScrollSpeed = GameConfig.BaseStageSpeed;
+            backgroundScrollSpeed = GameConfig.Instance.BaseStageSpeed;
             InitializeBackgrounds();
             EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
             EventManager.Add<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
@@ -81,8 +81,8 @@ namespace View
 
         private static Vector2 ScaleBackground(SpriteRenderer spriteRenderer)
         {
-            float stageWidth = GameConfig.BaseStageWidth;
-            float stageHeight = GameConfig.BaseStageHeight;
+            float stageWidth = GameConfig.Instance.BaseStageWidth;
+            float stageHeight = GameConfig.Instance.BaseStageHeight;
             float spriteWidth = spriteRenderer.bounds.size.x;
             float spriteHeight = spriteRenderer.bounds.size.y;
             Vector3 newScale = spriteRenderer.transform.localScale;

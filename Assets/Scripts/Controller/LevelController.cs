@@ -17,16 +17,18 @@ namespace Controller
   
         private void Awake()
         {
+            Debug.Log("level" +GameConfig.Instance);
             levelModel = new LevelModel
             {
-                CurrentStage = GameConfig.StartingStage,
-                StageSpeed = GameConfig.BaseStageSpeed,
-                StageDuration = GameConfig.StageDuration,
-                StageWidth = GameConfig.BaseStageWidth,
-                StageHeight = GameConfig.BaseStageHeight,
-                ObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval,
-                PickupSpawnInterval = GameConfig.BasePickupSpawnInterval
+                CurrentStage = GameConfig.Instance.StartingStage,
+                StageSpeed = GameConfig.Instance.BaseStageSpeed,
+                StageDuration = GameConfig.Instance.StageDuration,
+                StageWidth = GameConfig.Instance.BaseStageWidth,
+                StageHeight = GameConfig.Instance.BaseStageHeight,
+                ObstacleSpawnInterval = GameConfig.Instance.BaseObstacleSpawnInterval,
+                PickupSpawnInterval = GameConfig.Instance.BasePickupSpawnInterval
             };
+            Debug.Log("health points now" + levelModel.StageSpeed);
         }
 
         private void Start()
@@ -98,11 +100,11 @@ namespace Controller
 
         private void EnhanceLevelDifficulty()
         {
-            float newStageSpeed = GameConfig.BaseStageSpeed + GameConfig.SpeedIncreasePerStage;
+            float newStageSpeed = GameConfig.Instance.BaseStageSpeed + GameConfig.Instance.SpeedIncreasePerStage;
             levelModel.StageSpeed = newStageSpeed;
-            float newObstacleSpawnInterval = GameConfig.BaseObstacleSpawnInterval / levelModel.CurrentStage;
+            float newObstacleSpawnInterval = GameConfig.Instance.BaseObstacleSpawnInterval / levelModel.CurrentStage;
             levelModel.ObstacleSpawnInterval = newObstacleSpawnInterval;
-            float newPickupSpawnInterval = GameConfig.BasePickupSpawnInterval / levelModel.CurrentStage;
+            float newPickupSpawnInterval = GameConfig.Instance.BasePickupSpawnInterval / levelModel.CurrentStage;
             levelModel.PickupSpawnInterval = newPickupSpawnInterval;
         }
         

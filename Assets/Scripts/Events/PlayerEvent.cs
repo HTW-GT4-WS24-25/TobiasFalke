@@ -121,11 +121,11 @@ namespace Events
         
         public class InvincibilityTriggered : Event
         {
-            public float invincibilityDuration { get; }
+            public float InvincibilityDuration { get; }
 
             public InvincibilityTriggered(float invincibilityDuration)
             {
-                invincibilityDuration = invincibilityDuration;
+                InvincibilityDuration = invincibilityDuration;
             }
         }
         

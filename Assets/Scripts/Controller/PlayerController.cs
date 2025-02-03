@@ -17,26 +17,28 @@ namespace Controller
         private void Awake()
         {
             movementController = GetComponent<PlayerMovementController>();
+            Debug.Log("player" +GameConfig.Instance);
+            playerModel = new PlayerModel
+            {
+                MaxHealthPoints = GameConfig.Instance.MaxHealthPoints,
+                HealthPoints = GameConfig.Instance.MaxHealthPoints,
+                MaxSpecialPoints = GameConfig.Instance.MaxSpecialPoints,
+                SpecialPoints = 0,
+                Speed = GameConfig.Instance.BaseSpeed,
+                MaxSpeedMultiplier = GameConfig.Instance.MaxSpeedMultiplier,
+                JumpHeight = GameConfig.Instance.JumpHeight,
+                JumpDuration = GameConfig.Instance.JumpDuration,
+                GrindActionScore = GameConfig.Instance.GrindActionScore,
+                TrickActionScore = GameConfig.Instance.TrickActionScore,
+                TrickActionDuration = GameConfig.Instance.TrickActionDuration,
+                SpecialActionDuration = GameConfig.Instance.SpecialActionDuration,
+                InvincibilityDuration = GameConfig.Instance.InvincibilityDuration
+            };
+            Debug.Log("health points now" + playerModel.HealthPoints);
         }
 
         private void Start()
         {
-            playerModel = new PlayerModel
-            {
-                HealthPoints = GameConfig.MaxHealthPoints,
-                MaxHealthPoints = GameConfig.MaxHealthPoints,
-                SpecialPoints = 0,
-                MaxSpecialPoints = GameConfig.MaxSpecialPoints,
-                Speed = GameConfig.BaseSpeed,
-                MaxSpeedMultiplier = GameConfig.MaxSpeedMultiplier,
-                JumpHeight = GameConfig.JumpHeight,
-                JumpDuration = GameConfig.JumpDuration,
-                GrindActionScore = GameConfig.GrindActionScore,
-                TrickActionScore = GameConfig.TrickActionScore,
-                TrickActionDuration = GameConfig.TrickActionDuration,
-                SpecialActionDuration = GameConfig.SpecialActionDuration,
-                InvincibilityDuration = GameConfig.InvincibilityDuration
-            };
             movementController.Initialize(playerModel);
             RegisterEvents();
         }
@@ -120,7 +122,6 @@ namespace Controller
             {
                 case PickupType.HealthBoost:
                     playerModel.HealthPoints += 50;
-                    EventManager.Trigger(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints + 50f));
                     break;
                 case PickupType.SpecialBoost:
                     playerModel.SpecialPoints += 25;
@@ -132,7 +133,7 @@ namespace Controller
                     playerModel.SpeedMultiplier += 0.25f;
                     break;
                 case PickupType.HealthBoom:
-                    playerModel.HealthPoints = GameConfig.MaxHealthPoints;
+                    playerModel.HealthPoints += 100;
                     break;
                 case PickupType.SpecialBoom:
                     playerModel.SpecialPoints += 50;

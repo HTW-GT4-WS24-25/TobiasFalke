@@ -19,7 +19,7 @@ namespace Model
             set
             {
                 currentStage = value;
-                EventManager.Trigger(new LevelEvent.StageChanged(currentStage));
+                EventManager.Trigger(new LevelEvent.StageChanged(CurrentStage));
             }
         }
         
@@ -31,7 +31,7 @@ namespace Model
             set
             {
                 stageSpeed = value;
-                EventManager.Trigger(new LevelEvent.StageSpeedChanged(stageSpeed));
+                EventManager.Trigger(new LevelEvent.StageSpeedChanged(StageSpeed));
             }
         }
         public float StageWidth { get; set; }

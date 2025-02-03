@@ -4,6 +4,9 @@ namespace Utility
 {
     public class GameConfig : MonoBehaviour
     {
+        public static GameConfig Instance { get; set; }
+        
+        /*
         [Header("Level Settings")]
         [SerializeField] private int startingStage = 1;
         [SerializeField] private float stageDuration = 20f;
@@ -25,29 +28,37 @@ namespace Utility
         [SerializeField] private float trickActionDuration = 1f;
         [SerializeField] private float specialActionDuration = 8f;
         [SerializeField] private float invincibilityDuration = 1f;
+*/
 
-        public static int MaxHealthPoints;
-        public static int MaxSpecialPoints;
-        public static float BaseSpeed;
-        public static float MaxSpeedMultiplier;
-        public static float JumpHeight;
-        public static float JumpDuration;
-        public static float GrindActionScore;
-        public static float TrickActionScore;
-        public static float TrickActionDuration;
-        public static float SpecialActionDuration;
-        public static float InvincibilityDuration;
-        public static int StartingStage;
-        public static float StageDuration;
-        public static float SpeedIncreasePerStage;
-        public static float BaseStageSpeed;
-        public static float BaseStageWidth;
-        public static float BaseStageHeight;
-        public static float BaseObstacleSpawnInterval;
-        public static float BasePickupSpawnInterval;
+        public int MaxHealthPoints;
+        public int MaxSpecialPoints;
+        public float BaseSpeed;
+        public float MaxSpeedMultiplier;
+        public float JumpHeight;
+        public float JumpDuration;
+        public float GrindActionScore;
+        public float TrickActionScore;
+        public float TrickActionDuration;
+        public float SpecialActionDuration;
+        public float InvincibilityDuration;
+        public int StartingStage;
+        public float StageDuration;
+        public float SpeedIncreasePerStage;
+        public float BaseStageSpeed;
+        public float BaseStageWidth;
+        public float BaseStageHeight;
+        public float BaseObstacleSpawnInterval;
+        public float BasePickupSpawnInterval;
 
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else Destroy(gameObject);
+            /*
             MaxHealthPoints = maxHealthPoints;
             MaxSpecialPoints = maxSpecialPoints;
             MaxSpeedMultiplier = maxSpeedMultiplier;
@@ -67,6 +78,7 @@ namespace Utility
             BaseStageHeight = baseStageHeight;
             BaseObstacleSpawnInterval = baseObstacleSpawnInterval;
             BasePickupSpawnInterval = basePickupSpawnInterval;
+        */
         }
     }
 }

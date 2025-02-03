@@ -31,8 +31,8 @@ namespace View
         {
             EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
             EventManager.Add<LevelEvent.TimeElapsed>(OnTimeElapsed);
-            EventManager.Add<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
             EventManager.Add<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
+            EventManager.Add<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
             EventManager.Add<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);
             EventManager.Add<PlayerEvent.SpeedMultiplierChanged>(OnSpeedMultiplierChanged);
             EventManager.Add<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);

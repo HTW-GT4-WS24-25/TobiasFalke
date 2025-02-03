@@ -47,8 +47,8 @@ namespace Controller
 
         private void ClampMovementInputWithinLevelBounds()
         {
-            float halfWidth = GameConfig.BaseStageWidth / 2;
-            float halfHeight = GameConfig.BaseStageHeight / 2;
+            float halfWidth = GameConfig.Instance.BaseStageWidth / 2;
+            float halfHeight = GameConfig.Instance.BaseStageHeight / 2;
             float playerX = transform.position.x;
             float playerY = transform.position.y;
             const float buffer = 0.5f;
@@ -60,24 +60,29 @@ namespace Controller
         }
         private void OnJumpAction()
         {
+            if (playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingJumpAction = true;
-            playerModel.IsInvincible = true;
             AudioManager.Instance.StopBackgroundTrack();
             AudioManager.Instance.PlaySound(Audio.JumpActionSFX);
             timeSinceJump = 0;
             origJumpPos = transform.position.y;
         }
-        
+
         private void ProcessJumpMovement()
         {
             timeSinceJump += Time.fixedDeltaTime;
             var progress = timeSinceJump / playerModel.JumpDuration;
             var verticalOffset = playerModel.JumpHeight * Mathf.Sin(Mathf.PI * progress);
-            transform.position = new Vector3(transform.position.x, origJumpPos + verticalOffset, transform.position.z);
+            var currentVerticalPosition = origJumpPos + verticalOffset;
+            var movement = movementInput * (playerModel.Speed * playerModel.SpeedMultiplier * Time.fixedDeltaTime);
+            transform.position = new Vector3(transform.position.x + movement.x, 
+                currentVerticalPosition + movement.y, 
+                transform.position.z);
+
             if (!(progress >= 1)) return;
             ProcessLanding();
         }
-
+        
         private void ProcessLanding()
         {
             transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);

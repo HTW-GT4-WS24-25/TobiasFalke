@@ -33,6 +33,7 @@ namespace View
             EventManager.Add<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Add<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
             EventManager.Add<PlayerEvent.ObstacleCollision>(OnObstacleCollision); 
+            EventManager.Add<PlayerEvent.InvincibilityTriggered>(OnInvincibilityTriggered); 
             EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     
@@ -43,7 +44,6 @@ namespace View
     
         private void OnTrickActionTriggered(PlayerEvent.TrickActionTriggered evt)
         {
-            Debug.Log("Flip animation triggered");
             playerAnimator.SetTrigger(Animations.trickAction);
             playerShadowAnimator.SetTrigger(Animations.trickAction);
         }
@@ -55,20 +55,28 @@ namespace View
         
         private void OnObstacleCollision(PlayerEvent.ObstacleCollision evt)
         {
-            StartCoroutine(FlashingEffect(2f, Color.yellow));
+        }
+
+        private void OnInvincibilityTriggered(PlayerEvent.InvincibilityTriggered evt)
+        {
+            Debug.Log("invinc triggered" + evt.InvincibilityDuration);
+            StartCoroutine(FlashingEffect(evt.InvincibilityDuration, Color.white));
         }
         
         private IEnumerator FlashingEffect(float time, Color flashColor)
         {
             Color originalColor = playerSprite.color;
-            float flashDuration = 0.1f;
+            float flashDuration = 0.2f;
             int flashCount = (int)(time * 10);
+            originalColor.a = 1.0f;
+            flashColor.a = 0.5f;
 
             for (int i = 0; i < flashCount; i++)
             {
                 playerSprite.color = flashColor;
                 playerShadowSprite.color = flashColor;
                 yield return new WaitForSeconds(flashDuration);
+        
                 playerSprite.color = originalColor;
                 playerShadowSprite.color = originalColor;
                 yield return new WaitForSeconds(flashDuration);
@@ -90,6 +98,7 @@ namespace View
             EventManager.Remove<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
             EventManager.Remove<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Remove<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.Remove<PlayerEvent.InvincibilityTriggered>(OnInvincibilityTriggered);
             EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     }

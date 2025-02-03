@@ -2584,25 +2584,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef22f41b7a7c41c7803d755078c08c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingStage: 1
-  stageDuration: 10
-  speedIncreasePerStage: 1
-  baseStageSpeed: 3
-  baseStageWidth: 18
-  baseStageHeight: 10
-  baseObstacleSpawnInterval: 1
-  basePickupSpawnInterval: 5
-  maxHealthPoints: 100
-  maxSpecialPoints: 100
-  baseSpeed: 6
-  maxSpeedMultiplier: 3
-  baseJumpHeight: 2
-  baseJumpDuration: 1
-  baseGrindActionScore: 100
-  trickActionScore: 50
-  trickActionDuration: 1
-  specialActionDuration: 8
-  invincibilityDuration: 3
+  MaxHealthPoints: 100
+  MaxSpecialPoints: 100
+  BaseSpeed: 4
+  MaxSpeedMultiplier: 3
+  JumpHeight: 3
+  JumpDuration: 1
+  GrindActionScore: 100
+  TrickActionScore: 100
+  TrickActionDuration: 1
+  SpecialActionDuration: 8
+  InvincibilityDuration: 1
+  StartingStage: 1
+  StageDuration: 20
+  SpeedIncreasePerStage: 1
+  BaseStageSpeed: 2
+  BaseStageWidth: 20
+  BaseStageHeight: 10
+  BaseObstacleSpawnInterval: 1
+  BasePickupSpawnInterval: 5
 --- !u!114 &1143362123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5176,7 +5176,7 @@ AudioSource:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1128679509}
   - {fileID: 1545029890}
   - {fileID: 834257143}
   - {fileID: 3364418675536671408}
-  - {fileID: 1128679509}
