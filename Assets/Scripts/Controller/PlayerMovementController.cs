@@ -104,15 +104,19 @@ namespace Controller
 
         private void ProcessGrindMovement()
         {
+            var rotation = transform.rotation;
+            rotation.z = -75;
+            transform.rotation = rotation;
             // TODO: implement grind logic
             if (!playerModel.IsDoingJumpAction && playerModel.IsAboveRail) return;
             playerModel.IsDoingGrindAction = false;
+            rotation.z = 0;
+            transform.rotation = rotation;
             AudioManager.Instance.PlaySound(Audio.EndGrindSFX);
         }
         
         private void OnTrickAction()
         {
-            Debug.Log("flip triggered!");
             if (!playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingTrickAction = true;
             AudioManager.Instance.PlaySound(Audio.TrickActionSFX);

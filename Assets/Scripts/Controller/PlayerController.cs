@@ -5,6 +5,7 @@ using Model;
 using UnityEngine;
 using Utility;
 using static Utility.GameConstants;
+using Event = UnityEngine.Event;
 
 namespace Controller
 {
@@ -17,7 +18,6 @@ namespace Controller
         private void Awake()
         {
             movementController = GetComponent<PlayerMovementController>();
-            Debug.Log("player" +GameConfig.Instance);
             playerModel = new PlayerModel
             {
                 MaxHealthPoints = GameConfig.Instance.MaxHealthPoints,
@@ -34,11 +34,11 @@ namespace Controller
                 SpecialActionDuration = GameConfig.Instance.SpecialActionDuration,
                 InvincibilityDuration = GameConfig.Instance.InvincibilityDuration
             };
-            Debug.Log("health points now" + playerModel.HealthPoints);
         }
 
         private void Start()
         {
+            EventManager.Trigger(new PlayerEvent.HealthPointsChanged(playerModel.HealthPoints));
             movementController.Initialize(playerModel);
             RegisterEvents();
         }
@@ -86,11 +86,26 @@ namespace Controller
             int collisionDamage = obstacle.DetermineDamageAmount();
             playerModel.HealthPoints -= collisionDamage;
             playerModel.IsInvincible = true;
+            StartCoroutine(SpinEffect(360, 1f));
             StartCoroutine(InvincibilityActive(playerModel.InvincibilityDuration));
             if (playerModel.HealthPoints <= 0)
             {
                 AudioManager.Instance.PlaySound(Audio.GameOverSFX);
                 EventManager.Trigger(new PlayerEvent.GameOverTriggered(playerModel.ScorePoints));
+            }
+        }
+        
+        private IEnumerator SpinEffect(float degrees, float duration)
+        {
+            float rotationAmount = degrees / duration; // Degrees per second
+            float rotationElapsed = 0f;
+
+            while (rotationElapsed < duration)
+            {
+                float rotationStep = rotationAmount * Time.deltaTime;
+                transform.Rotate(0, 0, rotationStep);
+                rotationElapsed += Time.deltaTime;
+                yield return null;
             }
         }
 

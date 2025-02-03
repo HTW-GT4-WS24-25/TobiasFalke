@@ -17,7 +17,6 @@ namespace Controller
   
         private void Awake()
         {
-            Debug.Log("level" +GameConfig.Instance);
             levelModel = new LevelModel
             {
                 CurrentStage = GameConfig.Instance.StartingStage,
@@ -28,7 +27,6 @@ namespace Controller
                 ObstacleSpawnInterval = GameConfig.Instance.BaseObstacleSpawnInterval,
                 PickupSpawnInterval = GameConfig.Instance.BasePickupSpawnInterval
             };
-            Debug.Log("health points now" + levelModel.StageSpeed);
         }
 
         private void Start()

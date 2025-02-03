@@ -4,6 +4,7 @@ using Events;
 using UnityEngine;
 using Utility;
 using static Utility.GameConstants;
+using Event = UnityEngine.Event;
 
 namespace View
 {
@@ -30,6 +31,8 @@ namespace View
 
         private void RegisterEvents()
         {
+            EventManager.Add<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Add<PlayerEvent.GrindActionTriggered>(OnGrindAction);
             EventManager.Add<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Add<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
             EventManager.Add<PlayerEvent.ObstacleCollision>(OnObstacleCollision); 
@@ -37,11 +40,16 @@ namespace View
             EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     
-        private void OnJumpAction()
+        private void OnJumpAction(PlayerEvent.JumpActionTriggered evt)
         {
-            playerShadowSprite.enabled = !playerShadowSprite.enabled;
+            // TODO: fix shadow position transform to stay on the ground
         }
-    
+        
+        private void OnGrindAction(PlayerEvent.GrindActionTriggered evt)
+        {
+            // TODO: trigger special effect for grinding
+        }
+        
         private void OnTrickActionTriggered(PlayerEvent.TrickActionTriggered evt)
         {
             playerAnimator.SetTrigger(Animations.trickAction);
@@ -59,7 +67,6 @@ namespace View
 
         private void OnInvincibilityTriggered(PlayerEvent.InvincibilityTriggered evt)
         {
-            Debug.Log("invinc triggered" + evt.InvincibilityDuration);
             StartCoroutine(FlashingEffect(evt.InvincibilityDuration, Color.white));
         }
         
@@ -95,6 +102,8 @@ namespace View
 
         private void UnsubscribeEvents()
         {
+            EventManager.Remove<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Remove<PlayerEvent.GrindActionTriggered>(OnGrindAction);
             EventManager.Remove<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
             EventManager.Remove<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Remove<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
