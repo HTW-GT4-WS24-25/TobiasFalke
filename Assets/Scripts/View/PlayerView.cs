@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Events;
+using UnityEditor;
 using UnityEngine;
 using Utility;
 using static Utility.GameConstants;
@@ -17,6 +18,9 @@ namespace View
     
         private float _shadowSpriteY;
         private float _initialShadowSpriteY;
+        private float _initialJumpY;
+
+        private bool _isJumping;
 
         private void Awake()
         {
@@ -29,9 +33,15 @@ namespace View
             RegisterEvents();
         }
 
+        private void FixedUpdate()
+        {
+            HandleJumping();
+        }
+
         private void RegisterEvents()
         {
             EventManager.Add<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Add<PlayerEvent.LandActionTriggered>(OnLandAction);
             EventManager.Add<PlayerEvent.GrindActionTriggered>(OnGrindAction);
             EventManager.Add<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Add<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
@@ -42,11 +52,21 @@ namespace View
     
         private void OnJumpAction(PlayerEvent.JumpActionTriggered evt)
         {
-            // TODO: fix shadow position transform to stay on the ground
+            _isJumping = true;
+            _initialJumpY = transform.position.y;
+            _shadowSpriteY = _initialJumpY - playerSprite.bounds.extents.y;
+            ToggleShadowSprite(true);
+        }
+        
+        private void OnLandAction(PlayerEvent.LandActionTriggered evt)
+        {
+            _isJumping = false;
+            ToggleShadowSprite(false);
         }
         
         private void OnGrindAction(PlayerEvent.GrindActionTriggered evt)
         {
+            ToggleShadowSprite(false);
             // TODO: trigger special effect for grinding
         }
         
@@ -103,12 +123,25 @@ namespace View
         private void UnsubscribeEvents()
         {
             EventManager.Remove<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Remove<PlayerEvent.LandActionTriggered>(OnLandAction);
             EventManager.Remove<PlayerEvent.GrindActionTriggered>(OnGrindAction);
             EventManager.Remove<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
             EventManager.Remove<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
             EventManager.Remove<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
             EventManager.Remove<PlayerEvent.InvincibilityTriggered>(OnInvincibilityTriggered);
             EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+        }
+
+        private void HandleJumping()
+        {
+            if (!_isJumping) return;
+            // Add y offset to the shadow.
+            playerShadowSprite.transform.position = new Vector3(playerSprite.transform.position.x, _shadowSpriteY, playerShadowSprite.transform.position.z);
+        }
+        
+        private void ToggleShadowSprite(bool show)
+        {
+            playerShadowSprite.enabled = show;
         }
     }
 }

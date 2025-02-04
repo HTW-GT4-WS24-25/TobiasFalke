@@ -89,6 +89,10 @@ namespace Events
             }
         }
         
+        public class LandActionTriggered : Event
+        {
+        }
+        
         public class GrindActionTriggered : Event
         {
             public float GrindScore { get; }

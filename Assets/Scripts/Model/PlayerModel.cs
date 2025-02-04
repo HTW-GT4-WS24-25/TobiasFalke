@@ -30,6 +30,7 @@ namespace Model
         // PLAYER STATES
         private bool isAboveRail;
         private bool isDoingJumpAction;
+        private bool isDoingLandAction;
         private bool isDoingGrindAction;
         private bool isDoingTrickAction;
         private bool isDoingSpecialAction;
@@ -132,6 +133,15 @@ namespace Model
             {
                 isDoingJumpAction = value;
                 if (isDoingJumpAction) EventManager.Trigger(new PlayerEvent.JumpActionTriggered(JumpDuration, JumpHeight));
+            }
+        }
+
+        public bool IsDoingLandAction
+        {
+            set
+            {
+                isDoingLandAction = value;
+                if (isDoingLandAction) EventManager.Trigger(new PlayerEvent.LandActionTriggered());
             }
         }
 

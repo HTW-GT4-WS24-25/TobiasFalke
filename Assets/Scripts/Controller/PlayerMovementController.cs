@@ -93,6 +93,8 @@ namespace Controller
         
         private void ProcessLanding()
         {
+            playerModel.IsDoingLandAction = true;
+            
             transform.position = new Vector3(transform.position.x, origJumpPos, transform.position.z);
             playerModel.IsDoingJumpAction = false;
             playerModel.IsDoingTrickAction = false;
