@@ -1,5 +1,6 @@
-using Events;
 using UnityEngine;
+using Events;
+using Utility;
 
 namespace Model
 {
@@ -12,85 +13,45 @@ namespace Model
         Hole
     }
 
-    public class Obstacle : MonoBehaviour, IObject
+    public class Obstacle : FallingObject
     {
         [SerializeField] internal ObstacleType Type;
-        private float fallSpeed;
-        public bool IsJumpable => Type != ObstacleType.Wall;
-
-        private void OnEnable()
-        {
-            EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
-            InitializeFallSpeed(LevelModel.GetStageSpeed());
-        }
-
-        private void OnDisable()
-        {
-            EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
-        }
-
-        private void Update()
-        {
-            MoveDownwards();
-            if (transform.position.y <= -10)
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        public void InitializeFallSpeed(float initialSpeed)
-        {
-            fallSpeed = initialSpeed;
-        }
-
-        public void UpdateFallSpeed(float newSpeed)
-        {
-            fallSpeed = newSpeed;
-        }
-
-        public void MoveDownwards()
-        {
-            transform.Translate(Vector3.down * (fallSpeed * Time.deltaTime));
-        }
-
-        private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
-        {
-            UpdateFallSpeed(evt.StageSpeed);
-        }
-
+        
+        public bool canJumpOver => Type != ObstacleType.Wall;
+        
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            EventManager.Broadcast(new PlayerEvents.ObstacleCollisionEvent(gameObject));
+            EventManager.Trigger(new PlayerEvent.ObstacleCollision(gameObject));
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            EventManager.Broadcast(new PlayerEvents.ObstacleCollisionExitEvent(gameObject));
+            EventManager.Trigger(new PlayerEvent.ObstacleEvasion(gameObject));
         }
 
         public int DetermineScore()
         {
             return Type switch
             {
-                ObstacleType.BigObstacle => 50,
-                ObstacleType.SmallObstacle => 10,
-                ObstacleType.Hole => 60,
-                _ => 10
+                ObstacleType.BigObstacle => 200,
+                ObstacleType.SmallObstacle => 100,
+                ObstacleType.Hole => 100,
+                _ => 100
             };
         }
-    
+
         public int DetermineDamageAmount()
         {
             return Type switch
             {
-                ObstacleType.Wall => -50,
-                ObstacleType.BigObstacle => -20,
-                ObstacleType.SmallObstacle => -10,
-                ObstacleType.Hole => -100,
-                ObstacleType.Rail => -30,
-                _ => -20
+                ObstacleType.Wall => 50,
+                ObstacleType.BigObstacle => 50,
+                ObstacleType.SmallObstacle => 25,
+                ObstacleType.Hole => 25,
+                ObstacleType.Rail => 25,
+                _ => -25
             };
         }
     }

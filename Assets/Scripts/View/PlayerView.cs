@@ -1,121 +1,147 @@
 using System;
 using System.Collections;
 using Events;
+using UnityEditor;
 using UnityEngine;
+using Utility;
+using static Utility.GameConstants;
+using Event = UnityEngine.Event;
 
-public class PlayerView : MonoBehaviour
+namespace View
 {
-    private SpriteRenderer playerSprite;
-    public SpriteRenderer playerShadowSprite;
-    private Animator playerAnimator;
-    public Animator playerShadowAnimator;
+    public class PlayerView : MonoBehaviour
+    {
+        private SpriteRenderer playerSprite;
+        public SpriteRenderer playerShadowSprite;
+        private Animator playerAnimator;
+        public Animator playerShadowAnimator;
     
-    private float _shadowSpriteY;
-    private float _initialShadowSpriteY;
+        private float _shadowSpriteY;
+        private float _initialShadowSpriteY;
+        private float _initialJumpY;
 
-    void Awake()
-    {
-        playerSprite = GetComponent<SpriteRenderer>();
-        playerAnimator = GetComponent<Animator>();
-    }
+        private bool _isJumping;
 
-    void Start()
-    {
-        RegisterEvents();
-    }
-    
-    private void RegisterEvents()
-    {
-        EventManager.AddListener<PlayerEvents.JumpEvent>(OnJumpAction);
-        EventManager.AddListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-        EventManager.AddListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
-        EventManager.AddListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-        EventManager.AddListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
-        EventManager.AddListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
-    }
-    
-    private void OnDestroy()
-    {
-        UnregisterEvents();
-    }
-
-    private void UnregisterEvents()
-    {
-        EventManager.RemoveListener<PlayerEvents.JumpEvent>(OnJumpAction);
-        EventManager.RemoveListener<PlayerEvents.TrickActionEvent>(OnTrickAction);
-        EventManager.RemoveListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
-        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionEvent>(OnObstacleCollision);
-        EventManager.RemoveListener<PlayerEvents.ObstacleCollisionExitEvent>(OnObstacleExit);
-        EventManager.RemoveListener<PlayerEvents.PickupCollisionEvent>(OnPickupCollision);
-    }
-    
-    // sprite transformation
-    
-    public void UpdateDirection(float direction)
-    {
-        if (direction != 0) playerSprite.flipX = direction < 0;
-    }
-    
-    // animation
-    public void SetRunning(bool isRunning)
-    {
-        playerAnimator.SetBool("isRunning", isRunning);
-    }
-    
-    public void PlayAnimation(string animationName)
-    {
-        playerAnimator.Play(animationName);
-    }
-    
-    private void OnJumpAction(PlayerEvents.JumpEvent obj)
-    {
-        float newHeight = obj.initialJumpHeight - playerSprite.bounds.extents.y;
-        playerShadowSprite.enabled = !playerShadowSprite.enabled;
-    }
-
-    private void OnPickupCollision(PlayerEvents.PickupCollisionEvent obj)
-    {
-        // TODO: make evasion sound
-        // TODO: make visual effect on player
-    }
-
-    private void OnObstacleExit(PlayerEvents.ObstacleCollisionExitEvent obj)
-    {
-        // TODO: make evasion sound
-    }
-
-    private void OnObstacleCollision(PlayerEvents.ObstacleCollisionEvent obj)
-    {
-        playerAnimator.SetBool("isInvincible", true);
-    }
-
-    private void OnTrickAction(PlayerEvents.TrickActionEvent obj)
-    {
-        AudioManager.Instance.PlaySound("flip");
-        playerAnimator.SetTrigger("Flip");
-        playerShadowAnimator.SetTrigger("Flip");
-    }
-
-    
-    private void OnSpecialAction(PlayerEvents.SpecialActionTriggered obj)
-    {
-        StartCoroutine(FlashBlue(6.0f));
-    }
-    
-    private IEnumerator FlashBlue(float time)
-    {
-        Color originalColor = playerSprite.color;
-        Color flashColor = Color.cyan;
-        
-        float flashDuration = 0.1f;
-        int flashCount = (int)(time * 10);
-
-        for (int i = 0; i < flashCount; i++)
+        private void Awake()
         {
-            playerSprite.color = flashColor;
-            yield return new WaitForSeconds(flashDuration);
-            playerSprite.color = originalColor;
-            yield return new WaitForSeconds(flashDuration);
+            playerSprite = GetComponent<SpriteRenderer>();
+            playerAnimator = GetComponent<Animator>();
+        }
+
+        private void Start()
+        {
+            RegisterEvents();
+        }
+
+        private void FixedUpdate()
+        {
+            HandleJumping();
+        }
+
+        private void RegisterEvents()
+        {
+            EventManager.Add<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Add<PlayerEvent.LandActionTriggered>(OnLandAction);
+            EventManager.Add<PlayerEvent.GrindActionTriggered>(OnGrindAction);
+            EventManager.Add<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.Add<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
+            EventManager.Add<PlayerEvent.ObstacleCollision>(OnObstacleCollision); 
+            EventManager.Add<PlayerEvent.InvincibilityTriggered>(OnInvincibilityTriggered); 
+            EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+        }
+    
+        private void OnJumpAction(PlayerEvent.JumpActionTriggered evt)
+        {
+            _isJumping = true;
+            _initialJumpY = transform.position.y;
+            _shadowSpriteY = _initialJumpY - playerSprite.bounds.extents.y;
+            ToggleShadowSprite(true);
+        }
+        
+        private void OnLandAction(PlayerEvent.LandActionTriggered evt)
+        {
+            _isJumping = false;
+            ToggleShadowSprite(false);
+        }
+        
+        private void OnGrindAction(PlayerEvent.GrindActionTriggered evt)
+        {
+            ToggleShadowSprite(false);
+            // TODO: trigger special effect for grinding
+        }
+        
+        private void OnTrickActionTriggered(PlayerEvent.TrickActionTriggered evt)
+        {
+            playerAnimator.SetTrigger(Animations.trickAction);
+            playerShadowAnimator.SetTrigger(Animations.trickAction);
+        }
+    
+        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered evt)
+        {
+            StartCoroutine(FlashingEffect(evt.SpecialActionDuration, Color.blue));
+        }
+        
+        private void OnObstacleCollision(PlayerEvent.ObstacleCollision evt)
+        {
+        }
+
+        private void OnInvincibilityTriggered(PlayerEvent.InvincibilityTriggered evt)
+        {
+            StartCoroutine(FlashingEffect(evt.InvincibilityDuration, Color.white));
+        }
+        
+        private IEnumerator FlashingEffect(float time, Color flashColor)
+        {
+            Color originalColor = playerSprite.color;
+            float flashDuration = 0.2f;
+            int flashCount = (int)(time * 10);
+            originalColor.a = 1.0f;
+            flashColor.a = 0.5f;
+
+            for (int i = 0; i < flashCount; i++)
+            {
+                playerSprite.color = flashColor;
+                playerShadowSprite.color = flashColor;
+                yield return new WaitForSeconds(flashDuration);
+        
+                playerSprite.color = originalColor;
+                playerShadowSprite.color = originalColor;
+                yield return new WaitForSeconds(flashDuration);
+            }
+        }
+
+        private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
+        {
+            playerAnimator.SetBool(Animations.gameOver, true);
+        }
+    
+        private void OnDestroy()
+        {
+            UnsubscribeEvents();
+        }
+
+        private void UnsubscribeEvents()
+        {
+            EventManager.Remove<PlayerEvent.JumpActionTriggered>(OnJumpAction);
+            EventManager.Remove<PlayerEvent.LandActionTriggered>(OnLandAction);
+            EventManager.Remove<PlayerEvent.GrindActionTriggered>(OnGrindAction);
+            EventManager.Remove<PlayerEvent.TrickActionTriggered>(OnTrickActionTriggered);
+            EventManager.Remove<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.Remove<PlayerEvent.ObstacleCollision>(OnObstacleCollision);
+            EventManager.Remove<PlayerEvent.InvincibilityTriggered>(OnInvincibilityTriggered);
+            EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+        }
+
+        private void HandleJumping()
+        {
+            if (!_isJumping) return;
+            // Add y offset to the shadow.
+            playerShadowSprite.transform.position = new Vector3(playerSprite.transform.position.x, _shadowSpriteY, playerShadowSprite.transform.position.z);
+        }
+        
+        private void ToggleShadowSprite(bool show)
+        {
+            playerShadowSprite.enabled = show;
         }
     }
 }

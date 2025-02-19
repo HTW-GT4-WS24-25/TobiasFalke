@@ -1,41 +1,31 @@
 using System.Collections.Generic;
 using Events;
 using UnityEngine;
+using Utility;
 
 namespace View
 {
     public class LevelView : MonoBehaviour
     {
-        public List<Sprite> levelBackgrounds;
+        public List<Sprite> stageBackgrounds;
+        private SpriteRenderer backgroundRenderer;
         private List<SpriteRenderer> activeBackgrounds;
+        private float backgroundScrollSpeed;
         private Vector3 startPosition;
-        private SpriteRenderer originalBackground;
-        private float backgroundHeight = 10f;
-        private float currentScrollSpeed = 2f;
-
+        
         private void Awake()
         {
-            originalBackground = GetComponent<SpriteRenderer>();
+            backgroundRenderer = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
         {
+            backgroundScrollSpeed = GameConfig.Instance.BaseStageSpeed;
             InitializeBackgrounds();
-            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
-            EventManager.AddListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
+            EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Add<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
         }
-
-        private void OnDestroy()
-        {
-            EventManager.RemoveListener<LevelEvents.StageSpeedChangedEvent>(OnLevelSpeedChanged);
-            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
-        }
-
-        private void Update()
-        {
-            ScrollBackgrounds();
-        }
-
+        
         private void InitializeBackgrounds()
         {
             startPosition = transform.position;
@@ -45,67 +35,68 @@ namespace View
             {
                 GameObject backgroundObj = new GameObject("Background" + i);
                 SpriteRenderer spriteRenderer = backgroundObj.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = originalBackground.sprite;
-                spriteRenderer.sortingLayerID = originalBackground.sortingLayerID;
-                spriteRenderer.sortingOrder = originalBackground.sortingOrder;
+                spriteRenderer.sprite = backgroundRenderer.sprite;
+                spriteRenderer.sortingLayerID = backgroundRenderer.sortingLayerID;
+                spriteRenderer.sortingOrder = backgroundRenderer.sortingOrder;
                 backgroundObj.transform.SetParent(transform);
-                ScaleBackgroundToCamera(spriteRenderer);
-
-                float yPos = startPosition.y + i * backgroundHeight;
+                spriteRenderer.transform.localScale = ScaleBackground(spriteRenderer);
+                float yPos = startPosition.y + i * GameConfig.Instance.BaseStageHeight;
                 backgroundObj.transform.position = new Vector3(startPosition.x, yPos, startPosition.z);
-
                 activeBackgrounds.Add(spriteRenderer);
             }
-        }
 
+            backgroundRenderer.sprite = null;
+        }
+        
+        private void Update()
+        {
+            ScrollBackgrounds();
+        }
+        
         private void ScrollBackgrounds()
         {
             foreach (var bg in activeBackgrounds)
             {
                 Vector3 pos = bg.transform.position;
-                pos.y -= currentScrollSpeed * Time.deltaTime;
+                pos.y -= backgroundScrollSpeed * Time.deltaTime;
                 bg.transform.position = pos;
 
-                if (bg.transform.position.y < startPosition.y - backgroundHeight)
+                if (bg.transform.position.y < startPosition.y - GameConfig.Instance.BaseStageHeight)
                 {
-                    bg.transform.position += new Vector3(0, 2 * backgroundHeight, 0);
+                    bg.transform.position += new Vector3(0, 2 * GameConfig.Instance.BaseStageHeight, 0);
                 }
             }
         }
-
-        private void OnLevelSpeedChanged(LevelEvents.StageSpeedChangedEvent evt)
+        
+        private void OnStageSpeedChanged(LevelEvent.StageSpeedChanged evt)
         {
-            currentScrollSpeed = evt.StageSpeed;
+            backgroundScrollSpeed = evt.StageSpeed;
         }
 
-        private void OnLevelChanged(LevelEvents.StageChanged evt)
+        private void OnStageChanged(LevelEvent.StageChanged evt)
         {
-            UpdateLevelBackground(evt.NewStage);
+            int stageId = evt.NewStage % stageBackgrounds.Count;
+            foreach (var background in activeBackgrounds) background.sprite = stageBackgrounds[stageId];
         }
 
-        private void UpdateLevelBackground(int stage)
+        private Vector3 ScaleBackground(SpriteRenderer spriteRenderer)
         {
-            int levelId = stage % levelBackgrounds.Count;
-            foreach (var bg in activeBackgrounds)
-            {
-                bg.sprite = levelBackgrounds[levelId];
-            }
+            float stageWidth = GameConfig.Instance.BaseStageWidth;
+            float stageHeight = GameConfig.Instance.BaseStageHeight;
+            float spriteWidth = spriteRenderer.sprite.bounds.size.x;
+            float spriteHeight = spriteRenderer.sprite.bounds.size.y;
+
+            float scaleX = stageWidth / spriteWidth;
+            float scaleY = stageHeight / spriteHeight;
+
+            return new Vector3(scaleX, scaleY, 1f);
         }
 
-        private void ScaleBackgroundToCamera(SpriteRenderer spriteRenderer)
+        
+        private void OnDestroy()
         {
-            Camera cam = Camera.main;
-            if (cam != null)
-            {
-                float cameraHeight = cam.orthographicSize * 2;
-                float cameraWidth = cameraHeight * cam.aspect;
-                float spriteHeight = spriteRenderer.bounds.size.y;
-                float spriteWidth = spriteRenderer.bounds.size.x;
-                Vector3 newScale = spriteRenderer.transform.localScale;
-                newScale.x *= (cameraWidth / spriteWidth);
-                newScale.y *= (cameraHeight / spriteHeight);
-                spriteRenderer.transform.localScale = newScale;
-            }
+            EventManager.Remove<LevelEvent.StageSpeedChanged>(OnStageSpeedChanged);
+            EventManager.Remove<LevelEvent.StageChanged>(OnStageChanged);
         }
     }
 }

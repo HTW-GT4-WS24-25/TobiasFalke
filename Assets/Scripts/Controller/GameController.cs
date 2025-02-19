@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using Model;
 using Events;
+using Utility;
+using static Utility.GameConstants;
 
 namespace Controller
 {
@@ -10,7 +12,6 @@ namespace Controller
         // TODO: make dedicated persistent singleton class? (example in previous branches)
         private static GameController Instance { get; set; }
         private GameModel gameModel;
-        private InputManager playerInput;
 
         private void Awake()
         {
@@ -19,7 +20,6 @@ namespace Controller
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
                 gameModel = new GameModel();
-                playerInput = InputManager.Instance;
             }
             else Destroy(gameObject);
         }
@@ -27,48 +27,36 @@ namespace Controller
         private void Start()
         {
             RegisterEvents();
-            DetermineInitialGameState();
+            gameModel.CurrentGameState = GameModel.GameState.Menu;
         }
         
         private void RegisterEvents()
         {
-            playerInput.OnEscapeButtonPressed += EscapeAction;
-            EventManager.AddListener<GameModel.GameStateChanged>(OnGameStateChanged);
-        }
-        
-        private void DetermineInitialGameState()
-        {
-            if (CompareTag("MainMenu"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Menu;
-            }
-            else if (CompareTag("Level"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Running;
-            }
-            else if (CompareTag("GameOver"))
-            {
-                gameModel.CurrentGameState = GameModel.GameState.Loose;
-            }
+            EventManager.Add<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
         
         private static void OnGameStateChanged(GameModel.GameStateChanged evt)
         {
+            Debug.Log("New game state " + evt.NewGameState);
             switch (evt.NewGameState)
             {
                 case GameModel.GameState.Menu:
-                    SceneLoader.Instance.LoadScene("MainMenu");
+                    SceneLoader.Instance.LoadScene(Scenes.MainMenu);
+                    AudioManager.Instance.PlayTrack(Audio.MainMenuBGM);
                     break;
                 case GameModel.GameState.Running:
+                    AudioManager.Instance.PlayTrack(Audio.LevelBGM);
                     Time.timeScale = 1f;
-                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(false));
+                    EventManager.Trigger(new LevelEvent.TogglePauseMenu(false));
                     break;
                 case GameModel.GameState.Paused:
                     Time.timeScale = 0f;
-                    EventManager.Broadcast(new LevelEvents.TogglePauseMenu(true));
+                    EventManager.Trigger(new LevelEvent.TogglePauseMenu(true));
                     break;
                 case GameModel.GameState.Loose:
-                    SceneLoader.Instance.LoadScene("Game Over");
+                    SceneLoader.Instance.LoadScene(Scenes.GameOver);
+                    AudioManager.Instance.PlayTrack(Audio.GameOverBGM);
                     break;
                 case GameModel.GameState.Quit:
                     Application.Quit();
@@ -77,8 +65,15 @@ namespace Controller
                     throw new ArgumentOutOfRangeException();
             }
         }
+        
+        private void OnGameOverTriggered(PlayerEvent.GameOverTriggered evt)
+        {
+            gameModel.CurrentGameState = GameModel.GameState.Loose;
+            SceneLoader.Instance.LoadScene(Scenes.GameOver);
+            Debug.Log("Game Over triggered in game controller");
+        }
 
-        private void EscapeAction()
+        private void OnCancel()
         {
             gameModel.CurrentGameState = gameModel.CurrentGameState switch
             {
@@ -94,11 +89,11 @@ namespace Controller
         {
             UnsubscribeEvents();
         }
-        
+
         private void UnsubscribeEvents()
         {
-            playerInput.OnEscapeButtonPressed -= EscapeAction;
-            EventManager.RemoveListener<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.Remove<GameModel.GameStateChanged>(OnGameStateChanged);
+            EventManager.Remove<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
         }
     }
 }

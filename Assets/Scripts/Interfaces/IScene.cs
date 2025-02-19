@@ -1,4 +1,7 @@
-public interface IScene
+namespace Interfaces
 {
-    void LoadScene(string sceneName);
+    public interface IScene
+    {
+        void LoadScene(string sceneName);
+    }
 }

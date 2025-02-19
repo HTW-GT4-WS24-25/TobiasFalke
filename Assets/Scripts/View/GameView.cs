@@ -2,12 +2,13 @@ using Events;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 namespace View
 {
     public class GameView : MonoBehaviour
     {
-        public TextMeshProUGUI levelCounter;
+        public TextMeshProUGUI stageCounter;
         public TextMeshProUGUI timeCounter;
         public TextMeshProUGUI scoreCounter;
         // TODO: refactor status bars
@@ -26,45 +27,58 @@ namespace View
             RegisterEvents();
         }
         
-        private void OnLevelChanged(LevelEvents.StageChanged evt)
+        private void RegisterEvents()
         {
-            levelCounter.text = evt.NewStage.ToString();
+            EventManager.Add<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Add<LevelEvent.TimeElapsed>(OnTimeElapsed);
+            EventManager.Add<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
+            EventManager.Add<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
+            EventManager.Add<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);
+            EventManager.Add<PlayerEvent.SpeedMultiplierChanged>(OnSpeedMultiplierChanged);
+            EventManager.Add<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
+            EventManager.Add<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
+        }
+
+        
+        private void OnStageChanged(LevelEvent.StageChanged evt)
+        {
+            stageCounter.text = evt.NewStage.ToString();
         }
         
-        private void OnTimeElapsed(LevelEvents.TimeElapsed evt)
+        private void OnTimeElapsed(LevelEvent.TimeElapsed evt)
         {
             timeCounter.text = FormatTime(evt.NewTime);
         }
 
-        private void OnScoreChanged(PlayerEvents.ScoreChanged evt)
+        private void OnScoreChanged(PlayerEvent.ScorePointsChanged evt)
         {
-            scoreCounter.text = ((int)evt.NewScore).ToString();
+            scoreCounter.text = ((int)evt.NewScorePoints).ToString();
         }
 
-        private void OnHealthChanged(PlayerEvents.HealthChanged evt)
+        private void OnHealthChanged(PlayerEvent.HealthPointsChanged evt)
         {
-            healthBar.value = evt.NewHealth / 100;
+            healthBar.value = evt.NewHealthPoints / 100;
             healthFill.color = healthGradient.Evaluate(healthBar.normalizedValue);
         }
 
-        private void OnSpecialChanged(PlayerEvents.SpecialChanged evt)
+        private void OnSpecialChanged(PlayerEvent.SpecialPointsChanged evt)
         {
-            specialBar.value = evt.NewSpecial / 100;
+            specialBar.value = evt.NewSpecialPoints / 100;
             specialFill.color = specialGradiant.Evaluate(specialBar.normalizedValue);
-            if (evt.NewSpecial == 100) specialActionButtonPopUp.gameObject.SetActive(true);
+            if (evt.NewSpecialPoints == 100) specialActionButtonPopUp.gameObject.SetActive(true);
         }
 
-        private void OnSpeedChanged(PlayerEvents.SpeedChanged evt)
+        private void OnSpeedMultiplierChanged(PlayerEvent.SpeedMultiplierChanged evt)
         {
-            speedCounter.text = evt.NewSpeed.ToString();
+            speedCounter.text = evt.NewSpeedMultiplier.ToString();
         }
 
-        private void OnJumpDurationChanged(PlayerEvents.JumpDurationChanged evt)
+        private void OnJumpDurationChanged(PlayerEvent.JumpDurationChanged evt)
         {
-            jumpDurationCounter.text = evt.NewJumpDuration.ToString();
+            jumpDurationCounter.text = evt.NewJumpDuration + " sec";
         }
 
-        private void OnSpecialAction(PlayerEvents.SpecialActionTriggered evt)
+        private void OnSpecialAction(PlayerEvent.SpecialActionTriggered evt)
         {
             specialActionButtonPopUp.gameObject.SetActive(false);
         }
@@ -76,18 +90,6 @@ namespace View
             return $"{minutes:0}:{seconds:00}";
         }
         
-        private void RegisterEvents()
-        {
-            EventManager.AddListener<LevelEvents.StageChanged>(OnLevelChanged);
-            EventManager.AddListener<LevelEvents.TimeElapsed>(OnTimeElapsed);
-            EventManager.AddListener<PlayerEvents.ScoreChanged>(OnScoreChanged);
-            EventManager.AddListener<PlayerEvents.HealthChanged>(OnHealthChanged);
-            EventManager.AddListener<PlayerEvents.SpecialChanged>(OnSpecialChanged);
-            EventManager.AddListener<PlayerEvents.SpeedChanged>(OnSpeedChanged);
-            EventManager.AddListener<PlayerEvents.JumpDurationChanged>(OnJumpDurationChanged);
-            EventManager.AddListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
-        }
-        
         private void OnDestroy()
         {
             UnsubscribeEvents();
@@ -95,13 +97,13 @@ namespace View
 
         private void UnsubscribeEvents()
         {
-            EventManager.RemoveListener<LevelEvents.StageChanged>(OnLevelChanged);
-            EventManager.RemoveListener<PlayerEvents.ScoreChanged>(OnScoreChanged);
-            EventManager.RemoveListener<PlayerEvents.HealthChanged>(OnHealthChanged);
-            EventManager.RemoveListener<PlayerEvents.SpecialChanged>(OnSpecialChanged);
-            EventManager.RemoveListener<PlayerEvents.SpeedChanged>(OnSpeedChanged);
-            EventManager.RemoveListener<PlayerEvents.JumpDurationChanged>(OnJumpDurationChanged);
-            EventManager.RemoveListener<PlayerEvents.SpecialActionTriggered>(OnSpecialAction);
+            EventManager.Remove<LevelEvent.StageChanged>(OnStageChanged);
+            EventManager.Remove<PlayerEvent.ScorePointsChanged>(OnScoreChanged);
+            EventManager.Remove<PlayerEvent.HealthPointsChanged>(OnHealthChanged);
+            EventManager.Remove<PlayerEvent.SpecialPointsChanged>(OnSpecialChanged);
+            EventManager.Remove<PlayerEvent.SpeedMultiplierChanged>(OnSpeedMultiplierChanged);
+            EventManager.Remove<PlayerEvent.JumpDurationChanged>(OnJumpDurationChanged);
+            EventManager.Remove<PlayerEvent.SpecialActionTriggered>(OnSpecialAction);
         }
     }
 }
