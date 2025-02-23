@@ -15,6 +15,7 @@ namespace Menus
         private Button tutorialButton;
         private Button quitButton;
         private Button returnButton;
+        private Button profileButton;
 
         private void Awake()
         {
@@ -23,6 +24,7 @@ namespace Menus
             tutorialButton = menuDocument.rootVisualElement.Q<Button>("TutorialButton");
             quitButton = menuDocument.rootVisualElement.Q<Button>("QuitButton");
             returnButton = tutorialDocument.rootVisualElement.Q<Button>("ReturnButton");
+            profileButton = menuDocument.rootVisualElement.Q<Button>("ProfileButton");
             RegisterButtonCallbacks();
         }
 
@@ -32,6 +34,14 @@ namespace Menus
             tutorialButton?.RegisterCallback<ClickEvent>(OnClickTutorialButton);
             quitButton?.RegisterCallback<ClickEvent>(OnClickExitButton);
             returnButton?.RegisterCallback<ClickEvent>(OnClickReturnButton);
+            profileButton?.RegisterCallback<ClickEvent>(OnClickProfileButton);
+        }
+
+        private void OnClickProfileButton(ClickEvent evt)
+        {
+            //TODO: open Login Menu onClick 
+            throw new System.NotImplementedException();
+            
         }
 
         private static void OnClickPlayButton(ClickEvent evt)
@@ -81,6 +91,7 @@ namespace Menus
             tutorialButton?.UnregisterCallback<ClickEvent>(OnClickTutorialButton);
             quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
             returnButton?.UnregisterCallback<ClickEvent>(OnClickReturnButton);
+            profileButton?.UnregisterCallback<ClickEvent>(OnClickProfileButton);
         }
 
         private void HideMenu()

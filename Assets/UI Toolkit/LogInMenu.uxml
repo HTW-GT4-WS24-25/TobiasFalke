@@ -3,10 +3,11 @@
     <engine:VisualElement class="panel-pause" style="flex-grow: 1; position: absolute; height: 350px; width: 563px; top: 0; bottom: 100%; right: 100%; left: 0;" />
     <engine:VisualElement name="VisualElement" class="menu" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-853887735&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_14&quot;); -unity-slice-left: 10; -unity-slice-top: 10; -unity-slice-right: 10; -unity-slice-bottom: 10; border-left-color: rgba(13, 13, 13, 0); border-right-color: rgba(13, 13, 13, 0); border-top-color: rgba(13, 13, 13, 0); border-bottom-color: rgba(13, 13, 13, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; padding-top: 25px; padding-right: 20px; padding-bottom: 25px; padding-left: 20px; max-width: 600px; align-items: stretch; align-self: center; height: 489px; width: initial; min-width: 400px; margin-top: 5%; margin-bottom: 5%;">
         <engine:Label text="Login and Registration" name="Titel" style="-unity-text-align: upper-center; margin-bottom: 20px;" />
-        <engine:TextField label="Mail" placeholder-text="example@mail.com" name="MailInput" />
+        <engine:TextField label="Mail" placeholder-text="example@mail.com" name="EmailInput" />
         <engine:TextField label="Password" placeholder-text="password" name="PasswordInput" password="true" />
+        <engine:Label name="Notification" double-click-selects-word="false" style="max-width: 253px; align-self: center; white-space: normal; -unity-font-style: normal; color: rgb(147, 0, 0);" />
         <engine:VisualElement style="flex-grow: 1; margin-top: 22px;">
-            <engine:Button text="Login" name="LogInButton" style="background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1279304698&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_20&quot;);" />
+            <engine:Button text="Login" name="LoginButton" style="background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1279304698&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_20&quot;);" />
             <engine:Button text=" Register &amp; Login" name="RegisterButton" />
             <engine:Button text="Reset Password" name="ResetPasswordButton" style="background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1338232284&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_21&quot;);" />
         </engine:VisualElement>
