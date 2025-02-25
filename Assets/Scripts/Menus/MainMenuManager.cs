@@ -1,4 +1,6 @@
+using Events;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utility;
@@ -10,6 +12,7 @@ namespace Menus
     {
         private UIDocument menuDocument;
         public UIDocument tutorialDocument;
+        public UIDocument loginDocument;
 
         private Button playButton;
         private Button tutorialButton;
@@ -25,8 +28,36 @@ namespace Menus
             quitButton = menuDocument.rootVisualElement.Q<Button>("QuitButton");
             returnButton = tutorialDocument.rootVisualElement.Q<Button>("ReturnButton");
             profileButton = menuDocument.rootVisualElement.Q<Button>("ProfileButton");
+            
             RegisterButtonCallbacks();
+            SubscribeEvents();
+
+            if (UserAccountManager.Instance.IsUserLoggedIn()) UserAccountManager.Instance.GetProfileImageID(SetProfilePictureButton,error =>{Debug.Log(error);});
+            else
+            {
+                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + "unknown_profile" + ".png";
+                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                profileButton.style.backgroundImage = profileImage;
+            };
         }
+
+        private void OnProfileImageChanged(UserEvent.ProfileImageChanged obj)
+        {
+            SetProfilePictureButton(obj.ProfileImageID);
+        }
+
+        private void SetProfilePictureButton(int index)
+        {
+                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + index + ".png";
+                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                profileButton.style.backgroundImage = profileImage;
+        }
+
+        private void OnUserSignedIn(UserEvent.UserSignedIn obj)
+        {
+            UserAccountManager.Instance.GetProfileImageID(SetProfilePictureButton,error =>{Debug.Log(error);});
+        }
+        
 
         private void RegisterButtonCallbacks()
         {
@@ -37,11 +68,15 @@ namespace Menus
             profileButton?.RegisterCallback<ClickEvent>(OnClickProfileButton);
         }
 
+        private void SubscribeEvents()
+        {
+            EventManager.Add<UserEvent.UserSignedIn>(OnUserSignedIn);
+            EventManager.Add<UserEvent.ProfileImageChanged>(OnProfileImageChanged);
+        }
+
         private void OnClickProfileButton(ClickEvent evt)
         {
-            //TODO: open Login Menu onClick 
-            throw new System.NotImplementedException();
-            
+            ShowLogin();
         }
 
         private static void OnClickPlayButton(ClickEvent evt)
@@ -79,10 +114,16 @@ namespace Menus
         {
             tutorialDocument.sortingOrder = -1;
         }
+        
+        private void ShowLogin()
+        {
+            loginDocument.sortingOrder = 1;
+        }
 
         private void OnDestroy()
         {
             UnregisterButtonCallbacks();
+            UnsubscribeEvents();
         }
 
         private void UnregisterButtonCallbacks()
@@ -92,6 +133,12 @@ namespace Menus
             quitButton?.UnregisterCallback<ClickEvent>(OnClickExitButton);
             returnButton?.UnregisterCallback<ClickEvent>(OnClickReturnButton);
             profileButton?.UnregisterCallback<ClickEvent>(OnClickProfileButton);
+        }
+
+        private void UnsubscribeEvents()
+        {
+            EventManager.Remove<UserEvent.UserSignedIn>(OnUserSignedIn);
+            EventManager.Remove<UserEvent.ProfileImageChanged>(OnProfileImageChanged);
         }
 
         private void HideMenu()
