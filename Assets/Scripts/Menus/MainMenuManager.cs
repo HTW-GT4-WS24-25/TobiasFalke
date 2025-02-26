@@ -32,11 +32,16 @@ namespace Menus
             RegisterButtonCallbacks();
             SubscribeEvents();
 
-            if (UserAccountManager.Instance.IsUserLoggedIn()) UserAccountManager.Instance.GetProfileImageID(SetProfilePictureButton,error =>{Debug.Log(error);});
+            if (UserAccountManager.Instance.IsUserLoggedIn())
+            {
+                UserAccountManager.Instance.GetProfileImageID(
+                    SetProfilePictureButton,
+                    Debug.Log
+                );
+            }
             else
             {
-                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + "unknown_profile" + ".png";
-                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(Sprites.UnkownProfilePath));
                 profileButton.style.backgroundImage = profileImage;
             };
         }

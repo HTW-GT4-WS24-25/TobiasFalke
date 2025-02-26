@@ -66,7 +66,6 @@ namespace Menus
             imagePaths = Directory.GetFiles(GameConstants.Sprites.ProfileImagesPath, GameConstants.Sprites.ProfileImageFileBase + "*.png")
                 .OrderBy(path => int.Parse(Path.GetFileNameWithoutExtension(path).Replace(GameConstants.Sprites.ProfileImageFileBase, "")))
                 .ToArray();
-            Debug.Log(imagePaths);
         }
 
         private void RegisterButtonCallbacks()
