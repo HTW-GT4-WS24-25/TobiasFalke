@@ -46,6 +46,7 @@ namespace Utility
         {
             public const string ProfileImagesPath = "Assets/Sprites/UI/Profile Pictures/";
             public const string ProfileImageFileBase = "em_outline_shadow_";
+            public const string UnkownProfilePath = "Assets/Sprites/UI/Profile Pictures/unknown_profile.png";
         }
     }
 }
