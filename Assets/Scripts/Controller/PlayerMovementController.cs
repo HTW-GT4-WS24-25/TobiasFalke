@@ -14,7 +14,6 @@ namespace Controller
         private Vector2 movementInput;
         private float timeSinceJump;
         private float origJumpPos;
-        
         private float shakeIntensity = 0.01f;
 
         public void Initialize(PlayerModel model)
@@ -62,7 +61,7 @@ namespace Controller
             else if (playerY >= halfHeight - buffer) movementInput.y = Mathf.Min(0, movementInput.y);
         }
 
-         private void OnJumpAction()
+        private void OnJumpAction()
         {
             if (playerModel.IsDoingJumpAction) return;
             playerModel.IsDoingJumpAction = true;

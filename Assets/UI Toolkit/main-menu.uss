@@ -15,28 +15,29 @@
     justify-content: flex-start;
     align-self: center;
     align-content: stretch;
-    max-height: 60px;
+    max-height: 50px;
     min-width: 253px;
-    background-image: url("project://database/Assets/Sprites/UI/tilemap_packed.png?fileID=-638729143&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_19");
+    background-image: url("project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-638729143&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_19");
     -unity-background-image-tint-color: rgb(255, 255, 255);
     -unity-slice-left: 7;
     -unity-slice-top: 7;
     -unity-slice-right: 7;
     -unity-slice-bottom: 7;
     -unity-background-scale-mode: scale-to-fit;
-    min-height: auto;
+    min-height: 40px;
     position: relative;
     background-position: center;
     background-repeat: no-repeat;
     flex-direction: column;
     flex-basis: auto;
     background-size: cover;
-    margin-top: 4px;
-    margin-right: 4px;
-    margin-bottom: 4px;
-    margin-left: 4px;
     transition-duration: 0.1s;
     transition-timing-function: ease;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .unity-button:hover {
@@ -48,6 +49,11 @@
     text-shadow: 0 0 0 rgba(0, 0, 0, 0.59);
     scale: 1.03 1.03;
     transition-duration: 0.1s;
+}
+
+.unity-button:focus {
+    background-color: rgba(69, 69, 69, 0);
+    -unity-background-image-tint-color: rgb(194, 226, 255);
 }
 
 .unity-text-element {
@@ -73,4 +79,107 @@
 .unity-button:active {
     -unity-background-image-tint-color: rgb(255, 255, 255);
     scale: 0.95 0.95;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.unity-base-text-field__input {
+    background-image: url("project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1079321258&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_17");
+    -unity-slice-left: 5;
+    -unity-slice-top: 5;
+    -unity-slice-right: 5;
+    -unity-slice-bottom: 5;
+    border-left-color: rgba(116, 116, 116, 0);
+    border-right-color: rgba(116, 116, 116, 0);
+    border-top-color: rgba(116, 116, 116, 0);
+    border-bottom-color: rgba(116, 116, 116, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+}
+
+.unity-base-text-field__label {
+    margin-right: -22px;
+}
+
+.exit-button {
+    right: 4%;
+    top: 4%;
+    position: absolute;
+    left: auto;
+    align-items: flex-end;
+    align-self: flex-end;
+    background-image: url("project://database/Assets/Sprites/UI/Buttons/exit_sk8dex.png?fileID=21300000&guid=410e0ec864cb6d1488645520ebfac44c&type=3#exit_sk8dex");
+    -unity-slice-left: 7;
+    -unity-slice-top: 7;
+    -unity-slice-right: 7;
+    -unity-slice-bottom: 7;
+}
+
+.small-button {
+    min-width: auto;
+    -unity-background-scale-mode: scale-to-fit;
+    background-image: url("project://database/Assets/Sprites/UI/Buttons/LeaderboardButton.png?fileID=21300000&guid=0951cd30a88aff648bc20e52cfe62d93&type=3#LeaderboardButton");
+}
+
+.unity-tab__header {
+    background-image: url("project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1435436861&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_18");
+    -unity-slice-left: 6;
+    -unity-slice-top: 6;
+    -unity-slice-right: 6;
+    -unity-slice-bottom: 6;
+    background-color: rgba(0, 0, 0, 0);
+    background-size: 100% 100%;
+    -unity-slice-scale: 1px;
+    padding-top: 0;
+}
+
+.unity-tab__header-label {
+    background-image: none;
+    -unity-slice-left: 6;
+    -unity-slice-top: 6;
+    -unity-slice-right: 6;
+    -unity-slice-bottom: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-size: 100% 100%;
+    -unity-slice-scale: 1px;
+    padding-top: 5px;
+}
+
+.unity-tab-view__header-container {
+    margin-left: 24px;
+}
+
+.unity-tab {
+    background-image: url("project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-853887735&guid=0e9fbb2636f533b4eb3268c814aafc3a&type=3#tilemap_packed_14");
+    -unity-slice-left: 10;
+    -unity-slice-top: 10;
+    -unity-slice-right: 10;
+    -unity-slice-bottom: 10;
+    margin-top: -5px;
+    margin-right: -5px;
+    margin-bottom: -5px;
+    margin-left: -5px;
+    padding-top: 75px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    min-width: 400px;
+    min-height: 400px;
+    justify-content: flex-start;
+}
+
+.unity-list-view__item {
+    min-height: 35px;
+}
+
+.unity-scroll-view__content-container {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    min-height: auto;
+    flex-grow: 1;
 }

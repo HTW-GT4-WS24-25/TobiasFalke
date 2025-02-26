@@ -41,5 +41,12 @@ namespace Utility
             public const string invincibility = "isInvincible";
             public const string gameOver = "isDead";
         }
+
+        public static class Sprites
+        {
+            public const string ProfileImagesPath = "Sprites/Profiles/";
+            public const string ProfileImageFileBase = "em_outline_shadow_";
+            public const string UnkownProfilePath = "Sprites/unknown_profile";
+        }
     }
 }
