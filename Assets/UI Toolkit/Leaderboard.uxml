@@ -1,0 +1,17 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/main-menu.uss?fileID=7433441132597879392&amp;guid=9eb3a4b59199704409428d005d953203&amp;type=3#main-menu" />
+    <engine:VisualElement style="flex-grow: 1; justify-content: space-around;">
+        <engine:VisualElement name="VisualElement" style="flex-grow: 0; padding-top: 50px; padding-right: 25px; padding-bottom: 25px; padding-left: 25px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=1487040650&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_13&quot;); -unity-slice-left: 10; -unity-slice-top: 10; -unity-slice-right: 10; -unity-slice-bottom: 10; min-width: 637px; min-height: 500px; max-width: none; align-items: stretch; align-self: center; align-content: auto; justify-content: flex-start;">
+            <engine:Label text="Leaderboard" style="font-size: 32px; margin-bottom: 15px;" />
+            <engine:MultiColumnListView focusable="false" header-title="LeaderBoardList" name="LeaderBoardList" selection-type="None" allow-remove="true" style="padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; flex-grow: 1; min-height: 100px;">
+                <engine:Columns resize-preview="true" reorderable="false">
+                    <engine:Column name="Number" sortable="false" stretchable="false" visible="true" title="No." min-width="50px" optional="false" resizable="false" binding-path="position" />
+                    <engine:Column name="User" title="Username" stretchable="true" binding-path="playFabId" />
+                    <engine:Column name="Score" title="Score" stretchable="true" visible="true" max-width="200px" binding-path="statValue" />
+                </engine:Columns>
+                <engine:SortColumnDescriptions />
+            </engine:MultiColumnListView>
+            <engine:Button name="ExitButton" class="exit-button small-button" style="position: absolute; min-height: 50px; min-width: 30px; right: 4%; width: 45px; background-image: url(&quot;project://database/Assets/Sprites/UI/Buttons/exit_sk8dex.png?fileID=21300000&amp;guid=410e0ec864cb6d1488645520ebfac44c&amp;type=3#exit_sk8dex&quot;);" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>
