@@ -41,7 +41,7 @@ namespace Menus
             }
             else
             {
-                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(Sprites.UnkownProfilePath));
+                StyleBackground profileImage = new StyleBackground( Resources.Load<Sprite>(Sprites.UnkownProfilePath));
                 profileButton.style.backgroundImage = profileImage;
             };
         }
@@ -53,8 +53,8 @@ namespace Menus
 
         private void SetProfilePictureButton(int index)
         {
-                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + index + ".png";
-                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + index;
+                StyleBackground profileImage = new StyleBackground( Resources.Load<Sprite>(fullImagePath));
                 profileButton.style.backgroundImage = profileImage;
         }
 
