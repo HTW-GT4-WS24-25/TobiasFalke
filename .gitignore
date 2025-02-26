@@ -73,3 +73,10 @@ crashlytics-build.properties
 
 # MacOS specific
 **/.DS_store
+
+# PlayFab SDK settings and authentication keys
+/Assets/PlayFabSdk/Shared/Internal/Settings.cs
+/Assets/PlayFabEditorExtensions/Editor/Scripts/PlayFabEditorDataService.cs
+
+# PlayFab Project Configuration
+/Assets/PlayFabEditorExtensions/Editor/Resources/PlayFabEditorConfig.json

@@ -1,34 +1,14 @@
 using UnityEngine;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
+using System.Threading.Tasks;
+using Unity.Services.RemoteConfig;
 
 namespace Utility
 {
     public class GameConfig : MonoBehaviour
     {
         public static GameConfig Instance { get; set; }
-        
-        /*
-        [Header("Level Settings")]
-        [SerializeField] private int startingStage = 1;
-        [SerializeField] private float stageDuration = 20f;
-        [SerializeField] private float speedIncreasePerStage = 2f;
-        [SerializeField] private float baseStageSpeed = 5f;
-        [SerializeField] private float baseStageWidth = 10f;
-        [SerializeField] private float baseStageHeight = 5f;
-        [SerializeField] private float baseObstacleSpawnInterval = 0.5f;
-        [SerializeField] private float basePickupSpawnInterval = 5f;
-        [Header("Player Settings")]
-        [SerializeField] private int maxHealthPoints = 100;
-        [SerializeField] private int maxSpecialPoints = 100;
-        [SerializeField] private float baseSpeed = 5f;
-        [SerializeField] private float maxSpeedMultiplier = 3f;
-        [SerializeField] private float baseJumpHeight = 2f;
-        [SerializeField] private float baseJumpDuration = 1f;
-        [SerializeField] private float baseGrindActionScore = 1f;
-        [SerializeField] private float trickActionScore = 1f;
-        [SerializeField] private float trickActionDuration = 1f;
-        [SerializeField] private float specialActionDuration = 8f;
-        [SerializeField] private float invincibilityDuration = 1f;
-*/
 
         public int MaxHealthPoints;
         public int MaxSpecialPoints;
@@ -50,7 +30,27 @@ namespace Utility
         public float BaseObstacleSpawnInterval;
         public float BasePickupSpawnInterval;
 
-        private void Awake()
+        public struct userAttributes
+        {
+            public int score;
+        }
+
+        public struct appAttributes
+        {
+
+        }
+
+        async Task InitializeRemoteConfigAsync()
+        {
+            await UnityServices.InitializeAsync();
+
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+        }
+
+        private async void Awake()
         {
             if (Instance == null)
             {
@@ -58,27 +58,65 @@ namespace Utility
                 DontDestroyOnLoad(gameObject);
             }
             else Destroy(gameObject);
-            /*
-            MaxHealthPoints = maxHealthPoints;
-            MaxSpecialPoints = maxSpecialPoints;
-            MaxSpeedMultiplier = maxSpeedMultiplier;
-            BaseSpeed = baseSpeed;
-            JumpHeight = baseJumpHeight;
-            JumpDuration = baseJumpDuration;
-            GrindActionScore = baseGrindActionScore;
-            TrickActionScore = trickActionScore;
-            TrickActionDuration = trickActionDuration;
-            SpecialActionDuration = specialActionDuration;
-            InvincibilityDuration = invincibilityDuration;
-            StartingStage = startingStage;
-            StageDuration = stageDuration;
-            SpeedIncreasePerStage = speedIncreasePerStage;
-            BaseStageSpeed = baseStageSpeed;
-            BaseStageWidth = baseStageWidth;
-            BaseStageHeight = baseStageHeight;
-            BaseObstacleSpawnInterval = baseObstacleSpawnInterval;
-            BasePickupSpawnInterval = basePickupSpawnInterval;
-        */
+            
+            await InitializeRemoteConfigAsync();
+
+            var uaStruct = new userAttributes
+            {
+                score = 0
+            };
+
+            RemoteConfigService.Instance.FetchConfigs(uaStruct, new appAttributes());
+            RemoteConfigService.Instance.FetchCompleted += RemoteConfigLoaded;
+            RemoteConfigService.Instance.SetEnvironmentID("ca19571a-8000-4cee-b0f2-f9832659a0b8");
+            await InitializeGameConfiguration();
+        }
+        
+        private async Task InitializeGameConfiguration()
+        {
+            BaseObstacleSpawnInterval = await SetConfigValue(false, "BaseObstacleSpawnInterval");
+            BaseSpeed = await SetConfigValue(false, "BaseSpeed");
+            BaseStageHeight = await SetConfigValue(false, "BaseStageHeight");
+            BaseStageSpeed = await SetConfigValue(false, "BaseStageSpeed");
+            BaseStageWidth = await SetConfigValue(false, "BaseStageWidth");
+            GrindActionScore = await SetConfigValue(false, "GrindActionScore");
+            InvincibilityDuration = await SetConfigValue(false, "InvincibilityDuration");
+            JumpDuration = await SetConfigValue(false, "JumpDuration");
+            JumpHeight = await SetConfigValue(false, "JumpHeight");
+            MaxHealthPoints = (int)await SetConfigValue(true, "MaxHealthPoints");
+            MaxSpecialPoints = (int)await SetConfigValue(true, "MaxSpecialPoints");
+            MaxSpeedMultiplier = await SetConfigValue(false, "MaxSpeedMultiplier");
+            SpecialActionDuration = await SetConfigValue(false, "SpecialActionDuration");
+            SpeedIncreasePerStage = await SetConfigValue(false, "SpeedIncreasePerStage");
+            StageDuration = await SetConfigValue(false, "StageDuration");
+            StartingStage = (int)await SetConfigValue(true, "StartingStage");
+            TrickActionDuration = await SetConfigValue(false, "TrickActionDuration");
+            TrickActionScore = await SetConfigValue(false, "TrickActionScore");
+        }
+
+        private async Task<float> SetConfigValue(bool isInteger, string key)
+        {
+            return isInteger switch
+            {
+                true => RemoteConfigService.Instance.appConfig.GetFloat(key),
+                false => RemoteConfigService.Instance.appConfig.GetInt(key)
+            };
+        }
+
+        private void RemoteConfigLoaded(ConfigResponse configResponse)
+        {
+            switch (configResponse.requestOrigin)
+            {
+                case ConfigOrigin.Default:
+                    Debug.Log("default settings");
+                    break;
+                case ConfigOrigin.Cached:
+                    Debug.Log("cached settings");
+                    break;
+                case ConfigOrigin.Remote:
+                    Debug.Log("remote settings");
+                    break;
+            }
         }
     }
 }

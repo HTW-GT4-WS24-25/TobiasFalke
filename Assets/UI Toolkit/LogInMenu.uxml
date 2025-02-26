@@ -1,0 +1,28 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/main-menu.uss?fileID=7433441132597879392&amp;guid=9eb3a4b59199704409428d005d953203&amp;type=3#main-menu" />
+    <engine:VisualElement class="panel-pause" style="flex-grow: 1; position: absolute; height: 100%; width: 100%; top: 0; bottom: 0; right: 100%; left: -1px; color: rgba(18, 18, 18, 0.62);" />
+    <engine:VisualElement style="flex-grow: 1; flex-direction: row; align-items: stretch; justify-content: space-around;">
+        <engine:TabView style="justify-content: center;">
+            <engine:Tab label="Login &amp; Register" closeable="false" class="unity-tab">
+                <engine:TextField label="Mail" placeholder-text="example@mail.com" name="EmailInput" />
+                <engine:TextField label="Password" placeholder-text="password" name="PasswordInput" password="true" />
+                <engine:Label name="Notification" double-click-selects-word="false" style="max-width: 253px; align-self: center; white-space: normal; -unity-font-style: normal; color: rgb(147, 0, 0);" />
+                <engine:VisualElement style="flex-grow: 1; margin-top: 22px;">
+                    <engine:Button text="Login" name="LoginButton" style="background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1279304698&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_20&quot;);" />
+                    <engine:Button text=" Register &amp; Login" name="RegisterButton" />
+                    <engine:Button text="Reset Password" name="ResetPasswordButton" style="background-image: url(&quot;project://database/Assets/Sprites/Level/tilemap_packed.png?fileID=-1338232284&amp;guid=0e9fbb2636f533b4eb3268c814aafc3a&amp;type=3#tilemap_packed_21&quot;);" />
+                </engine:VisualElement>
+            </engine:Tab>
+            <engine:Tab label="Profile" style="justify-content: space-around; padding-top: 30px;">
+                <engine:VisualElement style="flex-grow: 1; flex-direction: row; max-height: 60px; margin-top: 7px; margin-bottom: 7px;">
+                    <engine:Button name="SelectLeftImageButton" style="background-image: url(&quot;project://database/Assets/Sprites/UI/Buttons/Arrows.png?fileID=5287939958834139383&amp;guid=715bcbe75cc387945a34c02dfef3ba1c&amp;type=3#Arrows_1&quot;); min-width: auto; -unity-background-scale-mode: scale-to-fit;" />
+                    <engine:VisualElement name="SelectionImage" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/UI/Profile%20Pictures/em_outline_shadow_1.png?fileID=-3377791309342117184&amp;guid=1d361dce6e08840469618fd6ceaccf6d&amp;type=3#em_outline_shadow_43_0&quot;); -unity-background-scale-mode: scale-to-fit;" />
+                    <engine:Button name="SelectRightImageButton" style="background-image: url(&quot;project://database/Assets/Sprites/UI/Buttons/Arrows.png?fileID=-1033766676993296678&amp;guid=715bcbe75cc387945a34c02dfef3ba1c&amp;type=3#Arrows_0&quot;); min-width: 0; -unity-background-scale-mode: scale-to-fit;" />
+                </engine:VisualElement>
+                <engine:Label name="ProfileImageNotification" double-click-selects-word="false" style="max-width: 253px; align-self: center; white-space: normal; -unity-font-style: normal; color: rgb(147, 0, 0);" />
+                <engine:Button text="Save Profile Image" name="SaveImageButton" />
+            </engine:Tab>
+            <engine:Button name="ExitButton" enabled="true" class="exit-button" style="right: 19px; background-image: url(&quot;project://database/Assets/Sprites/UI/Buttons/exit_sk8dex.png?fileID=21300000&amp;guid=410e0ec864cb6d1488645520ebfac44c&amp;type=3#exit_sk8dex&quot;); min-width: 40px; max-height: 40px; top: 22px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+        </engine:TabView>
+    </engine:VisualElement>
+</engine:UXML>
