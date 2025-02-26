@@ -19,9 +19,7 @@ namespace Menus
         private static Color DARK_GREEN = new Color(0f, 0.5f, 0f, 1f);
         private static Color DARK_RED = new Color(0.6f, 0f, 0f, 1f);
         
-        private static string profileImageFolder = "Assets/Sprites/UI/Profile Pictures";
-        private static string profileImageFileBase= "em_outline_shadow_";
-        private string[] imagePaths;
+        private Sprite[] profileSpites;
         private int currentImageIndex = 0;
         
         private UIDocument uiDocument;
@@ -63,10 +61,11 @@ namespace Menus
 
         private void Start()
         {
-            imagePaths = Directory.GetFiles(GameConstants.Sprites.ProfileImagesPath, GameConstants.Sprites.ProfileImageFileBase + "*.png")
+            profileSpites = Resources.LoadAll<Sprite>(GameConstants.Sprites.ProfileImagesPath);
+            Debug.Log("Number of Sprites:" + profileSpites.Length + " First Sprite:" + profileSpites[0].name);
+            /*imagePaths = Directory.GetFiles(GameConstants.Sprites.ProfileImagesPath, GameConstants.Sprites.ProfileImageFileBase + "*.png")
                 .OrderBy(path => int.Parse(Path.GetFileNameWithoutExtension(path).Replace(GameConstants.Sprites.ProfileImageFileBase, "")))
-                .ToArray();
-            Debug.Log(imagePaths);
+                .ToArray();*/
         }
 
         private void RegisterButtonCallbacks()
@@ -109,8 +108,8 @@ namespace Menus
         {
             if (UserAccountManager.Instance.IsUserLoggedIn())
             {
-                string imagePath = imagePaths[currentImageIndex];
-                int imageNumber = int.Parse(Path.GetFileNameWithoutExtension(imagePath).Replace(GameConstants.Sprites.ProfileImageFileBase, ""));
+                Sprite profileSprite = profileSpites[currentImageIndex];
+                int imageNumber = int.Parse(profileSprite.name.Replace(GameConstants.Sprites.ProfileImageFileBase, ""));
 
                 UserAccountManager.Instance.SetProfileImageID(imageNumber);
                 
@@ -120,20 +119,22 @@ namespace Menus
 
         private void OnClickSelectRightImageButton(ClickEvent evt)
         {
-            currentImageIndex = (currentImageIndex + 1) % imagePaths.Length;
+            if (profileSpites is not { Length: > 0 }) return;
+            currentImageIndex = (currentImageIndex + 1) % profileSpites.Length;
             UpdateProfileImage();
         }
 
         private void OnClickSelectLeftImageButton(ClickEvent evt)
         {
-            currentImageIndex = (currentImageIndex - 1 + imagePaths.Length) % imagePaths.Length;
+            if (profileSpites is not { Length: > 0 }) return;
+            currentImageIndex = (currentImageIndex - 1 + profileSpites.Length) % profileSpites.Length;
             UpdateProfileImage();
         }
 
         private void UpdateProfileImage()
         {
-            string imagePath = imagePaths[currentImageIndex];
-            StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(imagePath));
+            Sprite profileSprite = profileSpites[currentImageIndex];
+            StyleBackground profileImage = new StyleBackground( profileSprite);
             selectionImage.style.backgroundImage = profileImage;
         }
 

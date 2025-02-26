@@ -32,11 +32,16 @@ namespace Menus
             RegisterButtonCallbacks();
             SubscribeEvents();
 
-            if (UserAccountManager.Instance.IsUserLoggedIn()) UserAccountManager.Instance.GetProfileImageID(SetProfilePictureButton,error =>{Debug.Log(error);});
+            if (UserAccountManager.Instance.IsUserLoggedIn())
+            {
+                UserAccountManager.Instance.GetProfileImageID(
+                    SetProfilePictureButton,
+                    Debug.Log
+                );
+            }
             else
             {
-                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + "unknown_profile" + ".png";
-                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                StyleBackground profileImage = new StyleBackground( Resources.Load<Sprite>(Sprites.UnkownProfilePath));
                 profileButton.style.backgroundImage = profileImage;
             };
         }
@@ -48,8 +53,8 @@ namespace Menus
 
         private void SetProfilePictureButton(int index)
         {
-                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + index + ".png";
-                StyleBackground profileImage = new StyleBackground( AssetDatabase.LoadAssetAtPath<Sprite>(fullImagePath));
+                string fullImagePath = Sprites.ProfileImagesPath + Sprites.ProfileImageFileBase + index;
+                StyleBackground profileImage = new StyleBackground( Resources.Load<Sprite>(fullImagePath));
                 profileButton.style.backgroundImage = profileImage;
         }
 

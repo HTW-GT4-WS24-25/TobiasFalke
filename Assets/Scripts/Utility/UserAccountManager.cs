@@ -10,6 +10,7 @@ namespace Utility
     public class UserAccountManager : MonoBehaviour
     {
         public static UserAccountManager Instance { get; private set; }
+        public string CurrentPlayerPlayFabId;
         private void Awake()
         {
             if (Instance == null)
@@ -17,6 +18,12 @@ namespace Utility
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
             }
+            EventManager.Add<PlayerEvent.GameOverTriggered>(OnGameOverTriggered);
+        }
+
+        private void OnGameOverTriggered(PlayerEvent.GameOverTriggered obj)
+        {
+            if (IsUserLoggedIn()) SendLeaderboard((int)obj.ScoreOnLoose);
         }
 
         public bool IsUserLoggedIn()
@@ -24,24 +31,52 @@ namespace Utility
             return PlayFabClientAPI.IsClientLoggedIn();
         }
 
-        /*public int GetProfileImageID()
+        public void SendLeaderboard(int score)
         {
-            int temporaryProfileImageID = 1;
-            var request = new GetUserDataRequest()
+            var request = new UpdatePlayerStatisticsRequest
             {
-                Keys = new List<string>() {"ProfileImageID"}
+                Statistics = new List<StatisticUpdate>
+                {
+                    new StatisticUpdate {
+                        StatisticName = "HighScore",
+                        Value = score
+                    }
+                }
             };
-            PlayFabClientAPI.GetUserData(request,
-                success =>
+            PlayFabClientAPI.UpdatePlayerStatistics(request, OnLeaderBoardUpdate, error => {Debug.LogError(error.GenerateErrorReport());} );
+        }
+
+        public void GetLeaderBoard(Action<List<LeaderboardEntry>> onSuccess, Action<string> onError)
+        {
+            var request = new GetLeaderboardRequest
             {
-                Debug.Log(success.Data["ProfileImageID"].Value);
-                int profileImageID = int.Parse(success.Data["ProfileImageID"].Value);
-            }, 
-                error => {
-                Debug.Log(error.GenerateErrorReport());
-            });
-            return profileImageID;
-        }*/
+                StatisticName = "HighScore",
+                StartPosition = 0,
+                MaxResultsCount = 10
+            };
+            PlayFabClientAPI.GetLeaderboard(request,
+                result =>
+            {
+                List<LeaderboardEntry> leaderboardEntries = new List<LeaderboardEntry>();
+                foreach (var item in result.Leaderboard)
+                {
+                    leaderboardEntries.Add(item.PlayFabId == CurrentPlayerPlayFabId
+                        ? new LeaderboardEntry(item.Position, "You", item.StatValue)
+                        : new LeaderboardEntry(item.Position, item.PlayFabId, item.StatValue));
+                }
+                
+                onSuccess(leaderboardEntries);
+            }, error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
+                onError(error.GenerateErrorReport());
+            } );
+        }
+
+        private void OnLeaderBoardUpdate(UpdatePlayerStatisticsResult obj)
+        {
+            Debug.Log("Successfully send Leaderboard Data");
+        }
         
         public void GetProfileImageID(Action<int> onSuccess, Action<string> onError)
         {
@@ -100,6 +135,7 @@ namespace Utility
         private void OnLoginSuccess(LoginResult obj)
         {
             Debug.Log(obj);
+            CurrentPlayerPlayFabId = obj.PlayFabId;
             EventManager.Trigger(new UserEvent.AccountActionSuccess("successfully logged in!"));
             EventManager.Trigger(new UserEvent.UserSignedIn());
         }
